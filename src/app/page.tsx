@@ -70,8 +70,8 @@ function HomePage() {
                 Website Under Construction
               </h3>
               <p className="text-lg">
-                We're working hard to finish the development of this site. Stay
-                tuned!
+                We&apos;re working hard to finish the development of this site.
+                Stay tuned!
               </p>
             </div>
           </div>
