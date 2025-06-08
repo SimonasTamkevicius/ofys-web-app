@@ -21,7 +21,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <ul className="hidden md:flex space-x-8 text-base font-medium text-[#1A1A1A]">
+        {/* <ul className="hidden md:flex space-x-8 text-base font-medium text-[#1A1A1A]">
           {["Home", "About", "Contact"].map((label) => (
             <li key={label}>
               <a
@@ -32,7 +32,7 @@ const Navbar = () => {
               </a>
             </li>
           ))}
-        </ul>
+        </ul> */}
       </nav>
     </div>
   );
