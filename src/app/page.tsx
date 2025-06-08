@@ -1,103 +1,107 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faListCheck,
+  faBuilding,
+  faHelmetSafety,
+} from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
+import Navbar from "./components/Navbar";
+
+const contacts = [
+  {
+    id: "management",
+    icon: "faListCheck",
+    title: "OFYS Management",
+    email: "Management@ofys.cr",
+    description: `For property owners seeking professional, high-end management services, our Property
+                  Management branch handles everything from guest coordination and maintenance to
+                  revenue optimization and reporting. We specialize in short- and long-term luxury rentals.`,
+  },
+  {
+    id: "realty",
+    title: "OFYS Realty",
+    email: "Realty@ofys.cr",
+    description: `Our Realty branch lists and sells luxury villas, apartments, and development projects in
+                  Liberia and surrounding regions. We assist both property owners looking to list and
+                  clients looking to buy or invest — including pre-sales and turnkey opportunities.`,
+  },
+  {
+    id: "construction",
+    title: "OFYS Construction & Development",
+    email: "Construction@ofys.com",
+    description: `We offer a complete framework for land development services—from architectural
+                  planning and permitting to full-scale construction. Ideal for landowners who want to build
+                  residential complexes with a trusted, all-in-one team.`,
+  },
+];
+
+function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="relative min-h-screen">
+      <div className="z-50 top-0 w-full relative">
+        <Navbar />
+      </div>
+      <div
+        className="fixed inset-0 -z-10 bg-cover bg-center"
+        style={{ backgroundImage: `url("/costaricacoast.png")` }}
+        aria-hidden="true"
+      />
+      <div
+        className="fixed inset-0 -z-10 bg-black opacity-40"
+        aria-hidden="true"
+      />
+      {/* Main content */}
+      <div className="relative z-10 flex flex-col items-center justify-center text-white p-8">
+        <h1 className="text-6xl font-bold text-center z-10">Welcome to OFYS</h1>
+        <p className="text-lg md:text-xl text-center mt-4 z-10 opacity-80">
+          Optimal Framework for Your Success
+        </p>
+      </div>
+      <div className="relative z-10 mt-12 w-full px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-8 max-w-7xl mx-auto">
+          {contacts.map((contact, index) => {
+            const icon =
+              index === 0
+                ? faListCheck
+                : index === 1
+                ? faBuilding
+                : faHelmetSafety;
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            return (
+              <div
+                key={contact.id}
+                className="flex flex-col justify-between bg-[#F3F3F3] border border-[#E0E0E0] opacity-95 rounded-2xl p-6 shadow-md text-center w-full"
+              >
+                <FontAwesomeIcon
+                  icon={icon}
+                  className="text-[#85277F] text-3xl mb-4"
+                />
+
+                <h2 className="text-[#1A1A1A] text-2xl font-semibold">
+                  {contact.title}
+                </h2>
+                <p className="text-[#999] my-4">{contact.description}</p>
+                <div className="flex items-center justify-center mt-4">
+                  <div className="w-10 h-10 flex items-center justify-center">
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-[#85277F] text-2xl"
+                    />
+                  </div>
+                  <span className="text-[#85277F] ml-3 font-bold">
+                    {contact.email}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
   );
 }
+
+export default HomePage;
