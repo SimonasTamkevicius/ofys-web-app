@@ -8,7 +8,8 @@ import {
   faHelmetSafety,
 } from "@fortawesome/free-solid-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/generic/Navbar";
+import BlurText from "./animations/BlurText";
 
 const contacts = [
   {
@@ -55,67 +56,15 @@ function HomePage() {
       />
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center text-white p-8">
-        <h1 className="text-6xl font-bold text-center z-10">Welcome to OFYS</h1>
-        <p className="text-lg md:text-xl text-center mt-4 z-10 opacity-80">
-          Optimal Framework for Your Success
-        </p>
-        <div className="relative z-20 mt-5 w-full">
-          <div className="bg-[#F5EBF3] border-l-4 border-[#792373] text-[#792373] p-6 rounded-xl shadow-lg max-w-3xl mx-auto flex items-center gap-4">
-            <FontAwesomeIcon
-              icon={faHelmetSafety}
-              className="text-[#792373] text-4xl"
-            />
-            <div>
-              <h3 className="text-2xl font-bold mb-1">
-                Website Under Construction
-              </h3>
-              <p className="text-lg">
-                We&apos;re working hard to finish the development of this site.
-                Stay tuned!
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="relative z-10 w-full px-4 mb-5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-8 max-w-7xl mx-auto">
-          {contacts.map((contact, index) => {
-            const icon =
-              index === 0
-                ? faListCheck
-                : index === 1
-                ? faBuilding
-                : faHelmetSafety;
+        <h1 className="text-4xl md:text-6xl font-bold mb-4 text-center"></h1>
 
-            return (
-              <div
-                key={contact.id}
-                className="flex flex-col justify-between bg-[#F3F3F3] border border-[#E0E0E0] opacity-95 rounded-2xl p-6 shadow-md text-center w-full"
-              >
-                <FontAwesomeIcon
-                  icon={icon}
-                  className="text-[#85277F] text-3xl mb-4"
-                />
-
-                <h2 className="text-[#1A1A1A] text-2xl font-semibold">
-                  {contact.title}
-                </h2>
-                <p className="text-[#999] my-4">{contact.description}</p>
-                <div className="flex items-center justify-center mt-4">
-                  <div className="w-10 h-10 flex items-center justify-center">
-                    <FontAwesomeIcon
-                      icon={faEnvelope}
-                      className="text-[#85277F] text-2xl"
-                    />
-                  </div>
-                  <span className="text-[#85277F] ml-3 font-bold">
-                    {contact.email}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <BlurText
+          text="Welcome to OFYS"
+          delay={300}
+          animateBy="words"
+          direction="bottom"
+          className="text-5xl mb-8 font-bold"
+        />
       </div>
     </div>
   );
