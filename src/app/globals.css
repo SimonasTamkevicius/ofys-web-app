@@ -1,26 +1,63 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --font-head: "Playfair Display", serif;
+  --font-body: "Lato", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer utilities {
+  .writing-mode-vertical-rl {
+    writing-mode: vertical-rl;
+  }
+  .writing-mode-vertical-lr {
+    writing-mode: vertical-lr;
+  }
+  .text-orientation-upright {
+    text-orientation: upright;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+}
+
+.head-text {
+  font-family: var(--font-head);
+}
+
+/* These recreate the Button 2 lines using a span's ::before and ::after */
+.btn-2 {
+  position: relative;
+}
+
+.btn-2 .before-after-lines {
+  position: relative;
+}
+
+.btn-2 .before-after-lines::before,
+.btn-2 .before-after-lines::after {
+  backface-visibility: hidden;
+  border: 1px solid transparent;
+  bottom: 0;
+  content: "";
+  display: block;
+  margin: 0 auto;
+  position: absolute;
+  width: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 280ms ease-in-out;
+}
+
+.btn-2 .before-after-lines::before {
+  top: 0;
+  bottom: auto;
+}
+
+.btn-2:hover .before-after-lines::before,
+.btn-2:hover .before-after-lines::after {
+  border-color: #fff;
+  width: 70%;
 }

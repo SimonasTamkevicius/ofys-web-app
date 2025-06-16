@@ -1,60 +1,117 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { motion } from "motion/react";
+import LogoComponent from "./LogoComponent";
+import BurgerMenu from "./BurgerMenu";
 
 const Navbar = () => {
   return (
-    <>
+    <div className=" text-white w-full z-50 ">
+      {/* Horizontal line animation */}
       <div className="overflow-hidden w-full">
         <motion.div
           initial={{ opacity: 0, x: "100%" }}
           animate={{ opacity: 1, x: "0%" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-[1px] bg-white my-4"
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="h-[1px] bg-[#FFF5EE] my-4"
         />
       </div>
-      <motion.div animate={{ opacity: 1 }}>
-        <nav className="mx-auto max-w-7xl flex items-center justify-around px-6">
-          <div className="flex items-center space-x-3">
-            <Image
-              src="/OFYSLOGO.svg"
-              alt="Main OFYS Logo"
-              width={50}
-              height={50}
-              priority
-              className="object-contain"
-            />
-            <div className="hidden md:block">
-              <p className="text-[#85277F] font-bold text-2xl">OFYS</p>
+      <motion.div>
+        <nav className="mx-auto flex items-center justify-between md:justify-around px-8">
+          {/* Logo div */}
+          <motion.div
+            initial={{ opacity: 0, x: -35 }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              transition: { duration: 0.6, delay: 0.5 },
+            }}
+            className="flex items-center space-x-3"
+          >
+            <div className="text-[#FFF5EE]">
+              <LogoComponent className="w-13 h-13" />
             </div>
-          </div>
+            <div>
+              <p className="text-[#FFF5EE] text-2xl">OFYS</p>
+            </div>
+          </motion.div>
 
-          <ul className="hidden md:flex space-x-8 text-base font-medium text-white">
-            {["Home", "About", "Contact"].map((label) => (
-              <li key={label}>
+          {/* Burger menu for mobile */}
+          <motion.div
+            initial={{ opacity: 0, x: 35 }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              transition: { duration: 0.6, delay: 0.5 },
+            }}
+            className="relative md:hidden flex items-center mr-5"
+          >
+            <BurgerMenu />
+          </motion.div>
+          {/* Navigation links */}
+          <ul className="hidden md:flex space-x-10 text-base font-bold text-white justify-center items-center">
+            {["Home", "About", "Contact"].map((label, i) => (
+              <motion.li
+                key={label}
+                initial={{ x: 35, opacity: 0 }}
+                animate={{
+                  x: 0,
+                  opacity: 1,
+                  transition: { duration: 0.6, delay: 0.5 + i * 0.1 },
+                }}
+                whileHover={{ scale: 1.05 }}
+              >
                 <a
                   href={`/${label.toLowerCase()}`}
-                  className="relative transition-all duration-200 font-bold hover:text-[#85277F] after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#85277F] after:transition-all"
+                  className="relative text-md after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#85277F] after:transition-all"
                 >
                   {label}
                 </a>
-              </li>
+              </motion.li>
             ))}
+
+            {/* Inquiries button */}
+            <motion.li>
+              <motion.a
+                href="/contact"
+                initial={{ x: 35, opacity: 0 }}
+                animate={{
+                  x: 0,
+                  opacity: 1,
+                  transition: { duration: 0.6, delay: 0.8 },
+                }}
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to left, #85277F 50%, transparent 50%)",
+                  backgroundSize: "200% 100%",
+                  backgroundPosition: "0% 0%",
+                  border: "1px solid white",
+                }}
+                whileHover={{
+                  backgroundPosition: "-100% 0%",
+                  color: "#fff",
+                  transition: { duration: 0.3, ease: "easeOut" },
+                }}
+                className="relative px-4 py-2 text-white font-bold overflow-hidden inline-block"
+              >
+                Inquiries
+              </motion.a>
+            </motion.li>
           </ul>
         </nav>
       </motion.div>
 
+      {/* Horizontal line animation */}
       <div className="overflow-hidden w-full">
         <motion.div
           initial={{ opacity: 0, x: "-100%" }}
           animate={{ opacity: 1, x: "0%" }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-[1px] bg-white my-4"
+          className="h-[1px] bg-[#FFF5EE] my-4"
         />
       </div>
-    </>
+    </div>
   );
 };
 
