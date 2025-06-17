@@ -19,9 +19,21 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
 });
 
+// export const metadata: Metadata = {
+//   title: "OFYS",
+//   description: "Optimal Framework for Your Success",
+// };
+
 export const metadata: Metadata = {
   title: "OFYS",
   description: "Optimal Framework for Your Success",
+  icons: [
+    {
+      rel: "icon",
+      url: "/OFYSLOGO.svg",
+      type: "image/svg+xml",
+    },
+  ],
 };
 
 export default function RootLayout({
