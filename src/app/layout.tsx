@@ -29,9 +29,20 @@ export const metadata: Metadata = {
   description: "Optimal Framework for Your Success",
   icons: [
     {
-      rel: "icon",
+      url: "/logo16.png",
+      sizes: "16x16",
+    },
+    {
+      url: "/logo32.png",
+      sizes: "32x32",
+    },
+    {
+      url: "/logo180.png",
+      sizes: "180x180",
+    },
+    {
       url: "/OFYSLOGO.svg",
-      type: "image/svg+xml",
+      sizes: "any",
     },
   ],
 };
@@ -43,6 +54,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" href="/logo16.png" sizes="16x16" type="image/png" />
+        <link rel="icon" href="/logo32.png" sizes="32x32" type="image/png" />
+        <link rel="apple-touch-icon" href="/logo180.png" sizes="180x180" />
+        {/* Fallback SVG icon (Safari might ignore) */}
+        <link rel="icon" href="/OFYSLOGO.svg" type="image/svg+xml" />
+      </head>
       <body className={`${plusJakartaSans.variable} font-sans antialiased`}>
         {children}
       </body>
