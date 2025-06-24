@@ -5,6 +5,7 @@ import React, { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import LandingScreen from "./components/LandingScreen";
 import GeneralInfo from "./components/GeneralInfo";
+import ImageCar
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);
@@ -37,6 +38,9 @@ function HomePage() {
       </div>
       <div className="h-[100vh]">
         <GeneralInfo />
+      </div>
+      <div className="h-[100vh]">
+        <ImageCarousel />
       </div>
     </div>
   );

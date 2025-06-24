@@ -60,7 +60,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               transition={{ duration: 1, ease: "easeOut", delay: 1.5 }}
             >
               <motion.button
-                className="relative overflow-hidden px-4 py-2 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer"
+                className="relative overflow-hidden px-4 py-2 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-lg"
                 style={{
                   backgroundImage:
                     "linear-gradient(to right, #85277F 50%, transparent 50%)",
@@ -77,9 +77,6 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               </motion.button>
             </motion.div>
           </motion.div>
-          {/* <motion.div>
-            <p className="writing-mode-vertical-rl">Vertical Text</p>
-          </motion.div> */}
         </div>
       </div>
     );

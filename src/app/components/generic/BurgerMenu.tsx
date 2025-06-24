@@ -143,7 +143,9 @@ export default function BurgerMenu() {
               <Image
                 src="/OFYSLOGO.svg"
                 alt="OFYS Logo"
-                className="h-12 w-12"
+                // className="h-12 w-12"
+                width={48}
+                height={48}
               />
               <p className="text-[#85277F] text-2xl font-bold">OFYS</p>
             </motion.div>

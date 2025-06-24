@@ -84,8 +84,9 @@ const Navbar = () => {
                 style={{
                   backgroundImage:
                     "linear-gradient(to left, #85277F 50%, transparent 50%)",
-                  backgroundSize: "200% 100%",
+                  backgroundSize: "200% 200%",
                   backgroundPosition: "0% 0%",
+
                   border: "1px solid white",
                 }}
                 whileHover={{
@@ -93,7 +94,7 @@ const Navbar = () => {
                   color: "#fff",
                   transition: { duration: 0.3, ease: "easeOut" },
                 }}
-                className="relative px-4 py-2 text-white font-bold overflow-hidden inline-block"
+                className="relative px-4 py-2 text-white font-bold overflow-hidden inline-block rounded-lg"
               >
                 Inquiries
               </motion.a>
