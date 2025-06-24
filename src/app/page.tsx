@@ -31,7 +31,7 @@ const contacts = [
   {
     id: "construction",
     title: "OFYS Construction & Development",
-    email: "Construction@ofys.com",
+    email: "Construction@ofys.cr",
     description: `We offer a complete framework for land development services—from architectural
                   planning and permitting to full-scale construction. Ideal for landowners who want to build
                   residential complexes with a trusted, all-in-one team.`,
