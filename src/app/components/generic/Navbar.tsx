@@ -20,7 +20,8 @@ const Navbar = () => {
       <motion.div>
         <nav className="mx-auto flex items-center justify-between md:justify-around px-8">
           {/* Logo div */}
-          <motion.div
+          <motion.a
+            href="/"
             initial={{ opacity: 0, x: -35 }}
             animate={{
               opacity: 1,
@@ -35,7 +36,7 @@ const Navbar = () => {
             <div>
               <p className="text-[#FFF5EE] text-2xl">OFYS</p>
             </div>
-          </motion.div>
+          </motion.a>
 
           {/* Burger menu for mobile */}
           <motion.div
@@ -51,7 +52,7 @@ const Navbar = () => {
           </motion.div>
           {/* Navigation links */}
           <ul className="hidden md:flex space-x-10 text-base font-bold text-white justify-center items-center">
-            {["Home", "About", "Contact"].map((label, i) => (
+            {["Home", "Realty", "Rentals", "About"].map((label, i) => (
               <motion.li
                 key={label}
                 initial={{ x: 35, opacity: 0 }}
@@ -60,11 +61,10 @@ const Navbar = () => {
                   opacity: 1,
                   transition: { duration: 0.6, delay: 0.5 + i * 0.1 },
                 }}
-                whileHover={{ scale: 1.05 }}
               >
                 <a
-                  href={`/${label.toLowerCase()}`}
-                  className="relative text-md after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-[#85277F] after:transition-all"
+                  href={`${label === "Home" ? "/" : `/${label.toLowerCase()}`}`}
+                  className="relative text-md after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-white after:transition-all"
                 >
                   {label}
                 </a>
@@ -74,7 +74,7 @@ const Navbar = () => {
             {/* Inquiries button */}
             <motion.li>
               <motion.a
-                href="/contact"
+                href="/inquiries"
                 initial={{ x: 35, opacity: 0 }}
                 animate={{
                   x: 0,

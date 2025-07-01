@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { motion, MotionValue } from "framer-motion";
-import Navbar from "./generic/Navbar";
+import Navbar from "../generic/Navbar";
 
 interface LandingScreenProps {
   navbarBlur: MotionValue<string>;
@@ -48,9 +48,9 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               initial={{ filter: "blur(10px)", opacity: 0 }}
               animate={{ filter: "blur(0px)", opacity: 1 }}
               transition={{ duration: 1, ease: "easeOut", delay: 1.5 }}
-              className="head-text text-6xl md:text-7xl tracking-wide leading-snug md:leading-relaxed text-[#FFF5EE]"
+              className="text-6xl md:text-7xl tracking-normal leading-snug md:leading-relaxed text-[#FFF5EE]"
             >
-              THE HEART OF COSTA RICA
+              The Heart of Costa Rica
             </motion.p>
 
             {/* Book now button */}

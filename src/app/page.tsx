@@ -3,9 +3,12 @@
 import React, { useRef } from "react";
 
 import { useScroll, useTransform } from "framer-motion";
-import LandingScreen from "./components/LandingScreen";
-import GeneralInfo from "./components/GeneralInfo";
-import ImageCar
+import LandingScreen from "./components/HomePage/LandingScreen";
+import GeneralInfo from "./components/HomePage/GeneralInfo";
+import ImageBanner from "./components/generic/HomePage/ImageBanner";
+import Services from "./components/HomePage/Services";
+import Footer from "./components/generic/Footer";
+import AboutHP from "./components/HomePage/AboutHP";
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);
@@ -27,21 +30,28 @@ function HomePage() {
   );
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       {/* Landing page section */}
-      <div className="h-[100vh]">
+      <div className="min-h-[100vh] flex relative">
         <LandingScreen
           ref={landingScreenRef}
           navbarBlur={navbarBlur}
           welcomeTextBlur={welcomeTextBlur}
         />
       </div>
-      <div className="h-[100vh]">
+      <div className="min-h-[100vh] flex relative">
         <GeneralInfo />
       </div>
-      <div className="h-[100vh]">
-        <ImageCarousel />
+      <div>
+        <ImageBanner />
       </div>
+      <div className="relative">
+        <Services />
+      </div>
+      <div className="relative">
+        <AboutHP />
+      </div>
+      <Footer />
     </div>
   );
 }

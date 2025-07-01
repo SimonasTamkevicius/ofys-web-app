@@ -5,9 +5,9 @@ const page = () => {
     <div>
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
         <div className="flex flex-col items-center justify-center gap-4">
-          <h1 className="text-4xl font-bold">About OFYS</h1>
+          <h1 className="text-4xl font-bold">Realty</h1>
           <p className="text-lg text-gray-500">
-            Optimal Framework For Your Success
+            Explore our properties for sale
           </p>
         </div>
         <div className="flex flex-col items-center justify-center gap-4">
