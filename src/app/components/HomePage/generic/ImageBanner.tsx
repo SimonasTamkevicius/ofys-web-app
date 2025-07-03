@@ -48,8 +48,9 @@ const ImageBanner = () => {
               +1 (416) 111-1111
             </a>
           </p>
-          <motion.button
-            className="relative overflow-hidden px-4 py-2 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-lg"
+          <motion.a
+            href="/inquiries"
+            className="relative overflow-hidden px-6 py-3 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-full"
             style={{
               backgroundImage:
                 "linear-gradient(to right, #85277F 50%, transparent 50%)",
@@ -63,7 +64,7 @@ const ImageBanner = () => {
             }}
           >
             Contact Us
-          </motion.button>
+          </motion.a>
         </div>
       </motion.div>
     </div>

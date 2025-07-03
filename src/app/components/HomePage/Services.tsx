@@ -1,5 +1,5 @@
 import React from "react";
-import ServiceCard from "../generic/HomePage/ServiceCard";
+import ServiceCard from "./generic/ServiceCard";
 
 const serviceData = [
   {
@@ -27,7 +27,7 @@ const Services = () => {
       </div>
 
       {/* Cards Grid */}
-      <div className="mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 justify-between">
+      <div className="mx-auto mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 justify-between max-w-6xl">
         {serviceData.map((service, index) => {
           return (
             <ServiceCard

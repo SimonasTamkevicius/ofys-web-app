@@ -31,7 +31,8 @@ const AboutHP = () => {
           country drive us to deliver unparalleled experiences.
         </motion.p>
 
-        <motion.div
+        <motion.a
+          href="/about"
           initial={{ y: 50, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
@@ -49,7 +50,7 @@ const AboutHP = () => {
             className="text-lg transition-transform group-hover:translate-x-1"
             style={{ color: "#85277F" }}
           />
-        </motion.div>
+        </motion.a>
       </div>
     </section>
   );

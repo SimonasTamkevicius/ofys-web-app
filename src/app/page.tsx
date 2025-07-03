@@ -5,9 +5,8 @@ import React, { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import LandingScreen from "./components/HomePage/LandingScreen";
 import GeneralInfo from "./components/HomePage/GeneralInfo";
-import ImageBanner from "./components/generic/HomePage/ImageBanner";
+import ImageBanner from "./components/HomePage/generic/ImageBanner";
 import Services from "./components/HomePage/Services";
-import Footer from "./components/generic/Footer";
 import AboutHP from "./components/HomePage/AboutHP";
 
 function HomePage() {
@@ -51,7 +50,7 @@ function HomePage() {
       <div className="relative">
         <AboutHP />
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

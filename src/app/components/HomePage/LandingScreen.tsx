@@ -25,6 +25,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
           style={{ backgroundImage: `url("/costaricavilla.jpg")` }}
           aria-hidden="true"
         />
+        {/* dim layer */}
         <div
           className="absolute inset-0 z-10 bg-black opacity-45"
           aria-hidden="true"
@@ -34,13 +35,13 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
         <div className="absolute inset-0 z-20 flex flex-col items-center justify-center text-white text-center">
           <motion.div
             style={{ filter: welcomeTextBlur }}
-            className="flex flex-col items-center justify-center text-center sticky top-1/5 md:top-1/2 transform -translate-y-1/5 md:-translate-y-1/2"
+            className="flex flex-col gap-3 items-center justify-center text-center sticky top-1/5 md:top-1/2 transform -translate-y-1/5 md:-translate-y-1/2"
           >
             <motion.p
               initial={{ filter: "blur(10px)", opacity: 0, y: -35 }}
               animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 1.5 }}
-              className="text-xl text-[#FFF5EE]"
+              className="relative text-xl text-[#FFF5EE]"
             >
               WELCOME TO
             </motion.p>
@@ -48,7 +49,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               initial={{ filter: "blur(10px)", opacity: 0 }}
               animate={{ filter: "blur(0px)", opacity: 1 }}
               transition={{ duration: 1, ease: "easeOut", delay: 1.5 }}
-              className="text-6xl md:text-7xl tracking-normal leading-snug md:leading-relaxed text-[#FFF5EE]"
+              className="relative text-6xl md:text-7xl tracking-normal leading-snug md:leading-relaxed text-[#FFF5EE]"
             >
               The Heart of Costa Rica
             </motion.p>
@@ -59,8 +60,8 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               animate={{ filter: "blur(0px)", opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: "easeOut", delay: 1.5 }}
             >
-              <motion.button
-                className="relative overflow-hidden px-4 py-2 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-lg"
+              <motion.a
+                className="relative overflow-hidden px-6 py-3 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-full"
                 style={{
                   backgroundImage:
                     "linear-gradient(to right, #85277F 50%, transparent 50%)",
@@ -74,7 +75,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
                 }}
               >
                 Book Now
-              </motion.button>
+              </motion.a>
             </motion.div>
           </motion.div>
         </div>

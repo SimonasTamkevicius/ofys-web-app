@@ -26,7 +26,7 @@ export default function BurgerMenu() {
       {/* Burger Icon */}
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative w-10 h-10 flex items-center justify-center z-50 cursor-pointer"
+        className="relative w-10 h-10 flex items-center justify-center z-20 cursor-pointer"
       >
         {/* Top Line */}
         <motion.div
@@ -127,7 +127,7 @@ export default function BurgerMenu() {
               opacity: 0,
               transition: { duration: 0.6, ease: "easeInOut" },
             }}
-            className="fixed top-0 left-0 w-full h-screen backdrop-blur-lg bg-[#F2F0EF] p-8 overflow-y-auto"
+            className="fixed top-0 z-10 left-0 w-full h-screen backdrop-blur-lg bg-[#F2F0EF] p-8 overflow-y-auto"
           >
             {/* Logo */}
             <motion.div
@@ -143,7 +143,6 @@ export default function BurgerMenu() {
               <Image
                 src="/OFYSLOGO.svg"
                 alt="OFYS Logo"
-                // className="h-12 w-12"
                 width={48}
                 height={48}
               />

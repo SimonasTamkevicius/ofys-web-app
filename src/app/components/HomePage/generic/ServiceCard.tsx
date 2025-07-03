@@ -46,10 +46,13 @@ const ServiceCard = ({
 
       <div className="p-6 flex flex-col gap-4">
         <p className="text-gray-600 text-md leading-relaxed">{desc}</p>
-        <button className="inline-flex w-48 border-[#85277F] border-2 bg-[#85277F] hover:bg-white items-center justify-center rounded-full h-10 px-6 hover:text-[#85277F] cursor-pointer text-white text-sm font-semibold hover:bg-opacity-90 transition-colors">
+        <a
+          href={`/${title.toLowerCase()}`}
+          className="inline-flex w-48 border-[#85277F] border-2 bg-[#85277F] hover:bg-white items-center justify-center rounded-full h-10 px-6 hover:text-[#85277F] cursor-pointer text-white text-sm font-semibold hover:bg-opacity-90 transition-colors"
+        >
           <span>{buttonText}</span>
           <FontAwesomeIcon icon={faArrowRight} className="w-4 h-4 ml-2" />
-        </button>
+        </a>
       </div>
     </motion.div>
   );

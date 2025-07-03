@@ -7,7 +7,7 @@ import BurgerMenu from "./BurgerMenu";
 
 const Navbar = () => {
   return (
-    <div className=" text-white w-full z-50 ">
+    <div className=" text-white w-full z-[9999]">
       {/* Horizontal line animation */}
       <div className="overflow-hidden w-full">
         <motion.div
@@ -72,29 +72,30 @@ const Navbar = () => {
             ))}
 
             {/* Inquiries button */}
-            <motion.li>
+            <motion.li
+              initial={{ x: 35, opacity: 0 }}
+              animate={{
+                x: 0,
+                opacity: 1,
+                transition: { duration: 0.6, delay: 0.5 + 4 * 0.1 },
+              }}
+            >
               <motion.a
                 href="/inquiries"
-                initial={{ x: 35, opacity: 0 }}
-                animate={{
-                  x: 0,
-                  opacity: 1,
-                  transition: { duration: 0.6, delay: 0.8 },
+                initial={false}
+                whileHover={{
+                  backgroundPosition: "-100% 0%",
+                  color: "#fff",
+                  transition: { duration: 0.3, ease: "easeOut" },
                 }}
                 style={{
                   backgroundImage:
                     "linear-gradient(to left, #85277F 50%, transparent 50%)",
                   backgroundSize: "200% 200%",
                   backgroundPosition: "0% 0%",
-
                   border: "1px solid white",
                 }}
-                whileHover={{
-                  backgroundPosition: "-100% 0%",
-                  color: "#fff",
-                  transition: { duration: 0.3, ease: "easeOut" },
-                }}
-                className="relative px-4 py-2 text-white font-bold overflow-hidden inline-block rounded-lg"
+                className="relative overflow-hidden px-5 py-3 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-full"
               >
                 Inquiries
               </motion.a>

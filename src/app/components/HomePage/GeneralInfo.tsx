@@ -1,5 +1,5 @@
 import React from "react";
-import ImageContainer from "../generic/HomePage/ImageContainer";
+import ImageContainer from "./generic/ImageContainer";
 
 const GeneralInfo = () => {
   return (
