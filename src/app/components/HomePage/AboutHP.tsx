@@ -5,24 +5,33 @@ import { motion } from "framer-motion";
 
 const AboutHP = () => {
   return (
-    <section className="md:py-10 mb-20 px-4 md:px-8 bg-white">
-      <div className="max-w-4xl mx-auto text-center flex flex-col items-center gap-6">
+    <section className="relative py-20 mb-20 px-4 md:px-8">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-gradient-to-br from-[#85277F]/5 to-transparent rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-10 w-64 h-64 bg-gradient-to-tl from-[#85277F]/5 to-transparent rounded-full blur-3xl"></div>
+      </div>
+
+      <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-8">
         <motion.h2
-          initial={{ y: 50, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-3xl md:text-4xl font-bold tracking-wide text-[#323130]"
+          className="text-4xl sm:text-5xl font-bold tracking-wide text-gray-800"
         >
-          About OFYS
+          About
+          <span className="block bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
+            OFYS
+          </span>
         </motion.h2>
 
         <motion.p
-          initial={{ y: 50, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="text-gray-600 text-base md:text-md leading-relaxed max-w-3xl"
+          className="text-gray-600 text-lg md:text-xl leading-relaxed max-w-3xl"
         >
           OFYS is a leading real estate and rental company in Costa Rica,
           specializing in luxury properties. We are committed to providing
@@ -31,26 +40,30 @@ const AboutHP = () => {
           country drive us to deliver unparalleled experiences.
         </motion.p>
 
-        <motion.a
-          href="/about"
-          initial={{ y: 50, opacity: 0 }}
+        <motion.div
+          initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
           viewport={{ once: true }}
-          className="flex flex-row gap-2 items-center justify-center md:justify-start group cursor-pointer"
         >
-          <p
-            className="text-md font-semibold group-hover:underline transition"
-            style={{ color: "#85277F" }}
+          <a
+            href="/about"
+            className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-200 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden hover:scale-105"
+            style={{ background: "linear-gradient(to right, #85277F, #9E3A95)" }}
           >
-            Learn More
-          </p>
-          <FontAwesomeIcon
-            icon={faArrowRight}
-            className="text-lg transition-transform group-hover:translate-x-1"
-            style={{ color: "#85277F" }}
-          />
-        </motion.a>
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+              style={{ background: "linear-gradient(to right, #9E3A95, #85277F)" }}
+            />
+            <span className="relative flex items-center gap-2">
+              Learn More
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="text-lg transition-transform duration-200 group-hover:translate-x-1"
+              />
+            </span>
+          </a>
+        </motion.div>
       </div>
     </section>
   );

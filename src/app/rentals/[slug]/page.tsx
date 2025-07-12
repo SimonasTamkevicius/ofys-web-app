@@ -14,5 +14,5 @@ export default async function PropertyPageServer({
     notFound();
   }
 
-  return <PropertyPage property={property} type="Realty" />;
+  return <PropertyPage property={property} type="Rentals" />;
 }

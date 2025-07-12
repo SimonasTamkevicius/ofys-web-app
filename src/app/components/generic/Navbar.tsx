@@ -1,119 +1,130 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import LogoComponent from "./LogoComponent";
 import BurgerMenu from "./BurgerMenu";
 
 const Navbar = () => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 50;
+      setScrolled(isScrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className=" text-white w-full z-[9999]">
-      {/* Horizontal line animation */}
-      <div className="overflow-hidden w-full">
-        <motion.div
-          initial={{ opacity: 0, x: "100%" }}
-          animate={{ opacity: 1, x: "0%" }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="h-[1px] bg-[#FFF5EE] my-4"
-        />
-      </div>
-      <motion.div>
-        <nav className="mx-auto flex items-center justify-between md:justify-around px-8">
-          {/* Logo div */}
-          <motion.a
-            href="/"
-            initial={{ opacity: 0, x: -35 }}
-            animate={{
-              opacity: 1,
-              x: 0,
-              transition: { duration: 0.6, delay: 0.5 },
-            }}
-            className="flex items-center space-x-3"
+    <motion.div 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled 
+          ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+          : 'bg-transparent'
+      }`}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      style={{ minHeight: '80px' }}
+    >
+      <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-16 py-4 h-20">
+        {/* Logo */}
+        <motion.a
+          href="/"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="flex items-center space-x-3 group"
+        >
+          <motion.div 
+            className={`transition-colors duration-300 ${
+              scrolled ? 'text-[#85277F]' : 'text-[#FFF5EE]'
+            }`}
+            whileHover={{ scale: 1.05 }}
           >
-            <div className="text-[#FFF5EE]">
-              <LogoComponent className="w-13 h-13" />
-            </div>
-            <div>
-              <p className="text-[#FFF5EE] text-2xl">OFYS</p>
-            </div>
-          </motion.a>
-
-          {/* Burger menu for mobile */}
-          <motion.div
-            initial={{ opacity: 0, x: 35 }}
-            animate={{
-              opacity: 1,
-              x: 0,
-              transition: { duration: 0.6, delay: 0.5 },
-            }}
-            className="relative md:hidden flex items-center mr-5"
-          >
-            <BurgerMenu />
+            <LogoComponent className="w-12 h-12" />
           </motion.div>
-          {/* Navigation links */}
-          <ul className="hidden md:flex space-x-10 text-base font-bold text-white justify-center items-center">
-            {["Home", "Realty", "Rentals", "About"].map((label, i) => (
-              <motion.li
-                key={label}
-                initial={{ x: 35, opacity: 0 }}
-                animate={{
-                  x: 0,
-                  opacity: 1,
-                  transition: { duration: 0.6, delay: 0.5 + i * 0.1 },
-                }}
-              >
-                <a
-                  href={`${label === "Home" ? "/" : `/${label.toLowerCase()}`}`}
-                  className="relative text-md after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-0 hover:after:w-full after:bg-white after:transition-all"
-                >
-                  {label}
-                </a>
-              </motion.li>
-            ))}
+          <div>
+            <p className={`text-2xl font-bold transition-colors duration-300 ${
+              scrolled ? 'text-[#85277F]' : 'text-[#FFF5EE]'
+            }`}>
+              OFYS
+            </p>
+          </div>
+        </motion.a>
 
-            {/* Inquiries button */}
-            <motion.li
-              initial={{ x: 35, opacity: 0 }}
-              animate={{
-                x: 0,
-                opacity: 1,
-                transition: { duration: 0.6, delay: 0.5 + 4 * 0.1 },
-              }}
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-8">
+          {["Home", "Realty", "Rentals", "About"].map((label, i) => (
+            <motion.a
+              key={label}
+              href={`${label === "Home" ? "/" : `/${label.toLowerCase()}`}`}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
+              className={`relative font-medium transition-all duration-300 group inline-block ${
+                scrolled ? 'text-gray-800 hover:text-[#85277F]' : 'text-[#FFF5EE] hover:text-white'
+              }`}
             >
-              <motion.a
-                href="/inquiries"
-                initial={false}
-                whileHover={{
-                  backgroundPosition: "-100% 0%",
-                  color: "#fff",
-                  transition: { duration: 0.3, ease: "easeOut" },
-                }}
-                style={{
-                  backgroundImage:
-                    "linear-gradient(to left, #85277F 50%, transparent 50%)",
-                  backgroundSize: "200% 200%",
-                  backgroundPosition: "0% 0%",
-                  border: "1px solid white",
-                }}
-                className="relative overflow-hidden px-5 py-3 border-1 border-[#FFF5EE] text-[#FFF5EE] font-bold bg-transparent hover:cursor-pointer rounded-full"
-              >
-                Inquiries
-              </motion.a>
-            </motion.li>
-          </ul>
-        </nav>
-      </motion.div>
+              {label}
+              <div 
+                className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-500 ease-out ${
+                  scrolled ? 'bg-gradient-to-r from-[#85277F] to-[#9E3A95]' : 'bg-gradient-to-r from-white to-[#FFF5EE]'
+                } group-hover:w-full w-0 rounded-full shadow-sm`}
+              />
+            </motion.a>
+          ))}
 
-      {/* Horizontal line animation */}
-      <div className="overflow-hidden w-full">
+          {/* Inquiries Button */}
+          <motion.a
+            href="/inquiries"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            className={`group relative overflow-hidden px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
+              scrolled 
+                ? 'bg-gradient-to-r from-[#85277F] to-[#9E3A95] border border-[#85277F] text-white' 
+                : 'bg-gradient-to-r from-[#FFF5EE]/10 to-[#FFF5EE]/5 text-[#FFF5EE] border border-[#FFF5EE]/30'
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <motion.div
+              className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
+                scrolled 
+                  ? 'bg-gradient-to-r from-[#9E3A95] to-[#85277F]' 
+                  : 'bg-gradient-to-r from-[#FFF5EE]/20 to-[#FFF5EE]/10'
+              }`}
+            />
+            <span className="relative">Inquiries</span>
+          </motion.a>
+        </div>
+
+        {/* Mobile Burger Menu */}
         <motion.div
-          initial={{ opacity: 0, x: "-100%" }}
-          animate={{ opacity: 1, x: "0%" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="h-[1px] bg-[#FFF5EE] my-4"
-        />
-      </div>
-    </div>
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="md:hidden"
+        >
+          <BurgerMenu scrolled={scrolled} />
+        </motion.div>
+      </nav>
+
+      {/* Animated bottom border */}
+      <div 
+        className={`h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent transition-opacity duration-500 ${
+          scrolled ? 'opacity-0' : 'opacity-100'
+        }`}
+        style={{ 
+          transform: 'scaleX(1)',
+          transformOrigin: 'left'
+        }}
+      />
+    </motion.div>
   );
 };
 

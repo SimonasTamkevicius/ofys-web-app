@@ -3,11 +3,13 @@
 import React, { useRef } from "react";
 
 import { useScroll, useTransform } from "framer-motion";
+import Navbar from "./components/generic/Navbar";
 import LandingScreen from "./components/HomePage/LandingScreen";
 import GeneralInfo from "./components/HomePage/GeneralInfo";
 import ImageBanner from "./components/HomePage/generic/ImageBanner";
 import Services from "./components/HomePage/Services";
 import AboutHP from "./components/HomePage/AboutHP";
+import LoadingScreen from "./components/generic/LoadingScreen";
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);
@@ -29,29 +31,42 @@ function HomePage() {
   );
 
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Landing page section */}
-      <div className="min-h-[100vh] flex relative">
-        <LandingScreen
-          ref={landingScreenRef}
-          navbarBlur={navbarBlur}
-          welcomeTextBlur={welcomeTextBlur}
-        />
+    // <LoadingScreen>
+      <div className="flex flex-col min-h-screen">
+        {/* Navbar */}
+        <Navbar />
+        
+        {/* Landing page section */}
+        <div className="min-h-[100vh] flex relative">
+          <LandingScreen
+            ref={landingScreenRef}
+            navbarBlur={navbarBlur}
+            welcomeTextBlur={welcomeTextBlur}
+          />
+        </div>
+        
+        {/* General Info - Default background */}
+        <div className="min-h-[100vh] flex relative bg-[#F9F6F9]">
+          <GeneralInfo />
+        </div>
+        
+        {/* Image Banner - White background */}
+        <div className="bg-white">
+          <ImageBanner />
+        </div>
+        
+        {/* Services - Default background */}
+        <div className="relative bg-[#F9F6F9]">
+          <Services />
+        </div>
+        
+        {/* About - White background */}
+        <div className="relative bg-white">
+          <AboutHP />
+        </div>
+        {/* <Footer /> */}
       </div>
-      <div className="min-h-[100vh] flex relative">
-        <GeneralInfo />
-      </div>
-      <div>
-        <ImageBanner />
-      </div>
-      <div className="relative">
-        <Services />
-      </div>
-      <div className="relative">
-        <AboutHP />
-      </div>
-      {/* <Footer /> */}
-    </div>
+    // </LoadingScreen>
   );
 }
 

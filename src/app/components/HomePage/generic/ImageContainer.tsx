@@ -36,7 +36,7 @@ const ImageContainer = ({
     <div className="relative w-full max-w-xl aspect-video md:aspect-square mx-auto">
       {/* Purple background block */}
       <motion.div
-        className="absolute inset-0 rounded-xl"
+        className="absolute inset-0 rounded-3xl"
         style={{ backgroundColor: "#85277F" }}
         initial={{
           x: imageSide === "left" ? -20 : 20,
@@ -53,7 +53,7 @@ const ImageContainer = ({
       />
 
       {/* Image block */}
-      <motion.div className="absolute inset-0 overflow-hidden rounded-xl shadow-2xl z-10">
+      <motion.div className="absolute inset-0 overflow-hidden rounded-3xl shadow-2xl z-10">
         <motion.img
           src={image}
           alt={altText}
@@ -69,7 +69,7 @@ const ImageContainer = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 p-6 md:p-16 items-center"
+      className="relative w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 p-6 md:p-16 items-center"
     >
       {/* Image always first on small screens, conditionally placed on md+ screens */}
       <div
@@ -84,7 +84,7 @@ const ImageContainer = ({
       {/* Text always second on small screens, conditionally placed on md+ screens */}
       <motion.div
         className={`
-      flex flex-col gap-5 z-20 text-center md:text-left 
+      flex flex-col gap-6 z-20 text-center md:text-left 
       ${imageSide === "left" ? "md:order-2" : "md:order-1"} 
       order-2
     `}
@@ -93,26 +93,64 @@ const ImageContainer = ({
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h4 className="text-lg font-semibold" style={{ color: "#85277F" }}>
+        <motion.h4 
+          className="text-lg md:text-xl font-semibold tracking-wide"
+          style={{ color: "#85277F" }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
           {subHeadText}
-        </h4>
-        <h2 className="text-3xl md:text-5xl font-bold tracking-wide text-[#323130]">
+        </motion.h4>
+        
+        <motion.h2 
+          className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-wide text-gray-800 leading-tight"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
           {headText}
-        </h2>
-        <p className="text-[#323130]">{paragraphText}</p>
-        <div className="flex flex-row gap-2 items-center justify-center md:justify-start group cursor-pointer">
-          <p
-            className="text-md font-semibold group-hover:underline transition"
-            style={{ color: "#85277F" }}
+        </motion.h2>
+        
+        <motion.p 
+          className="text-gray-600 text-lg md:text-xl leading-relaxed"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          viewport={{ once: true }}
+        >
+          {paragraphText}
+        </motion.p>
+        
+        {/* <motion.div 
+          className="flex flex-row gap-2 items-center justify-center md:justify-start group cursor-pointer"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          viewport={{ once: true }}
+        >
+          <motion.a
+            href={`/${buttonText.toLowerCase().replace(/\s+/g, '-')}`}
+            className="group/btn relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
+            style={{ background: "linear-gradient(to right, #85277F, #9E3A95)" }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {buttonText}
-          </p>
-          <FontAwesomeIcon
-            icon={faArrowRight}
-            className="text-lg transition-transform group-hover:translate-x-1"
-            style={{ color: "#85277F" }}
-          />
-        </div>
+            <motion.div
+              className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
+              style={{ background: "linear-gradient(to right, #9E3A95, #85277F)" }}
+            />
+            <span className="relative flex items-center gap-2">
+              {buttonText}
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="text-lg transition-transform group-hover/btn:translate-x-1"
+              />
+            </span>
+          </motion.a>
+        </motion.div> */}
       </motion.div>
     </div>
   );

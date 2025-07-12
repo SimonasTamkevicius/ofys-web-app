@@ -6,6 +6,7 @@ import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import FooterController from "./components/FooterController";
+import { LoadingProvider } from "./components/generic/LoadingProvider";
 
 export const metadata: Metadata = {
   title: "OFYS",
@@ -21,8 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         {/* <CursorFollower /> */}
-        {children}
-        <FooterController />
+        <LoadingProvider>
+          {children}
+          <FooterController />
+        </LoadingProvider>
       </body>
     </html>
   );
