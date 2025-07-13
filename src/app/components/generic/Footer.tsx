@@ -41,7 +41,7 @@ const Footer = () => {
                 <h2 className="text-2xl font-bold text-white">OFYS</h2>
               </div>
               <p className="text-white/90 leading-relaxed text-lg max-w-md">
-                Discover your dream home in Costa Rica's most breathtaking locations. 
+                Discover your dream home in Costa Rica&apos;s most breathtaking locations. 
                 From beachfront villas to mountain retreats, we offer carefully curated 
                 properties that combine luxury with natural beauty.
               </p>

@@ -12,7 +12,7 @@ const GeneralInfo = () => {
       </div>
 
       <div className="relative w-full">
-        <motion.div 
+        <motion.div
           className="py-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -29,8 +29,8 @@ const GeneralInfo = () => {
             buttonText="View Ocean Villas"
           />
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           className="py-20"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

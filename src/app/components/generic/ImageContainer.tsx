@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 interface ImageContainerProps {
   image: string;
@@ -10,7 +11,7 @@ interface ImageContainerProps {
   subHeadText: string;
   headText: string;
   paragraphText: string;
-  buttonText: string; // new prop for CTA text
+  buttonText: string;
 }
 
 const ImageContainer = ({
@@ -46,13 +47,19 @@ const ImageContainer = ({
 
       {/* Image block */}
       <motion.div className="absolute inset-0 overflow-hidden rounded-3xl shadow-2xl z-10">
-        <motion.img
-          src={image}
-          alt={altText}
+        <motion.div
           style={{ y, scale: 1.25 }}
           transition={{ y: { type: "tween", ease: "easeInOut" } }}
-          className="w-full h-full object-cover"
-        />
+          className="w-full h-full"
+        >
+          <Image
+            src={image}
+            alt={altText}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </motion.div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
       </motion.div>
     </div>

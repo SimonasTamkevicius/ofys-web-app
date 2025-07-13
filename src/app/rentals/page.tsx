@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import PropertyCard from "../components/generic/PropertyCard";
 import properties from "../data/properties";
 import Link from "next/link";
+import Image from "next/image";
 
 const Page = () => {
   return (
@@ -29,7 +30,8 @@ const Page = () => {
         <motion.div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(45deg, rgba(133, 39, 127, 0.05), rgba(255, 255, 255, 0.02), rgba(133, 39, 127, 0.05))"
+            background:
+              "linear-gradient(45deg, rgba(133, 39, 127, 0.05), rgba(255, 255, 255, 0.02), rgba(133, 39, 127, 0.05))",
           }}
           animate={{
             background: [
@@ -88,7 +90,7 @@ const Page = () => {
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="absolute left-1/2 top-1/3 transform -translate-x-1/2 -translate-y-1/3 text-center px-4 max-w-4xl w-full"
         >
-          <motion.h1 
+          <motion.h1
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -99,14 +101,14 @@ const Page = () => {
               Rentals
             </span>
           </motion.h1>
-          <motion.p 
+          <motion.p
             className="mt-6 text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow-lg max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
           >
-            Handpicked vacation and long-term rentals nestled in Costa Rica's
-            most breathtaking locations.
+            Handpicked vacation and long-term rentals nestled in Costa
+            Rica&apos;s most breathtaking locations.
           </motion.p>
         </motion.div>
       </div>
@@ -125,7 +127,6 @@ const Page = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-
           >
             <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-100">
               <div className="text-center mb-8">
@@ -133,11 +134,13 @@ const Page = () => {
                   Featured Rentals
                 </h3>
                 <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                  Discover our handpicked selection of premium rental properties. Each one offers the perfect blend of 
-                  luxury, comfort, and Costa Rica's natural beauty for your perfect getaway.
+                  Discover our handpicked selection of premium rental
+                  properties. Each one offers the perfect blend of luxury,
+                  comfort, and Costa Rica&apos;s natural beauty for your perfect
+                  getaway.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 {properties.slice(0, 3).map((property, index) => (
                   <Link key={property.slug} href={`/rentals/${property.slug}`}>
@@ -150,38 +153,68 @@ const Page = () => {
                       whileHover={{ scale: 1.02 }}
                     >
                       <div className="aspect-video bg-gray-200 rounded-xl mb-4 overflow-hidden">
-                        <img 
-                          src={property.imageUrl} 
+                        <Image
+                          src={property.imageUrl}
                           alt={property.name}
+                          width={400}
+                          height={250}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                      <h4 className="font-semibold text-gray-800 mb-2">{property.name}</h4>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{property.description}</p>
-                      <p className="text-lg font-bold" style={{ color: "#85277F" }}>{property.price}</p>
+                      <h4 className="font-semibold text-gray-800 mb-2">
+                        {property.name}
+                      </h4>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                        {property.description}
+                      </p>
+                      <p
+                        className="text-lg font-bold"
+                        style={{ color: "#85277F" }}
+                      >
+                        {property.price}
+                      </p>
                     </motion.div>
                   </Link>
                 ))}
               </div>
-              
+
               <div className="text-center">
                 <p className="text-gray-600 mb-6 text-lg">
-                  These are just a preview of what we offer. Scroll down to explore our complete collection.
+                  These are just a preview of what we offer. Scroll down to
+                  explore our complete collection.
                 </p>
                 <motion.div
                   className="inline-flex flex-col items-center gap-2 text-[#85277F]"
                   whileHover={{ y: 2 }}
                   animate={{ y: [0, 4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 >
                   <span className="text-sm font-medium">View All Rentals</span>
                   <motion.div
                     className="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center"
                     animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                   >
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                      />
                     </svg>
                   </motion.div>
                 </motion.div>
@@ -197,10 +230,10 @@ const Page = () => {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ 
-                  duration: 0.8, 
+                transition={{
+                  duration: 0.8,
                   ease: "easeOut",
-                  delay: index * 0.2 
+                  delay: index * 0.2,
                 }}
               >
                 <PropertyCard {...property} type="Rentals" />
@@ -227,26 +260,41 @@ const Page = () => {
                 Ready to Book Your Dream Rental?
               </h3>
               <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
-                Our team of rental experts is here to help you find the perfect accommodation 
-                that matches your vacation style and preferences.
+                Our team of rental experts is here to help you find the perfect
+                accommodation that matches your vacation style and preferences.
               </p>
-              <motion.button
+              <motion.a
+                href="/inquiries"
                 className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
-                style={{ background: "linear-gradient(to right, #85277F, #9E3A95)" }}
+                style={{
+                  background: "linear-gradient(to right, #85277F, #9E3A95)",
+                }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <motion.div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  style={{ background: "linear-gradient(to right, #9E3A95, #85277F)" }}
+                  style={{
+                    background: "linear-gradient(to right, #9E3A95, #85277F)",
+                  }}
                 />
                 <span className="relative flex items-center gap-2">
                   Get in Touch
-                  <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="w-5 h-5 transition-transform group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </span>
-              </motion.button>
+              </motion.a>
             </motion.div>
           </motion.div>
         </div>

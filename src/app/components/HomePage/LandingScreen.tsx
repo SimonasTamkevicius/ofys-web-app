@@ -2,12 +2,11 @@ import React, { forwardRef } from "react";
 import { motion, MotionValue } from "framer-motion";
 
 interface LandingScreenProps {
-  navbarBlur: MotionValue<string>;
   welcomeTextBlur: MotionValue<string>;
 }
 
 const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
-  ({ navbarBlur, welcomeTextBlur }, ref) => {
+  ({ welcomeTextBlur }, ref) => {
     return (
       <div ref={ref} className="relative h-[100vh] w-full mx-auto">
         {/* Background */}
@@ -16,7 +15,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
           style={{ backgroundImage: `url("/costaricavilla.jpg")` }}
           aria-hidden="true"
         />
-        
+
         {/* Dark overlay */}
         <div
           className="absolute inset-0 z-10 bg-black opacity-50"
@@ -27,7 +26,8 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
         <div
           className="absolute inset-0 z-15"
           style={{
-            background: "linear-gradient(45deg, rgba(133, 39, 127, 0.05), rgba(255, 255, 255, 0.02), rgba(133, 39, 127, 0.05))"
+            background:
+              "linear-gradient(45deg, rgba(133, 39, 127, 0.05), rgba(255, 255, 255, 0.02), rgba(133, 39, 127, 0.05))",
           }}
         />
 
@@ -45,7 +45,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
             >
               WELCOME TO
             </motion.p>
-            
+
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -64,7 +64,8 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.9 }}
               className="relative text-lg md:text-xl text-white/90 drop-shadow-lg max-w-2xl leading-relaxed"
             >
-              Discover luxury properties and unforgettable experiences in one of the world's most beautiful destinations.
+              Discover luxury properties and unforgettable experiences in one of
+              the world&apos;s most beautiful destinations.
             </motion.p>
 
             {/* Book now button */}
@@ -82,8 +83,18 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
               >
                 <span className="relative flex items-center gap-2">
                   Book Now
-                  <svg className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </span>
               </a>

@@ -2,7 +2,6 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import LogoComponent from "./LogoComponent";
 
 interface LoadingContextType {
@@ -52,7 +51,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
           })
         );
       } catch (error) {
-        console.log("Some resources failed to preload");
+        console.log("Some resources failed to preload:", error);
       }
     };
 

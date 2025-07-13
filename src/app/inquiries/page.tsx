@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEnvelope, faPhone, faMapMarkerAlt, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/generic/Navbar";
+import Footer from "../components/generic/Footer";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -120,7 +121,7 @@ const ContactPage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
           >
-            Let's Start a
+            Let&apos;s Start a
             <span className="block bg-gradient-to-r from-[#E5D9E4] to-[#C4A3C1] bg-clip-text text-transparent">
               Conversation
             </span>
@@ -132,7 +133,7 @@ const ContactPage = () => {
             transition={{ duration: 0.8, delay: 0.7 }}
           >
             Have questions about our properties? Ready to find your perfect home in Costa Rica? 
-            We're here to help make your dreams a reality.
+            We&apos;re here to help make your dreams a reality.
           </motion.p>
           
           
@@ -162,7 +163,7 @@ const ContactPage = () => {
                 </h3>
                 <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                   Choose your preferred way to connect with us. Whether you have questions about properties, 
-                  want to schedule a call, or need personalized assistance, we're here to help.
+                  want to schedule a call, or need personalized assistance, we&apos;re here to help.
                 </p>
               </div>
               
@@ -187,7 +188,7 @@ const ContactPage = () => {
                     <div>
                       <p className="text-sm font-semibold mb-1" style={{ color: "#85277F" }}>Email Us</p>
                       <p className="font-semibold text-gray-800 text-lg">info@ofys.com</p>
-                      <p className="text-gray-500 text-sm mt-1">We'll respond within 24 hours</p>
+                      <p className="text-gray-500 text-sm mt-1">We&apos;ll respond within 24 hours</p>
                     </div>
                   </div>
                 </motion.div>
@@ -294,7 +295,7 @@ const ContactPage = () => {
                   transition={{ duration: 0.6, delay: 0.3 }}
                   viewport={{ once: true }}
                 >
-                  We're not just another real estate company. We're your partners in finding the perfect 
+                  We&apos;re not just another real estate company. We&apos;re your partners in finding the perfect 
                   piece of paradise in Costa Rica, with personalized service and local expertise.
                 </motion.p>
               </div>
@@ -309,7 +310,7 @@ const ContactPage = () => {
                   viewport={{ once: true }}
                 >
                   <h4 className="font-semibold text-gray-800 mb-2">Local Expertise</h4>
-                  <p className="text-gray-600 text-sm">Deep knowledge of Costa Rica's real estate market and local communities.</p>
+                  <p className="text-gray-600 text-sm">Deep knowledge of Costa Rica&apos;s real estate market and local communities.</p>
                 </motion.div>
 
                 <motion.div 
@@ -333,7 +334,7 @@ const ContactPage = () => {
                   viewport={{ once: true }}
                 >
                   <h4 className="font-semibold text-gray-800 mb-2">Full Support</h4>
-                  <p className="text-gray-600 text-sm">From property search to closing, we're with you every step of the way.</p>
+                  <p className="text-gray-600 text-sm">From property search to closing, we&apos;re with you every step of the way.</p>
                 </motion.div>
               </div>
             </motion.section>
@@ -415,7 +416,7 @@ const ContactPage = () => {
                     type="text"
                     value={formData.subject}
                     onChange={handleInputChange}
-                    placeholder="What's this about?"
+                    placeholder="What&apos;s this about?"
                     className="w-full h-14 px-4 rounded-xl border-2 border-gray-200 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#85277F] focus:border-[#85277F] transition-all duration-300 hover:border-gray-300"
                     required
                   />
@@ -474,10 +475,9 @@ const ContactPage = () => {
                       ) : (
                         <>
                           Send Message
-                          <FontAwesomeIcon 
-                            icon={faPaperPlane} 
-                            className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" 
-                          />
+                          <svg className="w-3 h-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                          </svg>
                         </>
                       )}
                     </span>
@@ -488,6 +488,7 @@ const ContactPage = () => {
           </div>
         </div>
       </motion.main>
+      <Footer />
     </div>
   );
 };

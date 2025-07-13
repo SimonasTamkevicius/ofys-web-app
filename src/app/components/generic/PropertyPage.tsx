@@ -11,7 +11,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 
 interface Property {
   slug: string;
@@ -66,32 +67,34 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
   };
 
   // Navigate prev image
-  const prevImage = () => {
+  const prevImage = useCallback(() => {
     if (lightboxIndex === null) return;
     setLightboxIndex(
       (lightboxIndex - 1 + galleryImages.length) % galleryImages.length
     );
-  };
+  }, [lightboxIndex, galleryImages.length]);
 
   // Navigate next image
-  const nextImage = () => {
+  const nextImage = useCallback(() => {
     if (lightboxIndex === null) return;
     setLightboxIndex((lightboxIndex + 1) % galleryImages.length);
-  };
+  }, [lightboxIndex, galleryImages.length]);
 
   // Keyboard navigation for lightbox (left/right/esc)
   useEffect(() => {
-    if (lightboxIndex === null) return;
-
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") prevImage();
-      else if (e.key === "ArrowRight") nextImage();
-      else if (e.key === "Escape") closeLightbox();
+      if (e.key === "Escape") {
+        closeLightbox();
+      } else if (e.key === "ArrowLeft") {
+        prevImage();
+      } else if (e.key === "ArrowRight") {
+        nextImage();
+      }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [lightboxIndex]);
+  }, [lightboxIndex, nextImage, prevImage]);
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden items-center bg-[#F9F6F9]">
@@ -129,7 +132,10 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             href={`${type === "Realty" ? "/realty" : "/rentals"}`}
             className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/90 backdrop-blur-sm text-[#85277F] font-semibold shadow-lg hover:shadow-xl transition-all duration-200 border border-gray-100"
           >
-            <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1" />
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className="w-4 h-4 transition-transform duration-200 group-hover:-translate-x-1"
+            />
             Back
           </Link>
         </motion.div>
@@ -165,7 +171,6 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-
                   className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto"
                 >
                   {description}
@@ -187,8 +192,8 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                   </h3>
                   <ul className="space-y-4">
                     {amenities?.map((amenity: string, idx: number) => (
-                      <motion.li 
-                        key={idx} 
+                      <motion.li
+                        key={idx}
                         className="flex items-center gap-4"
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -228,7 +233,10 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                   <div className="space-y-6">
                     <div className="bg-gradient-to-r from-[#85277F]/10 to-[#9E3A95]/10 rounded-2xl p-6">
                       <p className="text-gray-600 text-lg mb-2">Asking Price</p>
-                      <p className="text-3xl font-bold" style={{ color: "#85277F" }}>
+                      <p
+                        className="text-3xl font-bold"
+                        style={{ color: "#85277F" }}
+                      >
                         {price}
                       </p>
                     </div>
@@ -238,19 +246,25 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                     <motion.a
                       href="/inquiries"
                       className="group/btn relative inline-flex items-center justify-center w-full h-14 px-6 rounded-xl font-semibold transition-all duration-300 cursor-pointer overflow-hidden shadow-lg hover:shadow-xl"
-                      style={{ 
+                      style={{
                         background: "linear-gradient(135deg, #85277F, #9E3A95)",
-                        color: "white"
+                        color: "white",
                       }}
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <div
                         className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
-                        style={{ background: "linear-gradient(135deg, #9E3A95, #85277F)" }}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #9E3A95, #85277F)",
+                        }}
                       />
                       <span className="relative flex items-center gap-2 text-base">
-                        <FontAwesomeIcon icon={faEnvelope} className="w-4 h-4" />
+                        <FontAwesomeIcon
+                          icon={faEnvelope}
+                          className="w-4 h-4"
+                        />
                         Inquire Now
                       </span>
                     </motion.a>
@@ -276,10 +290,11 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                   </span>
                 </h3>
                 <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                  Explore the beauty and details of this exceptional property through our curated photo collection.
+                  Explore the beauty and details of this exceptional property
+                  through our curated photo collection.
                 </p>
               </div>
-              
+
               <div
                 ref={galleryRef}
                 className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
@@ -307,21 +322,21 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
           </motion.div>
 
           {/* Call to Action */}
-          <motion.div 
+          <motion.div
             className="text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            <motion.div 
+            <motion.div
               className="bg-white rounded-3xl p-12 shadow-xl border border-gray-100 max-w-3xl mx-auto"
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <motion.h3 
+              <motion.h3
                 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -330,18 +345,21 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
               >
                 Ready to Make This Your Home?
               </motion.h3>
-              <motion.p 
+              <motion.p
                 className="text-gray-600 text-xl mb-10 max-w-2xl mx-auto"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                 viewport={{ once: true }}
               >
-                Our team is here to help you with any questions and guide you through the process.
+                Our team is here to help you with any questions and guide you
+                through the process.
               </motion.p>
               <motion.button
                 className="group/btn relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
-                style={{ background: "linear-gradient(135deg, #85277F, #9E3A95)" }}
+                style={{
+                  background: "linear-gradient(135deg, #85277F, #9E3A95)",
+                }}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
@@ -351,12 +369,24 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
               >
                 <div
                   className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
-                  style={{ background: "linear-gradient(135deg, #9E3A95, #85277F)" }}
+                  style={{
+                    background: "linear-gradient(135deg, #9E3A95, #85277F)",
+                  }}
                 />
                 <span className="relative flex items-center gap-2 text-base">
                   Contact Us Today
-                  <svg className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  <svg
+                    className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 8l4 4m0 0l-4 4m4-4H3"
+                    />
                   </svg>
                 </span>
               </motion.button>
@@ -414,11 +444,13 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             </div>
 
             {/* Image */}
-            <img
+            <Image
               src={galleryImages[lightboxIndex]}
               alt={`Gallery image ${lightboxIndex + 1}`}
+              width={800}
+              height={600}
               className="mx-auto max-h-[90vh] max-w-full w-full rounded-2xl shadow-2xl object-cover bg-gray-100"
-              loading="lazy"
+              priority
             />
           </div>
         </div>

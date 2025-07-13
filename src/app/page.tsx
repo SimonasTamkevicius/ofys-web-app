@@ -9,7 +9,6 @@ import GeneralInfo from "./components/HomePage/GeneralInfo";
 import ImageBanner from "./components/HomePage/generic/ImageBanner";
 import Services from "./components/HomePage/Services";
 import AboutHP from "./components/HomePage/AboutHP";
-import LoadingScreen from "./components/generic/LoadingScreen";
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);
@@ -17,12 +16,6 @@ function HomePage() {
     target: landingScreenRef,
     offset: ["end end", "end start"],
   });
-
-  const navbarBlur = useTransform(
-    scrollYProgress,
-    [0, 0.25],
-    ["blur(0px)", "blur(5px)"]
-  );
 
   const welcomeTextBlur = useTransform(
     scrollYProgress,
@@ -32,40 +25,39 @@ function HomePage() {
 
   return (
     // <LoadingScreen>
-      <div className="flex flex-col min-h-screen">
-        {/* Navbar */}
-        <Navbar />
-        
-        {/* Landing page section */}
-        <div className="min-h-[100vh] flex relative">
-          <LandingScreen
-            ref={landingScreenRef}
-            navbarBlur={navbarBlur}
-            welcomeTextBlur={welcomeTextBlur}
-          />
-        </div>
-        
-        {/* General Info - Default background */}
-        <div className="min-h-[100vh] flex relative bg-[#F9F6F9]">
-          <GeneralInfo />
-        </div>
-        
-        {/* Image Banner - White background */}
-        <div className="bg-white">
-          <ImageBanner />
-        </div>
-        
-        {/* Services - Default background */}
-        <div className="relative bg-[#F9F6F9]">
-          <Services />
-        </div>
-        
-        {/* About - White background */}
-        <div className="relative bg-white">
-          <AboutHP />
-        </div>
-        {/* <Footer /> */}
+    <div className="flex flex-col min-h-screen">
+      {/* Navbar */}
+      <Navbar />
+
+      {/* Landing page section */}
+      <div className="min-h-[100vh] flex relative">
+        <LandingScreen
+          ref={landingScreenRef}
+          welcomeTextBlur={welcomeTextBlur}
+        />
       </div>
+
+      {/* General Info - Default background */}
+      <div className="min-h-[100vh] flex relative bg-[#F9F6F9]">
+        <GeneralInfo />
+      </div>
+
+      {/* Image Banner - White background */}
+      <div className="bg-white">
+        <ImageBanner />
+      </div>
+
+      {/* Services - Default background */}
+      <div className="relative bg-[#F9F6F9]">
+        <Services />
+      </div>
+
+      {/* About - White background */}
+      <div className="relative bg-white">
+        <AboutHP />
+      </div>
+      {/* <Footer /> */}
+    </div>
     // </LoadingScreen>
   );
 }

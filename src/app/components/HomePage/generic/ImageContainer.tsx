@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 
 interface ImageContainerProps {
   image: string;
@@ -20,7 +19,6 @@ const ImageContainer = ({
   subHeadText,
   headText,
   paragraphText,
-  buttonText,
 }: ImageContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,13 +52,19 @@ const ImageContainer = ({
 
       {/* Image block */}
       <motion.div className="absolute inset-0 overflow-hidden rounded-3xl shadow-2xl z-10">
-        <motion.img
-          src={image}
-          alt={altText}
+        <motion.div
           style={{ y, scale: 1.25 }}
           transition={{ y: { type: "tween", ease: "easeInOut" } }}
-          className="w-full h-full object-cover"
-        />
+          className="w-full h-full"
+        >
+          <Image
+            src={image}
+            alt={altText}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        </motion.div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
       </motion.div>
     </div>
@@ -93,7 +97,7 @@ const ImageContainer = ({
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <motion.h4 
+        <motion.h4
           className="text-lg md:text-xl font-semibold tracking-wide"
           style={{ color: "#85277F" }}
           initial={{ opacity: 0, y: 20 }}
@@ -103,8 +107,8 @@ const ImageContainer = ({
         >
           {subHeadText}
         </motion.h4>
-        
-        <motion.h2 
+
+        <motion.h2
           className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-wide text-gray-800 leading-tight"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -113,8 +117,8 @@ const ImageContainer = ({
         >
           {headText}
         </motion.h2>
-        
-        <motion.p 
+
+        <motion.p
           className="text-gray-600 text-lg md:text-xl leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -123,7 +127,7 @@ const ImageContainer = ({
         >
           {paragraphText}
         </motion.p>
-        
+
         {/* <motion.div 
           className="flex flex-row gap-2 items-center justify-center md:justify-start group cursor-pointer"
           initial={{ opacity: 0, y: 20 }}
