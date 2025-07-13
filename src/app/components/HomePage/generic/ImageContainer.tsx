@@ -9,6 +9,7 @@ interface ImageContainerProps {
   subHeadText: string;
   headText: string;
   paragraphText: string;
+  buttonText: string;
 }
 
 const ImageContainer = ({
@@ -18,6 +19,7 @@ const ImageContainer = ({
   subHeadText,
   headText,
   paragraphText,
+  buttonText
 }: ImageContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
