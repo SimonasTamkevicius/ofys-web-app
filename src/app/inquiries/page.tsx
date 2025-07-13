@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope, faPhone, faMapMarkerAlt } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faPhone, faMapMarkerAlt, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/generic/Navbar";
 import Footer from "../components/generic/Footer";
 
@@ -475,9 +475,10 @@ const ContactPage = () => {
                       ) : (
                         <>
                           Send Message
-                          <svg className="w-3 h-3 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                          </svg>
+                          <FontAwesomeIcon 
+                            icon={faPaperPlane} 
+                            className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" 
+                          />
                         </>
                       )}
                     </span>
@@ -488,7 +489,7 @@ const ContactPage = () => {
           </div>
         </div>
       </motion.main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 };

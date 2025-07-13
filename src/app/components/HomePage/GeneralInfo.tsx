@@ -38,7 +38,7 @@ const GeneralInfo = () => {
           viewport={{ once: true }}
         >
           <ImageContainer
-            image="/costaricancoastv2.webp"
+            image="/rentalsbg1.png"
             altText="Tropical jungle villa with infinity pool"
             imageSide="right"
             subHeadText="Hidden Oasis"

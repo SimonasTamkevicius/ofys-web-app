@@ -9,7 +9,6 @@ interface ImageContainerProps {
   subHeadText: string;
   headText: string;
   paragraphText: string;
-  buttonText: string;
 }
 
 const ImageContainer = ({
@@ -127,34 +126,6 @@ const ImageContainer = ({
         >
           {paragraphText}
         </motion.p>
-
-        {/* <motion.div 
-          className="flex flex-row gap-2 items-center justify-center md:justify-start group cursor-pointer"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          viewport={{ once: true }}
-        >
-          <motion.a
-            href={`/${buttonText.toLowerCase().replace(/\s+/g, '-')}`}
-            className="group/btn relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
-            style={{ background: "linear-gradient(to right, #85277F, #9E3A95)" }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.div
-              className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
-              style={{ background: "linear-gradient(to right, #9E3A95, #85277F)" }}
-            />
-            <span className="relative flex items-center gap-2">
-              {buttonText}
-              <FontAwesomeIcon
-                icon={faArrowRight}
-                className="text-lg transition-transform group-hover/btn:translate-x-1"
-              />
-            </span>
-          </motion.a>
-        </motion.div> */}
       </motion.div>
     </div>
   );
