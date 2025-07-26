@@ -37,7 +37,9 @@ interface PropertyPageProps {
   type: "Realty" | "Rentals";
 }
 
-const amenityIcons: Record<string, unknown> = {
+import type { IconProp } from "@fortawesome/fontawesome-svg-core";
+
+const amenityIcons: Record<string, IconProp> = {
   Pool: faSwimmer,
   "Private Infinity Pool": faSwimmer,
   Barbeque: faFireAlt,
