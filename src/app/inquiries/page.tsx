@@ -10,7 +10,6 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../components/generic/Navbar";
-import Footer from "../components/generic/Footer";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({

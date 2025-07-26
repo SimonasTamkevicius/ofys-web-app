@@ -37,7 +37,7 @@ interface PropertyPageProps {
   type: "Realty" | "Rentals";
 }
 
-const amenityIcons: Record<string, any> = {
+const amenityIcons: Record<string, unknown> = {
   Pool: faSwimmer,
   "Private Infinity Pool": faSwimmer,
   Barbeque: faFireAlt,
