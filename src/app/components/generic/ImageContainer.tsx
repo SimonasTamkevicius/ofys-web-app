@@ -79,9 +79,9 @@ const ImageContainer = ({
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <h4 className="text-lg font-semibold" style={{ color: "#85277F" }}>
+        <p className="text-lg font-semibold" style={{ color: "#85277F" }}>
           {subHeadText}
-        </h4>
+        </p>
         <h2 className="text-3xl md:text-5xl font-bold tracking-wide text-[#323130]">
           {headText}
         </h2>

@@ -25,19 +25,16 @@ interface LoadingProviderProps {
   children: React.ReactNode;
 }
 
-export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) => {
+export const LoadingProvider: React.FC<LoadingProviderProps> = ({
+  children,
+}) => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [isContentReady, setIsContentReady] = useState(false);
 
   useEffect(() => {
-    // Preload critical images and resources
     const preloadResources = async () => {
-      const imageUrls = [
-        "/costaricacoast.jpg",
-        "/OFYSLOGO.svg",
-        // Add other critical images here
-      ];
+      const imageUrls = ["/costaricacoast.jpg", "/OFYSLOGO.svg"];
 
       try {
         await Promise.all(
@@ -45,7 +42,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
             return new Promise((resolve) => {
               const img = new window.Image();
               img.onload = resolve;
-              img.onerror = resolve; // Don't fail if image doesn't load
+              img.onerror = resolve;
               img.src = url;
             });
           })
@@ -55,7 +52,6 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
       }
     };
 
-    // Simulate loading progress
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -66,7 +62,6 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
           }, 500);
           return 100;
         }
-        // Use deterministic increments instead of random
         return prev + 8 + (prev % 3) * 2;
       });
     }, 100);
@@ -76,7 +71,6 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
     return () => clearInterval(interval);
   }, []);
 
-  // Deterministic particle positions to avoid hydration mismatch
   const particlePositions = [
     { left: "15%", top: "25%", delay: 0.3 },
     { left: "75%", top: "35%", delay: 0.8 },
@@ -89,7 +83,9 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
   ];
 
   return (
-    <LoadingContext.Provider value={{ isLoading, setIsLoading, progress, setProgress }}>
+    <LoadingContext.Provider
+      value={{ isLoading, setIsLoading, progress, setProgress }}
+    >
       <AnimatePresence mode="wait">
         {!isContentReady ? (
           <motion.div
@@ -102,8 +98,14 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
             {/* Background decorative elements */}
             <div className="absolute inset-0 overflow-hidden">
               <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-br from-[#85277F]/10 to-[#9E3A95]/10 rounded-full blur-3xl animate-pulse"></div>
-              <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-br from-[#9E3A95]/10 to-[#85277F]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-[#85277F]/5 to-[#9E3A95]/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+              <div
+                className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-gradient-to-br from-[#9E3A95]/10 to-[#85277F]/10 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "1s" }}
+              ></div>
+              <div
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-[#85277F]/5 to-[#9E3A95]/5 rounded-full blur-3xl animate-pulse"
+                style={{ animationDelay: "2s" }}
+              ></div>
             </div>
 
             {/* Floating particles with deterministic positions */}
@@ -122,7 +124,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
                     scale: [1, 1.5, 1],
                   }}
                   transition={{
-                    duration: 3 + (i * 0.5),
+                    duration: 3 + i * 0.5,
                     repeat: Infinity,
                     delay: particle.delay,
                     ease: "easeInOut",
@@ -140,7 +142,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="mb-8"
               >
-                <motion.div 
+                <motion.div
                   className="text-[#85277F]"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -160,7 +162,9 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
                     OFYS
                   </span>
                 </h1>
-                <p className="text-gray-600 text-lg">Loading your Costa Rican paradise...</p>
+                <p className="text-gray-600 text-lg">
+                  Loading your Costa Rican paradise...
+                </p>
               </motion.div>
 
               {/* Progress bar */}
@@ -200,22 +204,9 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
                 transition={{ duration: 0.6, delay: 0.7 }}
                 className="text-center"
               >
-                <span className="text-2xl font-bold text-[#85277F]">{Math.round(progress)}%</span>
-              </motion.div>
-
-              {/* Loading tips */}
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 1.1 }}
-                className="mt-8 text-center max-w-md"
-              >
-                <p className="text-sm text-gray-500 italic">
-                  {progress < 30 && "Discovering paradise locations..."}
-                  {progress >= 30 && progress < 60 && "Loading luxury properties..."}
-                  {progress >= 60 && progress < 90 && "Preparing your experience..."}
-                  {progress >= 90 && "Almost ready to explore Costa Rica..."}
-                </p>
+                <span className="text-2xl font-bold text-[#85277F]">
+                  {Math.round(progress)}%
+                </span>
               </motion.div>
             </div>
 
@@ -241,4 +232,4 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({ children }) =>
       </AnimatePresence>
     </LoadingContext.Provider>
   );
-}; 
+};

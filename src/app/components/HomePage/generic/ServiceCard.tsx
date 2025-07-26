@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
@@ -21,13 +23,13 @@ const ServiceCard = ({
 }: ServiceCardProps) => {
   return (
     <motion.div
-      className="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden border border-white/20"
-      initial={{ opacity: 0, y: 30 }}
+      className="group relative opacity-0 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg overflow-hidden border border-white/20"
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.6,
-        ease: "easeOut",
         delay: index * 0.2,
+        ease: "easeOut",
       }}
       viewport={{ once: true, amount: 0.3 }}
     >
@@ -39,7 +41,6 @@ const ServiceCard = ({
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           width={600}
           height={400}
-          priority={index === 0}
         />
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -54,7 +55,7 @@ const ServiceCard = ({
 
       {/* Content */}
       <div className="p-8 bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-sm">
-        <p className="text-gray-600 text-lg leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
+        <p className="text-gray-600 text-md leading-relaxed mb-6 group-hover:text-gray-700 transition-colors duration-300">
           {desc}
         </p>
 

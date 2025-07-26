@@ -17,6 +17,9 @@ const properties = [
       "Gourmet Kitchen",
       "Outdoor Dining Area",
       "Concierge Service",
+      "Ocean View",
+      "Smart TV",
+      "AC",
     ],
   },
   {
@@ -37,6 +40,9 @@ const properties = [
       "Heated Floors",
       "Ski-In/Ski-Out Access",
       "Fully Equipped Kitchen",
+      "Barbeque",
+      "Parking",
+      "Smart TV",
     ],
   },
   {
@@ -57,6 +63,9 @@ const properties = [
       "Smart Home Integration",
       "Floor-to-Ceiling Windows",
       "24/7 Doorman",
+      "AC",
+      "Parking",
+      "Pool",
     ],
   },
 ];

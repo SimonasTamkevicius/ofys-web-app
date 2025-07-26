@@ -25,14 +25,14 @@ const Footer = () => {
               className="lg:col-span-2"
             >
               <div className="flex items-center space-x-3 mb-6">
-                <motion.div 
+                <motion.div
                   className="relative w-12 h-12 bg-gradient-to-br from-white/30 via-white/20 to-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40 shadow-lg group hover:shadow-xl transition-all duration-300"
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   {/* Subtle glow effect */}
                   <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  
+
                   {/* Logo with enhanced styling */}
                   <div className="relative z-10">
                     <LogoComponent className="w-7 h-7 text-white drop-shadow-sm" />
@@ -40,10 +40,11 @@ const Footer = () => {
                 </motion.div>
                 <h2 className="text-2xl font-bold text-white">OFYS</h2>
               </div>
-              <p className="text-white/90 leading-relaxed text-lg max-w-md">
-                Discover your dream home in Costa Rica&apos;s most breathtaking locations. 
-                From beachfront villas to mountain retreats, we offer carefully curated 
-                properties that combine luxury with natural beauty.
+              <p className="text-white/90 leading-relaxed text-md max-w-md">
+                Discover your dream home in Costa Rica&apos;s most breathtaking
+                locations. From beachfront villas to mountain retreats, we offer
+                carefully curated properties that combine luxury with natural
+                beauty.
               </p>
             </motion.div>
 
@@ -54,10 +55,12 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-white mb-6">Quick Links</h4>
+              <h4 className="text-2xl font-semibold text-white mb-6">
+                Quick Links
+              </h4>
               <ul className="space-y-4">
                 {["Home", "Realty", "Rentals", "About"].map((link, i) => (
-                  <motion.li 
+                  <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
                     whileInView={{ opacity: 1, x: 0 }}
@@ -66,7 +69,9 @@ const Footer = () => {
                   >
                     <a
                       className="text-white/80 hover:text-white transition duration-300 text-lg"
-                      href={`${link === "Home" ? "/" : `/${link.toLowerCase()}`}`}
+                      href={`${
+                        link === "Home" ? "/" : `/${link.toLowerCase()}`
+                      }`}
                     >
                       {link}
                     </a>
@@ -82,7 +87,9 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <h4 className="text-lg font-semibold text-white mb-6">Contact</h4>
+              <h4 className="text-2xl font-semibold text-white mb-6">
+                Contact
+              </h4>
               <div className="space-y-4 text-white/80">
                 <div className="flex items-center space-x-3">
                   <div className="w-2 h-2 bg-white rounded-full"></div>
@@ -109,7 +116,7 @@ const Footer = () => {
           </div>
 
           {/* Social Links */}
-          <motion.div 
+          <motion.div
             className="mt-16 pt-8 border-t border-white/20"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -120,13 +127,13 @@ const Footer = () => {
               <p className="text-white/70 text-sm">
                 © 2025 OFYS. All rights reserved.
               </p>
-              
+
               <div className="flex space-x-6">
                 {/* Instagram */}
-                <motion.a 
-                  aria-label="Instagram" 
+                <motion.a
+                  aria-label="Instagram"
                   href="#"
-                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   className="group"
                 >
@@ -142,12 +149,12 @@ const Footer = () => {
                     </svg>
                   </div>
                 </motion.a>
-                
+
                 {/* Facebook */}
-                <motion.a 
-                  aria-label="Facebook" 
+                <motion.a
+                  aria-label="Facebook"
                   href="#"
-                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   className="group"
                 >
@@ -163,12 +170,12 @@ const Footer = () => {
                     </svg>
                   </div>
                 </motion.a>
-                
+
                 {/* Twitter */}
-                <motion.a 
-                  aria-label="Twitter" 
+                <motion.a
+                  aria-label="Twitter"
                   href="#"
-                  whileHover={{ scale: 1.1, y: -2 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   className="group"
                 >

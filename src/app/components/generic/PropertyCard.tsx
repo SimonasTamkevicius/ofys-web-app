@@ -29,7 +29,7 @@ const PropertyCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="group relative flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden max-w-6xl mx-auto min-h-[400px] bg-white/80 backdrop-blur-sm border border-white/20 hover:shadow-3xl transition-all duration-500 hover:-translate-y-2"
+      className="group relative flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden max-w-6xl mx-auto min-h-[400px] bg-white/80 backdrop-blur-sm border border-white/20 hover:shadow-3xl transition-all duration-500"
     >
       {/* Image */}
       <div className="md:w-1/2 w-full h-72 md:h-auto relative overflow-hidden">
@@ -49,20 +49,22 @@ const PropertyCard = ({
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <div className="px-3 py-1 rounded-full bg-gradient-to-r from-[#85277F]/10 to-[#9E3A95]/10 border border-[#85277F]/20 group-hover:border-[#85277F]/40 transition-colors duration-300">
-              <h4 className="text-sm text-[#85277F] uppercase tracking-widest font-semibold">{type}</h4>
+              <p className="text-sm text-[#85277F] uppercase tracking-widest font-semibold">
+                {type}
+              </p>
             </div>
           </div>
           <h2 className="text-2xl md:text-4xl font-bold text-gray-800 leading-tight group-hover:text-gray-900 transition-colors duration-300">
             {name}
           </h2>
-          <p className="text-gray-600 leading-relaxed text-base md:text-lg group-hover:text-gray-700 transition-colors duration-300">
+          <p className="text-gray-600 leading-relaxed text-md group-hover:text-gray-700 transition-colors duration-300">
             {description}
           </p>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl font-bold bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent group-hover:from-[#9E3A95] group-hover:to-[#85277F] transition-all duration-500">
+            <p className="text-2xl font-bold bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent group-hover:from-[#9E3A95] group-hover:to-[#85277F] transition-all duration-500">
               {price}
             </p>
           </div>
@@ -70,21 +72,23 @@ const PropertyCard = ({
             href={`${
               type === "Realty" ? `/realty/${slug}` : `/rentals/${slug}`
             }`}
-            className="group/btn relative inline-flex items-center justify-center px-8 py-4 rounded-xl font-semibold transition-all duration-300 overflow-hidden shadow-lg hover:shadow-xl"
-            style={{ 
+            className="group/btn relative inline-flex items-center justify-center px-5 py-3 rounded-xl font-semibold transition-all duration-300 overflow-hidden shadow-lg hover:shadow-xl"
+            style={{
               background: "linear-gradient(135deg, #85277F, #9E3A95)",
-              color: "white"
+              color: "white",
             }}
           >
             <div
               className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
-              style={{ background: "linear-gradient(135deg, #9E3A95, #85277F)" }}
+              style={{
+                background: "linear-gradient(135deg, #9E3A95, #85277F)",
+              }}
             />
-            <span className="relative flex items-center gap-3 text-lg">
+            <span className="relative flex items-center gap-3 text-md">
               Learn More
-              <FontAwesomeIcon 
-                icon={faArrowRight} 
-                className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" 
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1"
               />
             </span>
           </Link>

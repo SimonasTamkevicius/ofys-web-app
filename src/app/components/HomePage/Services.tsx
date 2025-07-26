@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { motion } from "framer-motion";
 import ServiceCard from "./generic/ServiceCard";
@@ -48,7 +50,7 @@ const Services = () => {
             </span>
           </motion.h2>
           <motion.p
-            className="text-gray-600 text-xl leading-relaxed max-w-3xl mx-auto"
+            className="text-gray-600 text-md lg:text-lg leading-relaxed max-w-3xl mx-auto"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
@@ -60,7 +62,7 @@ const Services = () => {
         </motion.div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto mb-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto mb-20">
           {serviceData.map((service, index) => (
             <ServiceCard
               key={index}
@@ -87,21 +89,19 @@ const Services = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             viewport={{ once: true }}
           >
-            <h3 className="text-3xl font-bold text-gray-800 mb-4">
+            <h3 className="text-4xl font-bold text-gray-800 mb-4">
               Ready to Get Started?
             </h3>
-            <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-md mb-8 max-w-2xl mx-auto">
               Our team of experts is here to help you find the perfect property
               or plan your dream vacation.
             </p>
             <motion.a
               href="/inquiries"
-              className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
+              className="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
               style={{
                 background: "linear-gradient(to right, #85277F, #9E3A95)",
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
             >
               <motion.div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

@@ -85,13 +85,13 @@ const Page = () => {
 
         {/* Hero Text */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: -80, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="absolute left-1/2 top-1/3 transform -translate-x-1/2 -translate-y-1/3 text-center px-4 max-w-4xl w-full"
         >
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6"
+            className="text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6 leading-18 md:leading-24"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
@@ -101,16 +101,6 @@ const Page = () => {
               Dream Home
             </span>
           </motion.h1>
-          <motion.p
-            className="mt-6 text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow-lg max-w-3xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            Discover carefully selected properties across Costa Rica&apos;s most
-            scenic landscapes. From beachfront villas to mountain retreats, find
-            your perfect piece of paradise.
-          </motion.p>
         </motion.div>
       </div>
 
@@ -124,7 +114,7 @@ const Page = () => {
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           {/* Quick Preview - Featured Properties */}
           <motion.div
-            className="mb-16 -mt-[40vh]"
+            className="mb-16 -mt-[50vh]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -134,24 +124,25 @@ const Page = () => {
                 <h3 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
                   Featured Properties
                 </h3>
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-600 text-md max-w-2xl mx-auto">
                   Discover our handpicked selection of premium properties. Each
                   one offers the perfect blend of luxury, comfort, and Costa
                   Rica&apos;s natural beauty.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 {properties.slice(0, 3).map((property, index) => (
                   <Link key={property.slug} href={`/realty/${property.slug}`}>
                     <motion.div
-                      className="bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                      className="flex flex-col h-full bg-gray-50 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group"
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       viewport={{ once: true }}
                       whileHover={{ scale: 1.02 }}
                     >
+                      {/* Image */}
                       <div className="aspect-video bg-gray-200 rounded-xl mb-4 overflow-hidden">
                         <Image
                           src={property.imageUrl}
@@ -161,25 +152,31 @@ const Page = () => {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                       </div>
-                      <h4 className="font-semibold text-gray-800 mb-2">
-                        {property.name}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {property.description}
-                      </p>
-                      <p
-                        className="text-lg font-bold"
-                        style={{ color: "#85277F" }}
-                      >
-                        {property.price}
-                      </p>
+
+                      {/* Content */}
+                      <div className="flex flex-col flex-grow justify-between">
+                        <div>
+                          <h4 className="font-semibold text-gray-800 mb-2 text-2xl">
+                            {property.name}
+                          </h4>
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {property.description}
+                          </p>
+                        </div>
+                        <p
+                          className="text-lg font-bold mt-4"
+                          style={{ color: "#85277F" }}
+                        >
+                          {property.price}
+                        </p>
+                      </div>
                     </motion.div>
                   </Link>
                 ))}
               </div>
 
               <div className="text-center">
-                <p className="text-gray-600 mb-6 text-lg">
+                <p className="text-gray-600 mb-6 text-md">
                   These are just a preview of what we offer. Scroll down to
                   explore our complete collection.
                 </p>
@@ -258,22 +255,20 @@ const Page = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">
+              <h3 className="text-4xl font-bold text-gray-800 mb-4">
                 Ready to Find Your Dream Home?
               </h3>
-              <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+              <p className="text-gray-600 text-md mb-8 max-w-2xl mx-auto">
                 Our team of real estate experts is here to help you find the
                 perfect property that matches your lifestyle and investment
                 goals.
               </p>
               <motion.a
                 href="/inquiries"
-                className="group relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
+                className="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
                 style={{
                   background: "linear-gradient(to right, #85277F, #9E3A95)",
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <motion.div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"

@@ -19,7 +19,7 @@ const ImageContainer = ({
   subHeadText,
   headText,
   paragraphText,
-  buttonText
+  buttonText,
 }: ImageContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -89,7 +89,7 @@ const ImageContainer = ({
       {/* Text always second on small screens, conditionally placed on md+ screens */}
       <motion.div
         className={`
-      flex flex-col gap-6 z-20 text-center md:text-left 
+      flex flex-col gap-4 z-20 text-center md:text-left 
       ${imageSide === "left" ? "md:order-2" : "md:order-1"} 
       order-2
     `}
@@ -98,8 +98,8 @@ const ImageContainer = ({
         viewport={{ once: true }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <motion.h4
-          className="text-lg md:text-xl font-semibold tracking-wide"
+        <motion.p
+          className="text-xl md:text-2xl tracking-wider"
           style={{ color: "#85277F" }}
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -107,10 +107,10 @@ const ImageContainer = ({
           viewport={{ once: true }}
         >
           {subHeadText}
-        </motion.h4>
+        </motion.p>
 
         <motion.h2
-          className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-wide text-gray-800 leading-tight"
+          className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-normal text-gray-800 leading-tight"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -120,7 +120,7 @@ const ImageContainer = ({
         </motion.h2>
 
         <motion.p
-          className="text-gray-600 text-lg md:text-xl leading-relaxed"
+          className="text-gray-600 text-md lg:text-lg leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}

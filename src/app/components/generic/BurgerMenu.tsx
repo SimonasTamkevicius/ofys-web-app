@@ -31,8 +31,6 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
         className="relative w-10 h-10 flex items-center justify-center z-100 cursor-pointer"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
       >
         {/* Top Line */}
         <motion.div
@@ -57,7 +55,11 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
           <motion.span
             className={lineClass}
             animate={{
-              backgroundColor: isOpen ? "#85277F" : (scrolled ? "#85277F" : "#FFF5EE"),
+              backgroundColor: isOpen
+                ? "#85277F"
+                : scrolled
+                ? "#85277F"
+                : "#B464AF",
             }}
             transition={{ duration: 0.2 }}
           />
@@ -68,7 +70,11 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
           className={lineClass}
           animate={{
             opacity: isOpen ? 0 : 1,
-            backgroundColor: isOpen ? "#85277F" : (scrolled ? "#85277F" : "#FFF5EE"),
+            backgroundColor: isOpen
+              ? "#85277F"
+              : scrolled
+              ? "#85277F"
+              : "#B464AF",
           }}
           transition={{
             opacity: {
@@ -105,7 +111,11 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
           <motion.span
             className={lineClass}
             animate={{
-              backgroundColor: isOpen ? "#85277F" : (scrolled ? "#85277F" : "#FFF5EE"),
+              backgroundColor: isOpen
+                ? "#85277F"
+                : scrolled
+                ? "#85277F"
+                : "#B464AF",
             }}
             transition={{ duration: 0.2 }}
           />
@@ -204,7 +214,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                   transition: { duration: 0.5, delay: 0.9 },
                 }}
                 href="#"
-                className="text-gray-600 hover:text-[#85277F] transition-all duration-300 hover:scale-110"
+                className="text-gray-600 hover:text-[#85277F]"
               >
                 <svg
                   fill="currentColor"
@@ -223,7 +233,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                   transition: { duration: 0.5, delay: 1.0 },
                 }}
                 href="#"
-                className="text-gray-600 hover:text-[#85277F] transition-all duration-300 hover:scale-110"
+                className="text-gray-600 hover:text-[#85277F]"
               >
                 <svg
                   fill="currentColor"
@@ -242,7 +252,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                   transition: { duration: 0.5, delay: 1.1 },
                 }}
                 href="#"
-                className="text-gray-600 hover:text-[#85277F] transition-all duration-300 hover:scale-110"
+                className="text-gray-600 hover:text-[#85277F]"
               >
                 <svg
                   fill="currentColor"

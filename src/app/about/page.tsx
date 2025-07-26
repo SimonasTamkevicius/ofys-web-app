@@ -85,13 +85,13 @@ const AboutPage = () => {
 
         {/* Hero Text */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: -80, filter: "blur(8px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           transition={{ duration: 1, ease: "easeOut", delay: 0.3 }}
           className="absolute left-1/2 top-1/3 transform -translate-x-1/2 -translate-y-1/3 text-center px-4 max-w-4xl w-full"
         >
           <motion.h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6"
+            className="text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl mb-6 leading-18 md:leading-24"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
@@ -101,15 +101,6 @@ const AboutPage = () => {
               About Us
             </span>
           </motion.h1>
-          <motion.p
-            className="mt-6 text-lg sm:text-xl md:text-2xl text-white/90 drop-shadow-lg max-w-3xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-          >
-            Our mission is to connect you with carefully curated homes and
-            retreats nestled in Costa Rica&apos;s most breathtaking landscapes.
-          </motion.p>
         </motion.div>
       </div>
 
@@ -123,21 +114,21 @@ const AboutPage = () => {
         <div className="max-w-7xl mx-auto px-6 sm:px-10 lg:px-16">
           {/* Our Story Card */}
           <motion.div
-            className="mb-16 -mt-[40vh]"
+            className="mb-16 -mt-[50vh]"
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            viewport={{ once: true }}
+            // viewport={{ once: true }}
           >
             <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-100">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                 <div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
+                  <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6">
                     <span className="bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
                       Our Story
                     </span>
                   </h2>
-                  <p className="text-gray-600 text-lg leading-relaxed">
+                  <p className="text-gray-600 text-md leading-relaxed">
                     Founded in 2010 by a team of passionate real estate
                     professionals and travel enthusiasts, Villa Escapes began
                     with a vision to redefine luxury villa rentals in Costa
@@ -170,14 +161,14 @@ const AboutPage = () => {
           >
             <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-100">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
                   <span className="bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
                     Our Guiding Principles
                   </span>
                 </h2>
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                  At Villa Escapes, we are guided by a set of core values that
-                  shape our approach to business and client interactions.
+                <p className="text-gray-600 text-md max-w-2xl mx-auto">
+                  At OFYS, we are guided by a set of core values that shape our
+                  approach to business and client interactions.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -203,10 +194,10 @@ const AboutPage = () => {
                       <path d="M12 2L2 7v10l10 5l10-5V7L12 2zm0 13l-6-3.27V8.73L12 12l6-3.27v3.27L12 15z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  <h3 className="text-3xl font-bold text-gray-800 mb-4">
                     Excellence
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-md">
                     We strive for excellence in every aspect of our service,
                     from property selection to customer support.
                   </p>
@@ -234,10 +225,10 @@ const AboutPage = () => {
                       <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  <h3 className="text-3xl font-bold text-gray-800 mb-4">
                     Client-Centric
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-md">
                     Our client-centric philosophy ensures that we prioritize
                     your needs and preferences, tailoring our services to meet
                     your unique requirements.
@@ -266,10 +257,10 @@ const AboutPage = () => {
                       <path d="M20 6h-4V4c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6 0h-4V4h4v2z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">
+                  <h3 className="text-3xl font-bold text-gray-800 mb-4">
                     Integrity
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 text-md">
                     We operate with the highest level of integrity, ensuring
                     transparency, honesty, and ethical practices in all our
                     dealings.
@@ -289,12 +280,12 @@ const AboutPage = () => {
           >
             <div className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-100">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
                   <span className="bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
                     Meet the Team
                   </span>
                 </h2>
-                <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                <p className="text-gray-600 text-md max-w-2xl mx-auto">
                   Our dedicated team is passionate about making your Costa Rican
                   dream a reality.
                 </p>
@@ -322,7 +313,7 @@ const AboutPage = () => {
                         className="object-cover w-full h-full"
                       />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2">
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">
                       {member.name}
                     </h3>
                     <p
@@ -352,21 +343,19 @@ const AboutPage = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               viewport={{ once: true }}
             >
-              <h3 className="text-3xl font-bold text-gray-800 mb-4">
+              <h3 className="text-4xl font-bold text-gray-800 mb-4">
                 Ready to Start Your Journey?
               </h3>
-              <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+              <p className="text-gray-600 text-md mb-8 max-w-2xl mx-auto">
                 Let us help you find your perfect piece of paradise in Costa
                 Rica.
               </p>
               <motion.a
                 href="/inquiries"
-                className="group/btn relative inline-flex items-center justify-center px-8 py-4 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
+                className="group/btn relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
                 style={{
                   background: "linear-gradient(135deg, #85277F, #9E3A95)",
                 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
               >
                 <motion.div
                   className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"
