@@ -281,7 +281,7 @@ const Page = () => {
                   viewport={{ once: true }}
                 >
                   Explore our complete collection of {properties.length}+ luxury
-                  properties across Costa Rica's most desirable locations.
+                  properties across Costa Rica&apos;s most desirable locations.
                 </motion.p>
 
                 <motion.div

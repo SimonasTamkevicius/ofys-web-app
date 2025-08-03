@@ -493,7 +493,7 @@ const ConstructionManagementPage = () => {
 
             {/* Timeline items */}
             <div className="space-y-8 md:space-y-0">
-              {steps.map((step, index) => {
+              {steps.map((step) => {
                 return (
                   <div
                     key={step.title}

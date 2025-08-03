@@ -3,7 +3,6 @@
 import Navbar from "@/app/components/generic/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEnvelope,
   faArrowLeft,
   faTimes,
   faChevronLeft,
@@ -11,9 +10,6 @@ import {
   faArrowRight,
   faFileAlt,
   faCalendarCheck,
-  faShieldAlt,
-  faBroom,
-  faCalendarAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import Image from "next/image";
