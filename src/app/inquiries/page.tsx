@@ -173,7 +173,7 @@ const ContactPage = () => {
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
-              Let's Start a
+              Let&apos;s Start a
               <span className="block bg-gradient-to-r from-[#E5D9E4] to-[#C4A3C1] bg-clip-text text-transparent">
                 Conversation
               </span>
@@ -311,7 +311,7 @@ const ContactPage = () => {
               Contact Our Team
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Fill out the form below and we'll get back to you promptly
+              Fill out the form below and we&apos;ll get back to you promptly
             </p>
           </div>
 

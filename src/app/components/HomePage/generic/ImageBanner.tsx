@@ -11,7 +11,6 @@ const ImageBanner = () => {
     offset: ["start end", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
   const blur = useTransform(
     scrollYProgress,
     [0, 0.3, 0.7, 1],
@@ -25,7 +24,6 @@ const ImageBanner = () => {
     >
       {/* Parallax background image */}
       <motion.div
-        // style={{ y }}
         className="absolute top-0 left-0 w-full h-[500px] bg-[url('/costaricabanner.avif')] bg-cover bg-center pointer-events-none will-change-transform"
         aria-hidden="true"
       />

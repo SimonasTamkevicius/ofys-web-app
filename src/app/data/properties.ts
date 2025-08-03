@@ -21,6 +21,10 @@ const properties = [
       "Smart TV",
       "AC",
     ],
+    location: "Costa Rica",
+    bathrooms: 4,
+    bedrooms: 5,
+    sleeps: 10,
   },
   {
     slug: "mountain-chalet-escape",
@@ -45,6 +49,10 @@ const properties = [
       "Parking",
       "Smart TV",
     ],
+    location: "Rocky Mountains",
+    bathrooms: 3,
+    bedrooms: 4,
+    sleeps: 8,
   },
   {
     slug: "urban-loft-nyc",
@@ -68,6 +76,10 @@ const properties = [
       "Parking",
       "Pool",
     ],
+    location: "New York City",
+    bathrooms: 2,
+    bedrooms: 3,
+    sleeps: 6,
   },
 ];
 

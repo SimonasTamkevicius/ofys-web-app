@@ -114,9 +114,8 @@ const Page = () => {
           <motion.div
             className="flex flex-col items-center mb-8"
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            viewport={{ once: true }}
           >
             <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#E5D9E4]">
               Exclusive Retreats
@@ -124,13 +123,12 @@ const Page = () => {
             <motion.div
               className="w-16 h-px bg-[#E5D9E4]/50"
               initial={{ scaleX: 0, originX: 0 }}
-              whileInView={{ scaleX: 1 }}
+              animate={{ scaleX: 1 }}
               transition={{
                 duration: 0.8,
                 ease: [0.16, 1, 0.3, 1],
                 delay: 1,
               }}
-              viewport={{ once: true }}
             />
           </motion.div>
           <motion.h1
@@ -160,81 +158,156 @@ const Page = () => {
             className="-mt-[50vh]"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="bg-white rounded-3xl p-8 lg:p-12">
-              <div className="text-center mb-8">
-                <h3 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-                  Featured Rentals
-                </h3>
-                <p className="text-gray-600 text-md max-w-2xl mx-auto">
-                  Discover our handpicked selection of premium rental
-                  properties. Each one offers the perfect blend of luxury,
-                  comfort, and Costa Rica&apos;s natural beauty for your perfect
-                  getaway.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 mx-auto max-w-7xl">
+            <div className="bg-gradient-to-b from-white to-[#F9F6F9] rounded-t-3xl p-8 lg:p-10">
+              {/* Property Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16 mx-auto max-w-7xl">
                 {properties.slice(0, 3).map((property, index) => (
-                  <Link key={property.slug} href={`/rentals/${property.slug}`}>
+                  <Link key={property.slug} href={`/realty/${property.slug}`}>
                     <motion.div
-                      className="bg-gray-50 rounded-2xl p-6 cursor-pointer group shadow-lg flex flex-col justify-between min-h-[420px]"
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: index * 0.1 }}
-                      viewport={{ once: true }}
+                      className="group relative overflow-hidden rounded-2xl shadow-lg bg-white h-full flex flex-col"
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.75,
+                        delay: index * 0.5,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
                     >
-                      <div>
-                        <div className="aspect-video bg-gray-200 rounded-xl mb-4 overflow-hidden">
-                          <Image
-                            src={property.imageUrl}
-                            alt={property.name}
-                            width={400}
-                            height={250}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
+                      {/* Image with overlay - now smaller */}
+                      <div className="relative aspect-[8/4] overflow-hidden flex-none">
+                        <Image
+                          src={property.imageUrl}
+                          alt={property.name}
+                          fill
+                          className="object-cover transition-all duration-700 group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
+
+                        {/* Property badge */}
+                        <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-sm text-xs">
+                          <span className="font-medium text-[#85277F]">
+                            Rental
+                          </span>
                         </div>
-
-                        <h4 className="font-semibold text-gray-800 mb-2 text-2xl">
-                          {property.name}
-                        </h4>
-
-                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                          {property.description}
-                        </p>
                       </div>
 
-                      <p
-                        className="text-lg font-bold"
-                        style={{ color: "#85277F" }}
-                      >
-                        {property.price}
-                      </p>
+                      {/* Property details - flex-grow makes this fill remaining space */}
+                      <div className="p-5 flex-grow flex flex-col">
+                        <div className="mb-3">
+                          <h4 className="font-serif text-xl font-medium text-gray-900 mb-1 line-clamp-1">
+                            {property.name}
+                          </h4>
+                          <p className="text-[#85277F] text-xs font-light flex items-center">
+                            <svg
+                              className="w-3 h-3 mr-1"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                            {property.location}
+                          </p>
+                        </div>
+
+                        {/* Description with consistent height */}
+                        <p className="text-gray-600 text-xs font-light mb-3 line-clamp-2 flex-grow">
+                          {property.description}
+                        </p>
+
+                        {/* Price and CTA - now at bottom */}
+                        <div className="flex justify-between items-center pt-3 border-t border-gray-100 mt-auto">
+                          <div>
+                            <p className="text-xs text-gray-500">
+                              Starting from
+                            </p>
+                            <p className="text-lg font-bold text-[#85277F]">
+                              {property.price}
+                            </p>
+                          </div>
+
+                          <motion.div
+                            className="w-8 h-8 rounded-full bg-[#85277F] flex items-center justify-center text-white"
+                            whileHover={{ scale: 1.1 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M14 5l7 7m0 0l-7 7m7-7H3"
+                              />
+                            </svg>
+                          </motion.div>
+                        </div>
+                      </div>
                     </motion.div>
                   </Link>
                 ))}
               </div>
 
-              <div className="text-center">
-                <p className="text-gray-600 mb-6 text-md">
-                  These are just a preview of what we offer. Scroll down to
-                  explore our complete collection.
-                </p>
-                <motion.div
-                  className="inline-flex flex-col items-center gap-2 text-[#85277F]"
-                  whileHover={{ y: 2 }}
-                  animate={{ y: [0, 4, 0] }}
-                  transition={{
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
+              {/* View All CTA */}
+              <motion.div
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                <motion.p
+                  className="text-gray-600 mb-8 text-lg font-light max-w-2xl mx-auto leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
                 >
-                  <span className="text-sm font-medium">View All Rentals</span>
+                  Explore our complete collection of {properties.length}+ luxury
+                  properties across Costa Rica's most desirable locations.
+                </motion.p>
+
+                <motion.div
+                  className="flex flex-col items-center justify-center gap-2 text-[#85277F] mt-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                >
+                  <motion.p
+                    className="text-sm font-light tracking-wider"
+                    animate={{
+                      opacity: [0.6, 1, 0.6],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                    }}
+                  >
+                    Explore our full collection below
+                  </motion.p>
+
                   <motion.div
-                    className="w-6 h-6 rounded-full border-2 border-current flex items-center justify-center"
-                    animate={{ scale: [1, 1.1, 1] }}
+                    className="flex flex-col items-center"
+                    animate={{
+                      y: [0, 8, 0],
+                    }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
@@ -242,7 +315,7 @@ const Page = () => {
                     }}
                   >
                     <svg
-                      className="w-3 h-3"
+                      className="w-5 h-5 text-[#85277F]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -250,18 +323,18 @@ const Page = () => {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={2}
+                        strokeWidth={1.5}
                         d="M19 14l-7 7m0 0l-7-7m7 7V3"
                       />
                     </svg>
                   </motion.div>
                 </motion.div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
 
           {/* Properties Grid */}
-          <div className="grid grid-cols-1 gap-12 mb-20 px-8">
+          <div className="grid grid-cols-1 gap-12 my-10 px-8">
             {properties.map((property, index) => (
               <motion.div
                 key={property.slug}

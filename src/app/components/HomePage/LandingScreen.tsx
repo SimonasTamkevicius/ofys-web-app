@@ -101,32 +101,55 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
             <motion.div
               className="flex flex-col items-center mb-8"
               initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
             >
               <motion.p
-                initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
-                animate={{ opacity: 0.8, y: 0, filter: "blur(0px)" }}
+                className="text-lg md:text-xl text-[#FFF5EE] tracking-[0.3em] mb-2 flex"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.8 }}
+              >
+                {"WELCOME TO".split("").map((char, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{
+                      opacity: 0,
+                      y: 24,
+                      filter: "blur(8px)",
+                      scale: 0.8,
+                    }}
+                    animate={{
+                      opacity: 0.8,
+                      y: 0,
+                      filter: "blur(0px)",
+                      scale: 1,
+                    }}
+                    transition={{
+                      duration: 0.6,
+                      ease: [0.16, 1, 0.3, 1],
+                      delay: 0.4 + i * 0.05,
+                    }}
+                  >
+                    {char === " " ? "\u00A0" : char}
+                  </motion.span>
+                ))}
+              </motion.p>
+              <motion.div
+                className="w-16 h-px bg-gradient-to-r from-transparent via-[#E5D9E4] to-transparent"
+                initial={{
+                  scaleX: 0,
+                  originX: 0.5,
+                  opacity: 0,
+                }}
+                animate={{
+                  scaleX: 1,
+                  opacity: 1,
+                }}
                 transition={{
                   duration: 1.2,
                   ease: [0.22, 1, 0.36, 1],
-                  delay: 0.4,
+                  delay: 0.9,
                 }}
-                className="text-xl md:text-2xl text-[#FFF5EE] tracking-[0.3em] mb-2"
-              >
-                WELCOME TO
-              </motion.p>
-              <motion.div
-                className="w-16 h-px bg-[#E5D9E4]/50"
-                initial={{ scaleX: 0, originX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.6,
-                }}
-                viewport={{ once: true }}
               />
             </motion.div>
 
@@ -139,13 +162,23 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
                 ease: [0.33, 1, 0.68, 1],
                 delay: 0.8,
               }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.15] tracking-tight text-white"
+              className="text-5xl md:text-6xl lg:text-7xl leading-[1.15] tracking-tight text-white"
             >
               The Heart of{" "}
               <span className="block mt-4 bg-gradient-to-r from-[#E5D9E4] via-[#D8BFD5] to-[#C4A3C1] bg-clip-text text-transparent">
                 Costa Rica
               </span>
             </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.2, duration: 1 }}
+              className="mt-8 max-w-2xl text-lg md:text-xl text-[#FFF5EE]/80 font-light leading-relaxed"
+            >
+              Experience unparalleled luxury in our exclusive beachfront villas,
+              where modern elegance meets tropical paradise.
+            </motion.p>
 
             {/* Luxury booking button */}
             <motion.div
@@ -171,7 +204,7 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
                 }}
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-[#9E3A95] to-[#85277F] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <span className="relative z-10 flex items-center gap-3 tracking-wider">
+                <span className="relative z-10 flex items-center gap-3 tracking-wider text-sm md:text-base">
                   RESERVE YOUR VILLA
                   <svg
                     className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2"

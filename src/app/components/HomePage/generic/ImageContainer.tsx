@@ -19,7 +19,6 @@ const ImageContainer = ({
   subHeadText,
   headText,
   paragraphText,
-  buttonText,
 }: ImageContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({

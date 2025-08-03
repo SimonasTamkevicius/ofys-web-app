@@ -44,7 +44,7 @@ const AboutPage = () => {
           className="absolute inset-0"
         >
           <Image
-            src="/costaricacoast.jpg"
+            src="/about.png"
             alt="Costa Rica Coast"
             fill
             className="object-cover"
@@ -53,7 +53,7 @@ const AboutPage = () => {
         </motion.div>
 
         <div
-          className="absolute inset-0 bg-black opacity-50"
+          className="absolute inset-0 bg-black opacity-30"
           aria-hidden="true"
         />
 

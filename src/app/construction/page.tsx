@@ -4,11 +4,8 @@ import React, { useEffect, useRef } from "react";
 import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Navbar from "../components/generic/Navbar";
-import { time } from "console";
 import ScrollIndicator from "../components/generic/ScrollIndicator";
 import CTA from "../components/generic/CTA";
-
-const primaryColor = "#85277F";
 
 const ConstructionManagementPage = () => {
   const services = [
@@ -127,6 +124,26 @@ const ConstructionManagementPage = () => {
   const step4 = useTransform(maxScrollReached, [0.6, 0.8], [0, 1]);
   const step5 = useTransform(maxScrollReached, [0.8, 1], [0, 1]);
 
+  const step1Y = useTransform(step1, [0, 1], [10, 0]);
+  const step1X = useTransform(step1, [0, 1], [-50, 0]);
+  const step1BubbleY = useTransform(step1, [0, 1], [20, 0]);
+
+  const step2Y = useTransform(step2, [0, 1], [10, 0]);
+  const step2X = useTransform(step2, [0, 1], [50, 0]);
+  const step2BubbleY = useTransform(step2, [0, 1], [20, 0]);
+
+  const step3Y = useTransform(step3, [0, 1], [10, 0]);
+  const step3X = useTransform(step3, [0, 1], [-50, 0]);
+  const step3BubbleY = useTransform(step3, [0, 1], [20, 0]);
+
+  const step4Y = useTransform(step4, [0, 1], [10, 0]);
+  const step4X = useTransform(step4, [0, 1], [50, 0]);
+  const step4BubbleY = useTransform(step4, [0, 1], [20, 0]);
+
+  const step5Y = useTransform(step5, [0, 1], [10, 0]);
+  const step5X = useTransform(step5, [0, 1], [-50, 0]);
+  const step5BubbleY = useTransform(step5, [0, 1], [20, 0]);
+
   const steps = [
     {
       title: "Consultation & Planning",
@@ -134,6 +151,10 @@ const ConstructionManagementPage = () => {
         "We begin with understanding your vision, budget, and requirements to create a customized plan.",
       icon: "1",
       animation: step1,
+      yTransform: step1Y,
+      xTransform: step1X,
+      bubbleYTransform: step1BubbleY,
+      isEven: true,
     },
     {
       title: "Design & Engineering",
@@ -141,6 +162,10 @@ const ConstructionManagementPage = () => {
         "Our architects and engineers create detailed plans that meet local regulations and your specifications.",
       icon: "2",
       animation: step2,
+      yTransform: step2Y,
+      xTransform: step2X,
+      bubbleYTransform: step2BubbleY,
+      isEven: false,
     },
     {
       title: "Permits & Approvals",
@@ -148,6 +173,10 @@ const ConstructionManagementPage = () => {
         "We handle all paperwork and municipal approvals, navigating Costa Rican regulations efficiently.",
       icon: "3",
       animation: step3,
+      yTransform: step3Y,
+      xTransform: step3X,
+      bubbleYTransform: step3BubbleY,
+      isEven: true,
     },
     {
       title: "Construction",
@@ -155,6 +184,10 @@ const ConstructionManagementPage = () => {
         "Our skilled team executes the project with quality craftsmanship and attention to detail.",
       icon: "4",
       animation: step4,
+      yTransform: step4Y,
+      xTransform: step4X,
+      bubbleYTransform: step4BubbleY,
+      isEven: false,
     },
     {
       title: "Finishing & Handover",
@@ -162,6 +195,10 @@ const ConstructionManagementPage = () => {
         "Final touches, quality checks, and a complete handover of your finished property.",
       icon: "5",
       animation: step5,
+      yTransform: step5Y,
+      xTransform: step5X,
+      bubbleYTransform: step5BubbleY,
+      isEven: true,
     },
   ];
 
@@ -171,7 +208,6 @@ const ConstructionManagementPage = () => {
     offset: ["start start", "end start"],
   });
 
-  // Blur effect that increases as you scroll
   const blurValue = useTransform(
     heroScroll,
     [0, 0.5],
@@ -194,7 +230,7 @@ const ConstructionManagementPage = () => {
           transition={{ duration: 1.5, ease: "easeInOut" }}
           className="absolute inset-0"
           style={{
-            scale: useTransform(scrollYProgress, [0, 1], [1.1, 1.3], {
+            scale: useTransform(heroScroll, [0, 1], [1.1, 1.3], {
               clamp: true,
             }),
           }}
@@ -441,7 +477,7 @@ const ConstructionManagementPage = () => {
               A Streamlined Approach
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Our proven methodology ensures your project's success from
+              Our proven methodology ensures your project&apos;s success from
               conception to completion
             </p>
           </div>
@@ -457,68 +493,66 @@ const ConstructionManagementPage = () => {
 
             {/* Timeline items */}
             <div className="space-y-8 md:space-y-0">
-              {steps.map((step, index) => (
-                <div
-                  key={step.title}
-                  className={`relative flex flex-col md:flex-row ${
-                    index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                  } items-center mb-6 md:mb-8`}
-                >
-                  <motion.div
-                    className="md:hidden flex items-center justify-center w-12 h-12 rounded-full text-white font-bold text-lg mx-auto mb-3"
-                    style={{
-                      background: "linear-gradient(135deg, #85277F, #9E3A95)",
-                      opacity: step.animation,
-                      scale: step.animation,
-                      y: useTransform(step.animation, [0, 1], [10, 0]),
-                    }}
-                  >
-                    {step.icon}
-                  </motion.div>
-                  {/* Content */}
-                  <motion.div
-                    className={`w-full md:w-1/2 p-4 ${
-                      index % 2 === 0
-                        ? "md:pr-8 md:text-right"
-                        : "md:pl-8 md:text-left"
-                    }`}
-                    style={{
-                      opacity: step.animation,
-                      x: useTransform(
-                        step.animation,
-                        [0, 1],
-                        [index % 2 === 0 ? -50 : 50, 0]
-                      ),
-                    }}
-                  >
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-gray-600 text-sm md:text-base">
-                      {step.description}
-                    </p>
-                  </motion.div>
-
-                  {/* Bubble */}
-                  <motion.div
-                    className="hidden md:flex items-center justify-center w-16 h-16 rounded-full text-white font-bold text-xl mx-auto my-4"
-                    style={{
-                      background: "linear-gradient(135deg, #85277F, #9E3A95)",
-                      scale: step.animation,
-                      y: useTransform(step.animation, [0, 1], [20, 0]),
-                    }}
-                  >
-                    {step.icon}
-                  </motion.div>
-
-                  {/* Empty space */}
+              {steps.map((step, index) => {
+                return (
                   <div
-                    className={`hidden md:block md:w-1/2 p-4 ${
-                      index % 2 === 0 ? "md:pl-8" : "md:pr-8"
-                    }`}
-                  ></div>
-                </div>
-              ))}
+                    key={step.title}
+                    className={`relative flex flex-col md:flex-row ${
+                      step.isEven ? "md:flex-row" : "md:flex-row-reverse"
+                    } items-center mb-6 md:mb-8`}
+                  >
+                    <motion.div
+                      className="md:hidden flex items-center justify-center w-12 h-12 rounded-full text-white font-bold text-lg mx-auto mb-3"
+                      style={{
+                        background: "linear-gradient(135deg, #85277F, #9E3A95)",
+                        opacity: step.animation,
+                        scale: step.animation,
+                        y: step.yTransform,
+                      }}
+                    >
+                      {step.icon}
+                    </motion.div>
+                    {/* Content */}
+                    <motion.div
+                      className={`w-full md:w-1/2 p-4 ${
+                        step.isEven
+                          ? "md:pr-8 md:text-right"
+                          : "md:pl-8 md:text-left"
+                      }`}
+                      style={{
+                        opacity: step.animation,
+                        x: step.xTransform,
+                      }}
+                    >
+                      <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
+                        {step.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm md:text-base">
+                        {step.description}
+                      </p>
+                    </motion.div>
+
+                    {/* Bubble */}
+                    <motion.div
+                      className="hidden md:flex items-center justify-center w-16 h-16 rounded-full text-white font-bold text-xl mx-auto my-4"
+                      style={{
+                        background: "linear-gradient(135deg, #85277F, #9E3A95)",
+                        scale: step.animation,
+                        y: step.bubbleYTransform,
+                      }}
+                    >
+                      {step.icon}
+                    </motion.div>
+
+                    {/* Empty space */}
+                    <div
+                      className={`hidden md:block md:w-1/2 p-4 ${
+                        step.isEven ? "md:pl-8" : "md:pr-8"
+                      }`}
+                    ></div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
