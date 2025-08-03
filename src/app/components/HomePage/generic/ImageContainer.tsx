@@ -9,7 +9,7 @@ interface ImageContainerProps {
   subHeadText: string;
   headText: string;
   paragraphText: string;
-  buttonText: string;
+  buttonText?: string;
 }
 
 const ImageContainer = ({
@@ -19,114 +19,142 @@ const ImageContainer = ({
   subHeadText,
   headText,
   paragraphText,
+  buttonText,
 }: ImageContainerProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
-
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["end end", "end start"],
   });
 
   const rawY = useTransform(scrollYProgress, [0, 1], [-20, 20]);
-  const y = useSpring(rawY, { stiffness: 200, damping: 20 });
+  const y = useSpring(rawY, {
+    stiffness: 150,
+    damping: 20,
+    mass: 0.5,
+  });
 
+  const scale = useTransform(scrollYProgress, [0, 1], [1.1, 1.25]);
+
+  // Image Block Component
   const ImageBlock = (
-    <div className="relative w-full max-w-xl aspect-video md:aspect-square mx-auto">
-      {/* Purple background block */}
+    <div className="relative w-full aspect-square md:aspect-[5/4] mx-auto">
       <motion.div
-        className="absolute inset-0 rounded-3xl"
+        className="absolute inset-0 rounded-2xl"
         style={{ backgroundColor: "#85277F" }}
         initial={{
-          x: imageSide === "left" ? -20 : 20,
-          y: 20,
+          x: imageSide === "left" ? -15 : 15,
+          y: 15,
           opacity: 0,
+          rotate: imageSide === "left" ? -1 : 1,
         }}
         whileInView={{
-          x: imageSide === "left" ? 20 : -20,
-          y: -20,
-          opacity: 1,
+          x: imageSide === "left" ? 15 : -15,
+          y: -15,
+          opacity: 0.8,
+          rotate: 0,
         }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
+        viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+        transition={{
+          duration: 0.6,
+          ease: [0.16, 1, 0.3, 1],
+        }}
       />
 
-      {/* Image block */}
-      <motion.div className="absolute inset-0 overflow-hidden rounded-3xl shadow-2xl z-10">
-        <motion.div
-          style={{ y, scale: 1.25 }}
-          transition={{ y: { type: "tween", ease: "easeInOut" } }}
-          className="w-full h-full"
-        >
+      <motion.div
+        className="absolute inset-0 border border-white/15 rounded-2xl pointer-events-none"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        viewport={{ once: true }}
+      />
+
+      <div className="absolute inset-0 overflow-hidden rounded-2xl shadow-lg z-10 group">
+        <motion.div style={{ y, scale }} className="w-full h-full">
           <Image
             src={image}
             alt={altText}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, 50vw"
+            priority
           />
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-      </motion.div>
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent" />
+
+        <div className="absolute inset-0 shadow-[inset_0_0_30px_10px_rgba(0,0,0,0.2)] rounded-2xl" />
+      </div>
     </div>
   );
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 p-6 md:p-16 items-center"
+      className="relative w-full grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 p-8 md:p-20 items-center"
     >
-      {/* Image always first on small screens, conditionally placed on md+ screens */}
+      {/* Image placement */}
       <div
-        className={`
-      ${imageSide === "left" ? "md:order-1" : "md:order-2"} 
-      order-1
-    `}
+        className={`${
+          imageSide === "left" ? "md:order-1" : "md:order-2"
+        } order-1`}
       >
         {ImageBlock}
       </div>
 
-      {/* Text always second on small screens, conditionally placed on md+ screens */}
+      {/* Text content */}
       <motion.div
-        className={`
-      flex flex-col gap-4 z-20 text-center md:text-left 
-      ${imageSide === "left" ? "md:order-2" : "md:order-1"} 
-      order-2
-    `}
-        initial={{ opacity: 0, y: 40 }}
+        className={`flex flex-col gap-6 z-20 ${
+          imageSide === "left" ? "md:order-2" : "md:order-1"
+        } order-2`}
+        initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{
+          duration: 1,
+          ease: [0.16, 1, 0.3, 1],
+        }}
+        viewport={{ once: true, margin: "0px 0px -100px 0px" }}
       >
-        <motion.p
-          className="text-xl md:text-2xl tracking-wider"
-          style={{ color: "#85277F" }}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
+        {/* Subheader */}
+        <motion.div
+          className="flex flex-col items-center md:items-start"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
           viewport={{ once: true }}
         >
-          {subHeadText}
-        </motion.p>
+          <div className="flex flex-col items-center">
+            <p className="text-lg md:text-xl tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
+              {subHeadText}
+            </p>
+            <motion.div
+              className="w-16 h-px bg-[#85277F]/50 mb-6"
+              initial={{
+                scaleX: 0,
+                opacity: 0,
+                originX: 0,
+              }}
+              whileInView={{
+                scaleX: 1,
+                opacity: 1,
+              }}
+              transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.2,
+              }}
+              viewport={{ once: true }}
+            />
+          </div>
+        </motion.div>
 
-        <motion.h2
-          className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-normal text-gray-800 leading-tight"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
-        >
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium leading-tight text-gray-900">
           {headText}
-        </motion.h2>
+        </h2>
 
-        <motion.p
-          className="text-gray-600 text-md lg:text-lg leading-relaxed"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          viewport={{ once: true }}
-        >
+        <p className="text-gray-600 text-lg lg:text-xl leading-relaxed font-light mt-4 mb-8">
           {paragraphText}
-        </motion.p>
+        </p>
       </motion.div>
     </div>
   );

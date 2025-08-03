@@ -9,6 +9,7 @@ import GeneralInfo from "./components/HomePage/GeneralInfo";
 import ImageBanner from "./components/HomePage/generic/ImageBanner";
 import Services from "./components/HomePage/Services";
 import AboutHP from "./components/HomePage/AboutHP";
+import Reviews from "./components/HomePage/Reviews";
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ function HomePage() {
       </div>
 
       {/* General Info - Default background */}
-      <div className="min-h-[100vh] flex relative bg-[#F9F6F9]">
+      <div className="flex relative bg-[#F9F6F9]">
         <GeneralInfo />
       </div>
 
@@ -56,7 +57,10 @@ function HomePage() {
       <div className="relative bg-white">
         <AboutHP />
       </div>
-      {/* <Footer /> */}
+
+      <div className="flex relative">
+        <Reviews />
+      </div>
     </div>
     // </LoadingScreen>
   );

@@ -209,13 +209,6 @@ h6,
   }
 }
 
-/* @font-face {
-  font-family: "progesteron";
-  src: url("/fonts/Progesterone.otf") format("opentype");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-} */
 @font-face {
   font-family: "Gracela";
   src: url("/fonts/Gracela.otf") format("opentype");
@@ -227,9 +220,13 @@ h6,
   font-weight: lighter;
   font-style: normal;
   font-display: swap;
-  color: pink;
 }
 
 .font-head {
   font-family: var(--font-head);
+}
+
+html,
+body {
+  overflow-x: hidden;
 }

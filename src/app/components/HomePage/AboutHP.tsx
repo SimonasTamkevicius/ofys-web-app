@@ -13,6 +13,22 @@ const AboutHP = () => {
       </div>
 
       <div className="relative max-w-4xl mx-auto text-center flex flex-col items-center gap-8">
+        <div className="flex flex-col items-center mb-4">
+          <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
+            Get to know us
+          </p>
+          <motion.div
+            className="w-16 h-px bg-[#85277F]/50"
+            initial={{ scaleX: 0, originX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.3,
+            }}
+            viewport={{ once: true }}
+          />
+        </div>
         <motion.h2
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
@@ -48,7 +64,7 @@ const AboutHP = () => {
         >
           <a
             href="/about"
-            className="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold transition-all duration-200 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
+            className="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold cursor-pointer shadow-lg overflow-hidden"
             style={{
               background: "linear-gradient(to right, #85277F, #9E3A95)",
             }}

@@ -29,7 +29,7 @@ const PropertyCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
       viewport={{ once: true }}
-      className="group relative flex flex-col md:flex-row shadow-2xl rounded-3xl overflow-hidden max-w-6xl mx-auto min-h-[400px] bg-white/80 backdrop-blur-sm border border-white/20 hover:shadow-3xl transition-all duration-500"
+      className="group relative flex flex-col md:flex-row shadow-xl rounded-3xl overflow-hidden mx-auto max-w-7xl min-h-[400px] bg-white/80 backdrop-blur-sm border border-white/20"
     >
       {/* Image */}
       <div className="md:w-1/2 w-full h-72 md:h-auto relative overflow-hidden">

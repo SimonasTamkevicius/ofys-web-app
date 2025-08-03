@@ -12,13 +12,7 @@ const GeneralInfo = () => {
       </div>
 
       <div className="relative w-full">
-        <motion.div
-          className="py-20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
+        <motion.div>
           <ImageContainer
             image="/costaricacoast.png"
             altText="Sunset over a luxury coastal villa"
@@ -30,13 +24,7 @@ const GeneralInfo = () => {
           />
         </motion.div>
 
-        <motion.div
-          className="py-20"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
+        <motion.div>
           <ImageContainer
             image="/rentalsbg1.png"
             altText="Tropical jungle villa with infinity pool"

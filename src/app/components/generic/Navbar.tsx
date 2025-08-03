@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <motion.div
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed max-w-full top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled ? "bg-white shadow-lg" : "bg-white/10 backdrop-blur-sm"
       }`}
       initial={{ y: -100, opacity: 0 }}
@@ -28,7 +28,7 @@ const Navbar = () => {
       transition={{ duration: 0.8, ease: "easeOut" }}
       style={{ minHeight: "80px" }}
     >
-      <nav className="max-w-7xl mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-16 py-4 h-20">
+      <nav className="max-w-full mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-16 py-4 h-20">
         {/* Logo */}
         <motion.a
           href="/"
@@ -39,7 +39,7 @@ const Navbar = () => {
         >
           <motion.div
             className={`transition-colors duration-300 ${
-              scrolled ? "text-[#85277F]" : "text-[#B464AF]"
+              scrolled ? "text-[#85277F]" : "text-[#C4A3C1]"
             }`}
           >
             <LogoComponent className="w-12 h-12" />
@@ -47,7 +47,7 @@ const Navbar = () => {
           <div>
             <h4
               className={`text-3xl mt-1 font-bold transition-colors duration-300 ${
-                scrolled ? "text-[#85277F]" : "text-[#B464AF]"
+                scrolled ? "text-[#85277F]" : "text-[#C4A3C1]"
               }`}
             >
               OFYS
@@ -56,11 +56,23 @@ const Navbar = () => {
         </motion.a>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
-          {["Home", "Realty", "Rentals", "About"].map((label, i) => (
+        <div className="hidden lg:flex items-center space-x-8">
+          {[
+            "Home",
+            "Realty",
+            "Rentals",
+            "Construction Management",
+            "About",
+          ].map((label, i) => (
             <motion.a
               key={label}
-              href={`${label === "Home" ? "/" : `/${label.toLowerCase()}`}`}
+              href={`${
+                label === "Home"
+                  ? "/"
+                  : label === "Construction Management"
+                  ? "/construction"
+                  : `/${label.toLowerCase()}`
+              }`}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
@@ -105,7 +117,7 @@ const Navbar = () => {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="md:hidden"
+          className="lg:hidden flex items-center"
         >
           <BurgerMenu scrolled={scrolled} />
         </motion.div>

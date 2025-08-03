@@ -17,117 +17,103 @@ const serviceData = [
     desc: "Experience the perfect vacation with our handpicked rental properties. Whether you're looking for a short-term getaway or an extended stay, we have the perfect accommodation for you.",
     buttonText: "Browse Rentals",
   },
+  {
+    img: "/rentals.png",
+    title: "Construction Management",
+    desc: "Transform your vision into reality with our expert construction management services. We handle everything from planning to execution, ensuring your project is completed on time and within budget.",
+    buttonText: "Learn More",
+  },
 ];
 
 const Services = () => {
   return (
-    <section className="relative py-24 px-4 sm:px-8 lg:px-16">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[#85277F]/10 to-transparent rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-tl from-[#85277F]/10 to-transparent rounded-full blur-3xl"></div>
-      </div>
-
+    <section className="relative py-8 px-4 sm:px-8 lg:px-16 overflow-hidden">
       <div className="relative max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
-          className="text-center mb-20"
-          initial={{ opacity: 0, y: 30 }}
+          className="text-center mb-12"
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
         >
-          <motion.h2
-            className="text-5xl sm:text-6xl font-bold text-gray-800 mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+          <motion.div
+            className="flex flex-col items-center mb-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
             viewport={{ once: true }}
           >
-            Explore Our
-            <span className="block bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
-              Services
+            <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
+              Exclusive Offerings
+            </p>
+            <motion.div
+              className="w-16 h-px bg-[#85277F]/50"
+              initial={{ scaleX: 0, originX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.3,
+              }}
+              viewport={{ once: true }}
+            />
+          </motion.div>
+
+          <motion.h2
+            className="text-3xl sm:text-4xl lg:text-5xl font-serif font-medium text-gray-900 mb-6 leading-tight"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true }}
+          >
+            Discover Our
+            <span className="block mt-2 bg-gradient-to-r from-[#85277F] via-[#9E3A95] to-[#C4A3C1] bg-clip-text text-transparent">
+              Luxury Services
             </span>
           </motion.h2>
+
           <motion.p
-            className="text-gray-600 text-md lg:text-lg leading-relaxed max-w-3xl mx-auto"
+            className="text-gray-600 text-lg lg:text-xl leading-relaxed max-w-3xl mx-auto font-light"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true }}
           >
-            From luxury real estate to unforgettable vacation rentals, we offer
-            comprehensive services to make your Costa Rican dreams a reality.
+            From premium real estate to exquisite vacation rentals, we provide
+            unparalleled services to actualize your Costa Rican paradise.
           </motion.p>
         </motion.div>
 
         {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-6xl mx-auto mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8 mb-16">
           {serviceData.map((service, index) => (
-            <ServiceCard
+            <motion.div
               key={index}
-              img={service.img}
-              title={service.title}
-              desc={service.desc}
-              buttonText={service.buttonText}
-              index={index}
-            />
+              className="h-full" // Ensure motion div takes full height
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: index * 0.1,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+            >
+              <div className="h-full">
+                {" "}
+                {/* Additional wrapper for consistent height */}
+                <ServiceCard
+                  img={service.img}
+                  title={service.title}
+                  desc={service.desc}
+                  buttonText={service.buttonText}
+                  index={index}
+                />
+              </div>
+            </motion.div>
           ))}
         </div>
-
-        <motion.div
-          className="text-center py-12"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          viewport={{ once: true }}
-        >
-          <motion.div
-            className="bg-white rounded-3xl p-8 lg:p-12 shadow-xl border border-gray-100 max-w-2xl mx-auto"
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-4xl font-bold text-gray-800 mb-4">
-              Ready to Get Started?
-            </h3>
-            <p className="text-gray-600 text-md mb-8 max-w-2xl mx-auto">
-              Our team of experts is here to help you find the perfect property
-              or plan your dream vacation.
-            </p>
-            <motion.a
-              href="/inquiries"
-              className="group relative inline-flex items-center justify-center px-6 py-3 rounded-xl text-white font-semibold transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl overflow-hidden"
-              style={{
-                background: "linear-gradient(to right, #85277F, #9E3A95)",
-              }}
-            >
-              <motion.div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background: "linear-gradient(to right, #9E3A95, #85277F)",
-                }}
-              />
-              <span className="relative flex items-center gap-2">
-                Contact Us Today
-                <svg
-                  className="w-5 h-5 transition-transform group-hover:translate-x-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 8l4 4m0 0l-4 4m4-4H3"
-                  />
-                </svg>
-              </span>
-            </motion.a>
-          </motion.div>
-        </motion.div>
       </div>
     </section>
   );

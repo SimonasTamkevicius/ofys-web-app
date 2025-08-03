@@ -23,7 +23,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
   }, [isOpen]);
 
   const lineClass =
-    "absolute top-1/2 left-1/2 w-10 h-[3px] transform rounded -translate-x-1/2 -translate-y-1/2 transition-all duration-300";
+    "absolute top-1/2 left-1/2 w-10 h-[3px] transform rounded -translate-x-1/2 -translate-y-1/2";
 
   return (
     <div className="relative">
@@ -59,7 +59,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                 ? "#85277F"
                 : scrolled
                 ? "#85277F"
-                : "#B464AF",
+                : "#C4A3C1",
             }}
             transition={{ duration: 0.2 }}
           />
@@ -74,7 +74,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
               ? "#85277F"
               : scrolled
               ? "#85277F"
-              : "#B464AF",
+              : "#C4A3C1",
           }}
           transition={{
             opacity: {
@@ -115,7 +115,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                 ? "#85277F"
                 : scrolled
                 ? "#85277F"
-                : "#B464AF",
+                : "#C4A3C1",
             }}
             transition={{ duration: 0.2 }}
           />
@@ -140,7 +140,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
               opacity: 0,
               transition: { duration: 0.4, ease: "easeIn" },
             }}
-            className="fixed top-0 z-99 left-0 w-full h-screen bg-white backdrop-blur-md p-8 overflow-y-auto"
+            className="fixed top-0 z-99 left-0 w-full h-screen bg-white backdrop-blur-md px-6 py-4 box-border overflow-y-auto"
           >
             {/* Logo */}
             <motion.div
@@ -163,34 +163,43 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
 
             {/* Navigation Links */}
             <ul className="space-y-8 mb-16">
-              {["Home", "Realty", "Rentals", "About", "Inquiries"].map(
-                (label, i) => (
-                  <motion.li
-                    key={label}
-                    initial={{ x: -20, opacity: 0 }}
-                    animate={{
-                      x: 0,
-                      opacity: 1,
-                      transition: { delay: 0.3 + i * 0.1, duration: 0.5 },
-                    }}
+              {[
+                "Home",
+                "Realty",
+                "Rentals",
+                "Construction Management",
+                "About",
+                "Inquiries",
+              ].map((label, i) => (
+                <motion.li
+                  key={label}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{
+                    x: 0,
+                    opacity: 1,
+                    transition: { delay: 0.3 + i * 0.1, duration: 0.5 },
+                  }}
+                >
+                  <motion.a
+                    href={`${
+                      label === "Home"
+                        ? "/"
+                        : label === "Construction Management"
+                        ? "/construction"
+                        : `/${label.toLowerCase()}`
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                    className="text-2xl font-medium text-gray-800 hover:text-[#85277F] transition-all duration-300 relative group"
                   >
-                    <motion.a
-                      href={`${
-                        label === "Home" ? "/" : `/${label.toLowerCase()}`
-                      }`}
-                      onClick={() => setIsOpen(false)}
-                      className="text-2xl font-medium text-gray-800 hover:text-[#85277F] transition-all duration-300 relative group"
-                    >
-                      {label}
-                      <motion.div
-                        className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#85277F] to-[#9E3A95] w-0 group-hover:w-full transition-all duration-300"
-                        initial={{ width: 0 }}
-                        whileHover={{ width: "100%" }}
-                      />
-                    </motion.a>
-                  </motion.li>
-                )
-              )}
+                    {label}
+                    <motion.div
+                      className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#85277F] to-[#9E3A95] w-0 group-hover:w-full transition-all duration-300"
+                      initial={{ width: 0 }}
+                      whileHover={{ width: "100%" }}
+                    />
+                  </motion.a>
+                </motion.li>
+              ))}
             </ul>
 
             {/* Divider */}

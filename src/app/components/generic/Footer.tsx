@@ -12,7 +12,7 @@ const Footer = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10">
+      <div className="relative">
         {/* Main Footer Content */}
         <div className="max-w-7xl mx-auto px-6 py-16">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
@@ -34,7 +34,7 @@ const Footer = () => {
                   <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                   {/* Logo with enhanced styling */}
-                  <div className="relative z-10">
+                  <div className="relative">
                     <LogoComponent className="w-7 h-7 text-white drop-shadow-sm" />
                   </div>
                 </motion.div>
@@ -59,7 +59,13 @@ const Footer = () => {
                 Quick Links
               </h4>
               <ul className="space-y-4">
-                {["Home", "Realty", "Rentals", "About"].map((link, i) => (
+                {[
+                  "Home",
+                  "Realty",
+                  "Rentals",
+                  "Construction Management",
+                  "About",
+                ].map((link, i) => (
                   <motion.li
                     key={i}
                     initial={{ opacity: 0, x: -10 }}
@@ -70,7 +76,11 @@ const Footer = () => {
                     <a
                       className="text-white/80 hover:text-white transition duration-300 text-lg"
                       href={`${
-                        link === "Home" ? "/" : `/${link.toLowerCase()}`
+                        link === "Home"
+                          ? "/"
+                          : link === "Construction Management"
+                          ? "/construction"
+                          : `/${link.toLowerCase()}`
                       }`}
                     >
                       {link}

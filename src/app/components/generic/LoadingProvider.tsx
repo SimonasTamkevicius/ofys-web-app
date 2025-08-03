@@ -54,7 +54,8 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({
 
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 100) {
+        const next = prev + 8 + (prev % 3) * 2;
+        if (next >= 100) {
           clearInterval(interval);
           setTimeout(() => {
             setIsContentReady(true);
@@ -62,7 +63,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({
           }, 500);
           return 100;
         }
-        return prev + 8 + (prev % 3) * 2;
+        return next;
       });
     }, 100);
 

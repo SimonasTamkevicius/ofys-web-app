@@ -32,6 +32,7 @@ const properties = [
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80",
       "/villaImg/villa6.jpeg",
+      "/villaImg/villa6.jpeg",
     ],
     price: "$1,750,000",
     amenities: [
