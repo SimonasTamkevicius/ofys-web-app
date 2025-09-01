@@ -8,19 +8,22 @@ const serviceData = [
   {
     img: "/realty1.png",
     title: "Realty",
-    desc: "Discover your dream home in Costa Rica's most breathtaking locations. From beachfront villas to mountain retreats, we offer carefully curated properties that combine luxury with natural beauty.",
+    // desc: "Discover your dream home in Costa Rica's most breathtaking locations. From beachfront villas to mountain retreats, we offer carefully curated properties that combine luxury with natural beauty.",
+    desc: "Discover villas and land directly from O.F.Y.S.—carefully selected, owned, and managed by us to ensure quality, value, and a seamless buying experience.",
     buttonText: "Explore Listings",
   },
   {
     img: "/rentals.png",
     title: "Rentals",
-    desc: "Experience the perfect vacation with our handpicked rental properties. Whether you're looking for a short-term getaway or an extended stay, we have the perfect accommodation for you.",
+    // desc: "Experience the perfect vacation with our handpicked rental properties. Whether you're looking for a short-term getaway or an extended stay, we have the perfect accommodation for you.",
+    desc: "Discover luxury rentals directly from O.F.Y.S.—personally managed, meticulously maintained, and chosen for comfort and style.",
     buttonText: "Browse Rentals",
   },
   {
     img: "/rentals.png",
     title: "Construction Management",
-    desc: "Transform your vision into reality with our expert construction management services. We handle everything from planning to execution, ensuring your project is completed on time and within budget.",
+    // desc: "Transform your vision into reality with our expert construction management services. We handle everything from planning to execution, ensuring your project is completed on time and within budget.",
+    desc: " Full-service construction and development—from concept to turnkey delivery—crafted to the highest international and Costa Rican standards.",
     buttonText: "Learn More",
   },
 ];

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 interface BurgerMenuProps {
@@ -10,6 +11,7 @@ interface BurgerMenuProps {
 
 export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isOpen) {
@@ -21,6 +23,18 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  // Helper function to check if a tab is active
+  const isActiveTab = (label: string) => {
+    if (label === "Home") return pathname === "/";
+    if (label === "Construction Management")
+      return pathname === "/construction";
+    if (label === "Realty") return pathname === "/realty";
+    if (label === "Rentals") return pathname === "/rentals";
+    if (label === "About") return pathname === "/about";
+    if (label === "Inquiries") return pathname === "/inquiries";
+    return false;
+  };
 
   const lineClass =
     "absolute top-1/2 left-1/2 w-10 h-[3px] transform rounded -translate-x-1/2 -translate-y-1/2";
@@ -189,13 +203,18 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
                         : `/${label.toLowerCase()}`
                     }`}
                     onClick={() => setIsOpen(false)}
-                    className="text-2xl font-medium text-gray-800 hover:text-[#85277F] transition-all duration-300 relative group"
+                    className={`text-2xl font-medium transition-all duration-300 relative group ${
+                      isActiveTab(label)
+                        ? "text-[#85277F] font-semibold"
+                        : "text-gray-800 hover:text-[#85277F]"
+                    }`}
                   >
                     {label}
                     <motion.div
-                      className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#85277F] to-[#9E3A95] w-0 group-hover:w-full transition-all duration-300"
-                      initial={{ width: 0 }}
-                      whileHover={{ width: "100%" }}
+                      className={`absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#85277F] to-[#9E3A95] transition-all duration-300 ${
+                        isActiveTab(label) ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                      initial={{ width: isActiveTab(label) ? "100%" : 0 }}
                     />
                   </motion.a>
                 </motion.li>

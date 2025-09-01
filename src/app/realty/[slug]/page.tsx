@@ -1,5 +1,6 @@
-import PropertyPage from "../../components/generic/PropertyPage";
-import properties from "@/app/data/properties";
+import PropertyPage from "../../custom-components/generic/PropertyPage";
+import { connectToDatabase } from "@/lib/mongodb";
+import Listing from "@/lib/models/Listing";
 import { notFound } from "next/navigation";
 
 export default async function PropertyPageServer({
@@ -8,11 +9,32 @@ export default async function PropertyPageServer({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const property = properties.find((v) => v.slug === slug);
 
-  if (!property) {
+  if (!slug) {
     notFound();
   }
 
-  return <PropertyPage property={property} type="Realty" />;
+  try {
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Database connection timeout")), 5000)
+    );
+
+    const dbPromise = connectToDatabase();
+    await Promise.race([dbPromise, timeoutPromise]);
+
+    const property = await Listing.findById(slug);
+
+    if (!property) {
+      notFound();
+    }
+
+    // Convert to plain object to remove toJSON method and make it serializable
+    const propertyData = JSON.parse(JSON.stringify(property));
+
+    return <PropertyPage property={propertyData} type="Realty" />;
+  } catch (error) {
+    console.error("Error fetching property:", error);
+    notFound();
+  }
 }

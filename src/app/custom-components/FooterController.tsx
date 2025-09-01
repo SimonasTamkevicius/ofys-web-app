@@ -5,7 +5,7 @@ import Footer from "./generic/Footer";
 
 export default function FooterController() {
   const pathname = usePathname();
-  const noFooterRoutes = ["/realty/"];
+  const noFooterRoutes = ["/realty/", "/admin/dashboard"];
   if (noFooterRoutes.includes(pathname)) return null;
   return <Footer />;
 }

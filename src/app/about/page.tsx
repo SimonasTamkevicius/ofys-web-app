@@ -3,10 +3,10 @@
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import Navbar from "../components/generic/Navbar";
+import Navbar from "../custom-components/generic/Navbar";
 import team from "../data/team";
-import ScrollIndicator from "../components/generic/ScrollIndicator";
-import CTA from "../components/generic/CTA";
+import ScrollIndicator from "../custom-components/generic/ScrollIndicator";
+import CTA from "../custom-components/generic/CTA";
 
 const AboutPage = () => {
   const componentRef = useRef(null);
@@ -120,31 +120,6 @@ const AboutPage = () => {
       {/* Our Story Section */}
       <section className="w-full py-24 bg-gray-50">
         <div className="container mx-auto px-6 md:px-12">
-          {/* Header with decorative element */}
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <div className="inline-flex flex-col items-center">
-              <span className="text-lg tracking-widest uppercase text-[#85277F] font-light mb-3">
-                Our Essence
-              </span>
-              <motion.div
-                className="h-0.5 w-16 bg-[#85277F]/60 mb-8"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 max-w-2xl mx-auto">
-              Redefining Luxury Living in Costa Rica
-            </h2>
-          </motion.div>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Image block - now with overlapping elements */}
             <motion.div
@@ -193,23 +168,56 @@ const AboutPage = () => {
               </div>
             </motion.div>
 
-            {/* Content block - restructured with stats */}
+            {/* Content block - redesigned with enhanced visual hierarchy */}
             <motion.div
-              className="flex flex-col gap-8"
+              className="flex flex-col gap-10"
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <p className="text-xl text-gray-600 leading-relaxed font-light">
-                Since our founding in 2010, OFYS has transformed Costa
-                Rica&apos;s luxury real estate landscape through unparalleled
-                service and curated properties that harmonize with the natural
-                beauty of the region. Since our founding in 2010, OFYS has
-                transformed Costa Rica&apos;s luxury real estate landscape
-                through unparalleled service and curated properties that
-                harmonize with the natural beauty of the region.
-              </p>
+              {/* Enhanced title with decorative elements */}
+              <div className="space-y-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <motion.div
+                    className="w-12 h-0.5 bg-gradient-to-r from-[#85277F] to-[#9E3A95]"
+                    initial={{ scaleX: 0, originX: 0 }}
+                    whileInView={{ scaleX: 1 }}
+                    transition={{ duration: 0.8, delay: 0.3 }}
+                    viewport={{ once: true }}
+                  />
+                  <span className="text-sm font-medium tracking-widest uppercase text-[#85277F]">
+                    Our Mission
+                  </span>
+                </div>
+
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-gray-900 leading-tight">
+                  <span className="block text-3xl md:text-4xl lg:text-5xl font-light text-[#85277F] mb-2">
+                    O.F.Y.S.
+                  </span>
+                  <span className="bg-gradient-to-r from-gray-900 via-gray-800 to-[#85277F] bg-clip-text text-transparent">
+                    Optimal Service for Your Success
+                  </span>
+                </h2>
+              </div>
+
+              {/* Enhanced description with better typography */}
+              <div className="space-y-6">
+                <p className="text-xl text-gray-600 leading-relaxed font-light">
+                  Our name reflects our mission: to provide seamless,
+                  high-quality support in every aspect of luxury real estate
+                  along Costa Rica's Gold Coast.
+                </p>
+
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  From architectural design and turnkey construction, to
+                  professional property management and expert realty services,
+                  O.F.Y.S. is built on a foundation of excellence. We combine
+                  local expertise with international standards to ensure that
+                  every client's investment, lifestyle, and vision are met with
+                  precision, care, and lasting value.
+                </p>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -312,69 +320,6 @@ const AboutPage = () => {
                   {value.title}
                 </h3>
                 <p className="text-gray-600 text-center">{value.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team Section */}
-      <section className="w-full py-20 px-8 md:px-20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
-                Our Experts
-              </p>
-              <motion.div
-                className="w-16 h-px bg-[#85277F]/50 mb-6"
-                initial={{ scaleX: 0, originX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.4,
-                }}
-                viewport={{ once: true }}
-              />
-            </motion.div>
-            <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 mb-4">
-              Meet the Team
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              The passionate professionals behind OFYS
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {team.map((member, index) => (
-              <motion.div
-                key={member.name}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className="text-center group"
-              >
-                <div className="relative w-48 h-48 mx-auto rounded-full overflow-hidden shadow-lg mb-6 transition-transform duration-300 group-hover:scale-105">
-                  <Image
-                    src={member.imageUrl}
-                    alt={member.name}
-                    fill
-                    className="object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-                <h3 className="text-2xl font-serif font-bold text-gray-800 mb-1">
-                  {member.name}
-                </h3>
-                <p className="text-[#85277F] font-medium">{member.role}</p>
               </motion.div>
             ))}
           </div>

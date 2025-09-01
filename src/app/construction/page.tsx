@@ -1,11 +1,291 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
-import Navbar from "../components/generic/Navbar";
-import ScrollIndicator from "../components/generic/ScrollIndicator";
-import CTA from "../components/generic/CTA";
+import Navbar from "../custom-components/generic/Navbar";
+import ScrollIndicator from "../custom-components/generic/ScrollIndicator";
+import CTA from "../custom-components/generic/CTA";
+
+// Carousel Component
+const SlideshowSection = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
+
+  const slides = [
+    {
+      title: "Design & Architecture",
+      blurb:
+        "Tailored architectural and design solutions that blend innovation with Guanacaste's natural beauty.",
+      writeup:
+        "We collaborate with top architects and designers to create bespoke projects that maximize ocean views, natural ventilation, and modern functionality. Every drawing and technical plan is carefully prepared to meet both aesthetic goals and structural requirements, ensuring harmony between vision and execution.",
+      icon: "🖊️",
+      image: "/luxuryvillawithpool.png",
+    },
+    {
+      title: "Engineering & Compliance",
+      blurb:
+        "Expert engineering with strict adherence to local codes and standards.",
+      writeup:
+        "From civil and structural engineering to electrical and plumbing networks, our specialists integrate robust systems designed for longevity and efficiency. Each phase is carefully aligned with Costa Rican building codes and area-specific regulations, ensuring safety, sustainability, and legal compliance across every municipality.",
+      icon: "⚡",
+      image: "/constructionmanagement.png",
+    },
+    {
+      title: "Interior Design & Finishes",
+      blurb:
+        "Curated interiors and premium finishes tailored to your lifestyle.",
+      writeup:
+        "Our interior design team guides you through the selection of large finishing materials, color palettes, and custom layouts, while sourcing high-quality furniture and fixtures. Every detail—down to textures, lighting, and flow—is chosen to complement your lifestyle and elevate your living environment.",
+      icon: "🏡",
+      image: "/interiordesign.png",
+    },
+    {
+      title: "A True Turnkey Solution",
+      blurb: "One team, one process, one result: a move-in-ready masterpiece.",
+      writeup:
+        "From the first sketch to the final piece of furniture, we deliver a complete solution. Our end-to-end service allows clients to step into a fully realized property, ready for immediate enjoyment or rental. The result: timeless homes built with care, precision, and a commitment to excellence that reflects the best of Costa Rica's Gold Coast.",
+      icon: "🔑",
+      image: "/costaricavilla.jpg",
+    },
+  ];
+
+  useEffect(() => {
+    if (!isAutoPlaying) return;
+
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 15000); // Change slide every 15 seconds
+
+    return () => clearInterval(interval);
+  }, [slides.length, isAutoPlaying]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+    setIsAutoPlaying(false);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    setIsAutoPlaying(false);
+  };
+
+  const handleDotClick = (index: number) => {
+    setCurrentSlide(index);
+    setIsAutoPlaying(false);
+  };
+
+  // Touch handlers for swipe functionality
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextSlide();
+    }
+    if (isRightSwipe) {
+      prevSlide();
+    }
+
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
+  return (
+    <motion.div
+      className="relative h-[350px] sm:h-[400px] md:h-[450px] lg:h-[500px] overflow-hidden rounded-2xl"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+    >
+      {/* Background Images */}
+      {slides.map((slide, index) => (
+        <motion.div
+          key={index}
+          className="absolute inset-0"
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: currentSlide === index ? 1 : 0,
+            scale: currentSlide === index ? 1 : 1.1,
+          }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+        >
+          <Image
+            src={slide.image}
+            alt={slide.title}
+            fill
+            className="object-cover"
+            priority={index === 0}
+          />
+          {/* Enhanced Overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/60" />
+        </motion.div>
+      ))}
+
+      {/* Navigation Arrows - Hidden on mobile, visible on larger screens */}
+      <button
+        onClick={prevSlide}
+        className="hidden md:flex absolute left-4 top-1/2 transform z-10 -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full items-center justify-center transition-all duration-300 group"
+        aria-label="Previous slide"
+      >
+        <svg
+          className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+
+      <button
+        onClick={nextSlide}
+        className="hidden md:flex absolute right-4 top-1/2 transform z-10 -translate-y-1/2 w-12 h-12 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full items-center justify-center transition-all duration-300 group"
+        aria-label="Next slide"
+      >
+        <svg
+          className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
+      {/* Content with enhanced readability */}
+      <div className="relative h-full flex items-center justify-center">
+        <div className="text-center px-4 sm:px-6 md:px-8 lg:px-12 max-w-4xl">
+          {slides.map((slide, index) => (
+            <motion.div
+              key={index}
+              className="absolute inset-0 flex items-center justify-center px-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{
+                opacity: currentSlide === index ? 1 : 0,
+                y: currentSlide === index ? 0 : 30,
+              }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <div className="text-center w-full">
+                {/* Icon */}
+                <motion.div
+                  className="text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 drop-shadow-2xl"
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{
+                    scale: currentSlide === index ? 1 : 0,
+                    rotate: currentSlide === index ? 0 : -180,
+                  }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  {slide.icon}
+                </motion.div>
+
+                {/* Title with enhanced readability */}
+                <motion.h3
+                  className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold mb-2 sm:mb-3 text-white drop-shadow-2xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: currentSlide === index ? 1 : 0,
+                    y: currentSlide === index ? 0 : 20,
+                  }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                  {slide.title}
+                </motion.h3>
+
+                {/* Blurb with enhanced readability */}
+                <motion.p
+                  className="text-sm sm:text-base md:text-lg lg:text-xl font-light mb-3 sm:mb-4 text-white drop-shadow-xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: currentSlide === index ? 1 : 0,
+                    y: currentSlide === index ? 0 : 20,
+                  }}
+                  transition={{ duration: 0.8, delay: 0.8 }}
+                >
+                  {slide.blurb}
+                </motion.p>
+
+                {/* Writeup with enhanced readability */}
+                <motion.p
+                  className="text-xs sm:text-sm md:text-base lg:text-lg leading-relaxed text-white/90 drop-shadow-lg max-w-xs sm:max-w-sm md:max-w-lg lg:max-w-2xl mx-auto"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{
+                    opacity: currentSlide === index ? 1 : 0,
+                    y: currentSlide === index ? 0 : 20,
+                  }}
+                  transition={{ duration: 0.8, delay: 1.0 }}
+                >
+                  {slide.writeup}
+                </motion.p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* Navigation Dots */}
+      <div className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 cursor-pointer ${
+              currentSlide === index
+                ? "bg-white scale-125 shadow-lg"
+                : "bg-white/50 hover:bg-white/75 hover:scale-110"
+            }`}
+            onClick={() => handleDotClick(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Slide Counter */}
+      <div className="absolute top-4 sm:top-6 right-4 sm:right-6 bg-black/30 backdrop-blur-sm rounded-full px-3 sm:px-4 py-1 sm:py-2 text-white text-xs sm:text-sm font-medium">
+        {currentSlide + 1} / {slides.length}
+      </div>
+
+      {/* Progress Bar */}
+      {isAutoPlaying && (
+        <motion.div
+          className="absolute bottom-0 left-0 h-1 bg-white/30"
+          initial={{ width: 0 }}
+          animate={{ width: "100%" }}
+          transition={{ duration: 15, ease: "linear" }}
+          key={currentSlide} // Reset animation on slide change
+        />
+      )}
+    </motion.div>
+  );
+};
 
 const ConstructionManagementPage = () => {
   const services = [
@@ -332,7 +612,7 @@ const ConstructionManagementPage = () => {
                   Our Services
                 </p>
                 <motion.div
-                  className="w-16 h-px bg-[#85277F]/50 mb-6"
+                  className="w-16 h-px bg-[#85277F]/50"
                   initial={{ scaleX: 0, originX: 0 }}
                   whileInView={{ scaleX: 1 }}
                   transition={{
@@ -346,12 +626,19 @@ const ConstructionManagementPage = () => {
             </motion.div>
 
             <h2 className="text-4xl md:text-5xl font-serif font-medium leading-tight text-gray-900">
-              Comprehensive Construction Solutions
+              From Vision to Reality
             </h2>
 
-            <p className="text-gray-600 text-lg leading-relaxed font-light mt-4 mb-8">
-              From initial design to final finishes, we handle every aspect of
-              your project with precision and care.
+            <p className="text-gray-600 text-md leading-relaxed font-light mt-4 mb-8">
+              Our Construction & Development division provides a complete
+              framework to bring your dream project to life. We manage every
+              stage of the process, beginning with custom design, architectural
+              drawings, and detailed engineering plans. From electrical and
+              plumbing systems to structural execution, each element is overseen
+              with precision and compliance to Costa Rican municipal bylaws and
+              regional regulations. Our team’s deep local knowledge ensures all
+              permitting and approval processes are handled efficiently and
+              correctly, giving you peace of mind.
             </p>
 
             <ul className="space-y-3 text-gray-600">
@@ -444,117 +731,36 @@ const ConstructionManagementPage = () => {
         </div>
       </section>
 
-      {/* Process Timeline Section */}
-      <section
-        ref={timelineRef}
-        className="w-full bg-white py-10 px-8 md:px-20"
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <motion.div
-              className="flex flex-col items-center"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
-                Our Process
-              </p>
+      {/* Auto-Rotating Services Slideshow */}
+      <section className="w-full py-12 bg-gray-50">
+        <div className="container mx-auto px-6 md:px-12">
+          {/* Section Header */}
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="inline-flex flex-col items-center">
+              <span className="text-lg tracking-widest uppercase text-[#85277F] font-light mb-3">
+                Our Expertise
+              </span>
               <motion.div
-                className="w-16 h-px bg-[#85277F]/50 mb-6"
-                initial={{ scaleX: 0, originX: 0 }}
+                className="h-0.5 w-16 bg-[#85277F]/60 mb-8"
+                initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
-                transition={{
-                  duration: 0.8,
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: 0.4,
-                }}
+                transition={{ duration: 0.8, delay: 0.2 }}
                 viewport={{ once: true }}
               />
-            </motion.div>
-            <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 mb-4">
-              A Streamlined Approach
+            </div>
+            <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 max-w-3xl mx-auto">
+              Comprehensive Construction Solutions
             </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Our proven methodology ensures your project&apos;s success from
-              conception to completion
-            </p>
-          </div>
+          </motion.div>
 
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="hidden md:block absolute left-1/2 top-0 h-full w-1 transform -translate-x-1/2 bg-gray-200 overflow-hidden">
-              <motion.div
-                className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[#85277F] to-[#9E3A95] origin-top"
-                style={{ scaleY: maxScrollReached }}
-              />
-            </div>
-
-            {/* Timeline items */}
-            <div className="space-y-8 md:space-y-0">
-              {steps.map((step) => {
-                return (
-                  <div
-                    key={step.title}
-                    className={`relative flex flex-col md:flex-row ${
-                      step.isEven ? "md:flex-row" : "md:flex-row-reverse"
-                    } items-center mb-6 md:mb-8`}
-                  >
-                    <motion.div
-                      className="md:hidden flex items-center justify-center w-12 h-12 rounded-full text-white font-bold text-lg mx-auto mb-3"
-                      style={{
-                        background: "linear-gradient(135deg, #85277F, #9E3A95)",
-                        opacity: step.animation,
-                        scale: step.animation,
-                        y: step.yTransform,
-                      }}
-                    >
-                      {step.icon}
-                    </motion.div>
-                    {/* Content */}
-                    <motion.div
-                      className={`w-full md:w-1/2 p-4 ${
-                        step.isEven
-                          ? "md:pr-8 md:text-right"
-                          : "md:pl-8 md:text-left"
-                      }`}
-                      style={{
-                        opacity: step.animation,
-                        x: step.xTransform,
-                      }}
-                    >
-                      <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-2">
-                        {step.title}
-                      </h3>
-                      <p className="text-gray-600 text-sm md:text-base">
-                        {step.description}
-                      </p>
-                    </motion.div>
-
-                    {/* Bubble */}
-                    <motion.div
-                      className="hidden md:flex items-center justify-center w-16 h-16 rounded-full text-white font-bold text-xl mx-auto my-4"
-                      style={{
-                        background: "linear-gradient(135deg, #85277F, #9E3A95)",
-                        scale: step.animation,
-                        y: step.bubbleYTransform,
-                      }}
-                    >
-                      {step.icon}
-                    </motion.div>
-
-                    {/* Empty space */}
-                    <div
-                      className={`hidden md:block md:w-1/2 p-4 ${
-                        step.isEven ? "md:pl-8" : "md:pr-8"
-                      }`}
-                    ></div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          {/* Slideshow Component */}
+          <SlideshowSection />
         </div>
       </section>
 

@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { usePathname } from "next/navigation";
 import LogoComponent from "./LogoComponent";
 import BurgerMenu from "./BurgerMenu";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +19,17 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Helper function to check if a tab is active
+  const isActiveTab = (label: string) => {
+    if (label === "Home") return pathname === "/";
+    if (label === "Construction Management")
+      return pathname === "/construction";
+    if (label === "Realty") return pathname === "/realty";
+    if (label === "Rentals") return pathname === "/rentals";
+    if (label === "About") return pathname === "/about";
+    return false;
+  };
 
   return (
     <motion.div
@@ -80,10 +93,14 @@ const Navbar = () => {
                 scrolled
                   ? "text-gray-800 hover:text-[#85277F]"
                   : "text-[#FCE6F8] hover:text-white"
-              }`}
+              } ${isActiveTab(label) ? "text-[#85277F] font-semibold" : ""}`}
             >
               {label}
-              <div className="absolute -bottom-1 left-0 h-0.5 w-0 group-hover:w-full transition-all duration-500 ease-out bg-gradient-to-r from-[#D497D4] to-[#B464AF] rounded-full" />
+              <div
+                className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-500 ease-out bg-gradient-to-r from-[#D497D4] to-[#B464AF] rounded-full ${
+                  isActiveTab(label) ? "w-full" : "w-0 group-hover:w-full"
+                }`}
+              />
             </motion.a>
           ))}
 

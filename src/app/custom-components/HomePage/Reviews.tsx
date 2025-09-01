@@ -11,40 +11,45 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 interface Review {
-  id: number;
+  _id: string;
   author: string;
   role: string;
   content: string;
   rating: number;
+  featured: boolean;
 }
 
 const Reviews = () => {
-  const reviews: Review[] = [
-    {
-      id: 1,
-      author: "Sarah Johnson",
-      role: "Luxury Home Buyer",
-      content:
-        "OFYS made our dream home a reality. Their attention to detail and personalized service exceeded all our expectations. The property we purchased through them is absolutely flawless.",
-      rating: 5,
-    },
-    {
-      id: 2,
-      author: "Michael Chen",
-      role: "Real Estate Investor",
-      content:
-        "Working with OFYS was a game-changer for our portfolio. Their market knowledge and negotiation skills secured us an incredible property that's already appreciated significantly.",
-      rating: 4,
-    },
-    {
-      id: 3,
-      author: "Emma Rodriguez",
-      role: "Vacation Rental Guest",
-      content:
-        "The villa we stayed in was even more beautiful than the photos. Every detail was perfect, from the premium amenities to the stunning ocean views. We'll definitely be back!",
-      rating: 5,
-    },
-  ];
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch reviews from API
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch("/api/reviews");
+        if (!response.ok) {
+          throw new Error("Failed to fetch reviews");
+        }
+        const data = await response.json();
+        // Filter to show only featured reviews, or all if no featured ones
+        const featuredReviews = data.filter(
+          (review: Review) => review.featured
+        );
+        setReviews(
+          featuredReviews.length > 0 ? featuredReviews : data.slice(0, 3)
+        );
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+        // Fallback to empty array
+        setReviews([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState<"left" | "right">("right");
@@ -53,24 +58,27 @@ const Reviews = () => {
   const touchEndX = useRef(0);
 
   const nextReview = () => {
+    if (reviews.length === 0) return;
     setDirection("right");
     setCurrentIndex((prev) => (prev + 1) % reviews.length);
   };
 
   const prevReview = () => {
+    if (reviews.length === 0) return;
     setDirection("left");
     setCurrentIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
   };
 
-  // Auto-advance every 8 seconds (only when not dragging)
+  // Auto-advance every 8 seconds (only when not dragging and have reviews)
   useEffect(() => {
+    if (reviews.length === 0) return;
     const interval = setInterval(() => {
       if (!isDragging) {
         nextReview();
       }
     }, 8000);
     return () => clearInterval(interval);
-  }, [isDragging]);
+  }, [isDragging, reviews.length]);
 
   const variants = {
     enter: (direction: string) => ({
@@ -133,6 +141,50 @@ const Reviews = () => {
     setIsDragging(false);
   };
 
+  if (loading) {
+    return (
+      <section className="py-8 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
+              What Our Clients Say
+            </p>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-wide text-gray-800">
+              Client
+              <span className="block bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
+                Testimonials
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 mt-4">Loading reviews...</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (reviews.length === 0) {
+    return (
+      <section className="py-8 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-8">
+            <p className="text-lg tracking-[0.3em] uppercase font-light mb-2 text-[#85277F]">
+              What Our Clients Say
+            </p>
+            <h2 className="text-4xl sm:text-5xl font-bold tracking-wide text-gray-800">
+              Client
+              <span className="block bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
+                Testimonials
+              </span>
+            </h2>
+            <p className="text-xl text-gray-600 mt-4">
+              No reviews available at the moment.
+            </p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-8 w-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -176,7 +228,7 @@ const Reviews = () => {
         <div className="relative max-w-4xl mx-auto">
           <AnimatePresence custom={direction} mode="wait">
             <motion.div
-              key={reviews[currentIndex].id}
+              key={reviews[currentIndex]._id}
               custom={direction}
               variants={variants}
               initial="enter"

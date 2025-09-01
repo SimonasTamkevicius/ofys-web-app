@@ -3,13 +3,13 @@
 import React, { useRef } from "react";
 
 import { useScroll, useTransform } from "framer-motion";
-import Navbar from "./components/generic/Navbar";
-import LandingScreen from "./components/HomePage/LandingScreen";
-import GeneralInfo from "./components/HomePage/GeneralInfo";
-import ImageBanner from "./components/HomePage/generic/ImageBanner";
-import Services from "./components/HomePage/Services";
-import AboutHP from "./components/HomePage/AboutHP";
-import Reviews from "./components/HomePage/Reviews";
+import Navbar from "./custom-components/generic/Navbar";
+import LandingScreen from "./custom-components/HomePage/LandingScreen";
+import GeneralInfo from "./custom-components/HomePage/GeneralInfo";
+import ImageBanner from "./custom-components/HomePage/generic/ImageBanner";
+import Services from "./custom-components/HomePage/Services";
+import AboutHP from "./custom-components/HomePage/AboutHP";
+import Reviews from "./custom-components/HomePage/Reviews";
 
 function HomePage() {
   const landingScreenRef = useRef<HTMLDivElement>(null);

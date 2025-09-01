@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,8 +12,15 @@ import {
   faChevronDown,
   faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
-import Navbar from "../components/generic/Navbar";
-import ScrollIndicator from "../components/generic/ScrollIndicator";
+import Navbar from "../custom-components/generic/Navbar";
+import ScrollIndicator from "../custom-components/generic/ScrollIndicator";
+
+interface FAQ {
+  _id: string;
+  question: string;
+  answer: string;
+  category: string;
+}
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +31,31 @@ const ContactPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [faqLoading, setFaqLoading] = useState(true);
+  const [faqError, setFaqError] = useState<string | null>(null);
+
+  // Fetch FAQs from API
+  useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        setFaqLoading(true);
+        const response = await fetch("/api/faq");
+        if (!response.ok) {
+          throw new Error("Failed to fetch FAQs");
+        }
+        const data = await response.json();
+        setFaqs(data);
+      } catch (err) {
+        setFaqError(err instanceof Error ? err.message : "An error occurred");
+        console.error("Error fetching FAQs:", err);
+      } finally {
+        setFaqLoading(false);
+      }
+    };
+
+    fetchFAQs();
+  }, []);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -61,34 +93,6 @@ const ContactPage = () => {
   );
   // Parallax down effect (text moves down slightly as you scroll)
   const yValue = useTransform(scrollYProgress, [0, 1], [0, 250]);
-
-  const faqs = [
-    {
-      question: "How quickly can I expect a response to my inquiry?",
-      answer:
-        "Our team typically responds within 24 hours during business days. For urgent matters, we recommend calling our direct line for immediate assistance.",
-    },
-    {
-      question: "What areas of Costa Rica do you specialize in?",
-      answer:
-        "We focus on luxury properties across prime locations including Guanacaste, Manuel Antonio, the Central Valley, and the Southern Pacific region.",
-    },
-    {
-      question: "Do you offer virtual property tours?",
-      answer:
-        "Yes, we provide high-quality virtual tours for all our listed properties. Simply request a tour through our contact form and we'll arrange a personalized viewing.",
-    },
-    {
-      question: "What makes OFYS different from other real estate agencies?",
-      answer:
-        "Our concierge-level service, exclusive off-market listings, and deep local expertise set us apart. We don't just sell properties—we curate lifestyles.",
-    },
-    {
-      question: "Can you assist with relocation services?",
-      answer:
-        "Absolutely. Our premium relocation package includes everything from visa assistance to school recommendations and home setup services.",
-    },
-  ];
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden items-center bg-[#F9F6F9]">
@@ -525,62 +529,136 @@ const ContactPage = () => {
         </div>
       </section>
 
-      {/* Luxury FAQ Section */}
-      <section className="w-full py-24 bg-gray-50">
+      {/* Enhanced FAQ Section */}
+      <section className="w-full py-24 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto px-6 md:px-12">
           <motion.div
             className="text-center mb-16"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
+            <div className="inline-flex flex-col items-center mb-6">
+              <span className="text-lg tracking-widest uppercase text-[#85277F] font-light mb-3">
+                Got Questions?
+              </span>
+              <motion.div
+                className="h-0.5 w-16 bg-[#85277F]/60 mb-4"
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: true }}
+              />
+            </div>
             <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 mb-4">
               Frequently Asked Questions
             </h2>
-            <div className="w-24 h-0.5 bg-[#85277F] mx-auto mb-8" />
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Answers to common questions about our services and process
+            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+              Find answers to common questions about our luxury real estate
+              services in Costa Rica
             </p>
           </motion.div>
 
           <div className="max-w-4xl mx-auto">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                className="mb-4 overflow-hidden"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                viewport={{ once: true }}
-              >
-                <div
-                  className={`p-6 rounded-xl cursor-pointer transition-all duration-300 ${
-                    activeFaq === index
-                      ? "bg-white shadow-lg border border-gray-200"
-                      : "bg-white shadow-sm border border-gray-100 hover:shadow-md"
-                  }`}
-                  onClick={() => toggleFaq(index)}
-                >
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-medium text-gray-800">
-                      {faq.question}
-                    </h3>
-                    <FontAwesomeIcon
-                      icon={activeFaq === index ? faChevronUp : faChevronDown}
-                      className="text-[#85277F] ml-2"
-                    />
-                  </div>
+            {faqLoading ? (
+              <div className="text-center py-12">
+                <motion.div
+                  className="w-8 h-8 border-2 border-[#85277F] border-t-transparent rounded-full mx-auto mb-4"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                />
+                <p className="text-gray-600">Loading FAQs...</p>
+              </div>
+            ) : faqError ? (
+              <div className="text-center py-12">
+                <p className="text-red-500 mb-4">Error loading FAQs</p>
+                <p className="text-gray-600 text-sm">{faqError}</p>
+              </div>
+            ) : faqs.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600">
+                  No FAQs available at the moment.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
                   <motion.div
+                    key={faq._id}
                     className="overflow-hidden"
-                    initial={{ height: 0 }}
-                    animate={{ height: activeFaq === index ? "auto" : 0 }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    viewport={{ once: true }}
                   >
-                    <p className="pt-4 text-gray-600">{faq.answer}</p>
+                    <div
+                      className={`group cursor-pointer transition-all duration-300 rounded-2xl border overflow-hidden ${
+                        activeFaq === index
+                          ? "bg-white shadow-xl border-[#85277F]/20 shadow-[#85277F]/10"
+                          : "bg-white shadow-sm border-gray-200 hover:shadow-lg hover:border-[#85277F]/30"
+                      }`}
+                      onClick={() => toggleFaq(index)}
+                    >
+                      <div className="p-6">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1 pr-4">
+                            <h3
+                              className={`text-lg font-medium transition-colors duration-300 ${
+                                activeFaq === index
+                                  ? "text-[#85277F]"
+                                  : "text-gray-800 group-hover:text-[#85277F]"
+                              }`}
+                            >
+                              {faq.question}
+                            </h3>
+                            {faq.category && faq.category !== "General" && (
+                              <span className="inline-block mt-2 px-3 py-1 bg-[#85277F]/10 text-[#85277F] text-xs font-medium rounded-full">
+                                {faq.category}
+                              </span>
+                            )}
+                          </div>
+                          <motion.div
+                            className="flex-shrink-0 w-8 h-8 rounded-full bg-[#85277F]/10 flex items-center justify-center group-hover:bg-[#85277F]/20 transition-colors duration-300"
+                            animate={{ rotate: activeFaq === index ? 180 : 0 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            <FontAwesomeIcon
+                              icon={faChevronDown}
+                              className={`text-[#85277F] transition-transform duration-300 ${
+                                activeFaq === index ? "rotate-180" : ""
+                              }`}
+                            />
+                          </motion.div>
+                        </div>
+
+                        <motion.div
+                          className="overflow-hidden"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{
+                            height: activeFaq === index ? "auto" : 0,
+                            opacity: activeFaq === index ? 1 : 0,
+                          }}
+                          transition={{
+                            height: { duration: 0.4, ease: "easeInOut" },
+                            opacity: {
+                              duration: 0.3,
+                              delay: activeFaq === index ? 0.1 : 0,
+                            },
+                          }}
+                        >
+                          <div className="pt-4 mt-4 border-t border-gray-100">
+                            <p className="text-gray-600 leading-relaxed">
+                              {faq.answer}
+                            </p>
+                          </div>
+                        </motion.div>
+                      </div>
+                    </div>
                   </motion.div>
-                </div>
-              </motion.div>
-            ))}
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

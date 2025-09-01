@@ -1,0 +1,269 @@
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { connectToDatabase } from "@/lib/mongodb";
+import Listing from "@/lib/models/Listing";
+import { uploadToS3, deleteFromS3, deleteMultipleFromS3 } from "@/lib/s3";
+import { randomUUID } from "crypto";
+
+async function checkAdmin() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== "admin") {
+    return null;
+  }
+  return session;
+}
+
+// ✅ GET - Fetch all listings
+export async function GET() {
+  await connectToDatabase();
+  const listings = await Listing.find();
+  return NextResponse.json(listings);
+}
+
+// ✅ POST - Create a new listing with images
+export async function POST(req: Request) {
+  const session = await checkAdmin();
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectToDatabase();
+  const formData = await req.formData();
+
+  console.log("Received form data:", formData);
+
+  // Extract fields
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
+  const location = formData.get("location") as string;
+  const bedrooms = parseInt(formData.get("bedrooms") as string);
+  const bathrooms = parseInt(formData.get("bathrooms") as string);
+  const sleeps = parseInt(formData.get("sleeps") as string);
+  const price = parseFloat(formData.get("price") as string);
+  const featured = String(formData.get("featured")) === "true";
+  const category = formData.get("category") as
+    | "Villa"
+    | "Apartment"
+    | "Bungalow";
+  const amenities = JSON.parse(formData.get("amenities") as string);
+
+  // Validate category uniqueness for Apartment and Bungalow
+  if (category === "Apartment" || category === "Bungalow") {
+    const existingCategory = await Listing.findOne({ category });
+    if (existingCategory) {
+      return NextResponse.json(
+        { error: `Only one ${category} property is allowed` },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Check featured property limit
+  if (featured) {
+    const featuredCount = await Listing.countDocuments({ featured: true });
+    if (featuredCount >= 3) {
+      return NextResponse.json(
+        { error: "Maximum of 3 featured properties allowed" },
+        { status: 400 }
+      );
+    }
+  }
+
+  const amenitiesArr = (amenities as string[]).map((name) => ({
+    name,
+    icon: "default-icon.png", // or map to your icon logic
+  }));
+
+  // Files
+  const mainImage = formData.get("mainImage") as File | null;
+  const floorplan = formData.get("floorplan") as File | null;
+  const gallery = formData.getAll("gallery") as File[];
+
+  // Upload files to S3
+  let mainImageUrl = "";
+  let floorplanUrl = "";
+  const galleryUrls: string[] = [];
+
+  if (mainImage) {
+    const buffer = Buffer.from(await mainImage.arrayBuffer());
+    const key = `listings/${randomUUID()}-${mainImage.name}`;
+    mainImageUrl = await uploadToS3(buffer, key, mainImage.type);
+  }
+
+  if (floorplan) {
+    const buffer = Buffer.from(await floorplan.arrayBuffer());
+    const key = `listings/${randomUUID()}-${floorplan.name}`;
+    floorplanUrl = await uploadToS3(buffer, key, floorplan.type);
+  }
+
+  for (const file of gallery) {
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const key = `listings/gallery/${randomUUID()}-${file.name}`;
+    const url = await uploadToS3(buffer, key, file.type);
+    galleryUrls.push(url);
+  }
+
+  const newListing = await Listing.create({
+    name,
+    description,
+    location,
+    bedrooms,
+    bathrooms,
+    sleeps,
+    price,
+    featured,
+    category,
+    amenities: amenitiesArr,
+    mainImage: mainImageUrl,
+    floorPlanImage: floorplanUrl,
+    galleryImages: galleryUrls,
+  });
+
+  return NextResponse.json(newListing);
+}
+
+// ✅ PUT - Update listing (with optional new images)
+export async function PUT(req: Request) {
+  const session = await checkAdmin();
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectToDatabase();
+  const formData = await req.formData();
+
+  const id = formData.get("id") as string;
+  const featured = String(formData.get("featured")) === "true";
+
+  // Check featured property limit when setting to featured
+  if (featured) {
+    const currentListing = await Listing.findById(id);
+    const featuredCount = await Listing.countDocuments({ featured: true });
+    if (!currentListing?.featured && featuredCount >= 3) {
+      return NextResponse.json(
+        { error: "Maximum of 3 featured properties allowed" },
+        { status: 400 }
+      );
+    }
+  }
+
+  const amenities = JSON.parse(formData.get("amenities") as string);
+  const amenitiesArr = (amenities as string[]).map((name) => ({
+    name,
+    icon: "default-icon.png", // or map to your icon logic
+  }));
+
+  const updateData: any = {
+    name: formData.get("name"),
+    description: formData.get("description"),
+    location: formData.get("location") as string,
+    bedrooms: parseInt(formData.get("bedrooms") as string),
+    bathrooms: parseInt(formData.get("bathrooms") as string),
+    sleeps: parseInt(formData.get("sleeps") as string),
+    price: parseFloat(formData.get("price") as string),
+    featured,
+    category: formData.get("category") as "Villa" | "Apartment" | "Bungalow",
+    amenities: amenitiesArr,
+  };
+
+  // Validate category uniqueness for Apartment and Bungalow (only if category is being changed)
+  if (
+    updateData.category === "Apartment" ||
+    updateData.category === "Bungalow"
+  ) {
+    const existingCategory = await Listing.findOne({
+      category: updateData.category,
+      _id: { $ne: id }, // Exclude current listing from check
+    });
+    if (existingCategory) {
+      return NextResponse.json(
+        { error: `Only one ${updateData.category} property is allowed` },
+        { status: 400 }
+      );
+    }
+  }
+
+  // Optional files
+  const mainImage = formData.get("mainImage") as File | null;
+  const floorplan = formData.get("floorplan") as File | null;
+  const gallery = formData.getAll("gallery") as File[];
+
+  if (mainImage) {
+    const buffer = Buffer.from(await mainImage.arrayBuffer());
+    const key = `listings/${randomUUID()}-${mainImage.name}`;
+    updateData.mainImage = await uploadToS3(buffer, key, mainImage.type);
+  }
+
+  if (floorplan) {
+    const buffer = Buffer.from(await floorplan.arrayBuffer());
+    const key = `listings/${randomUUID()}-${floorplan.name}`;
+    updateData.floorPlanImage = await uploadToS3(buffer, key, floorplan.type);
+  }
+
+  if (gallery.length > 0) {
+    const galleryUrls: string[] = [];
+    for (const file of gallery) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const key = `listings/gallery/${randomUUID()}-${file.name}`;
+      const url = await uploadToS3(buffer, key, file.type);
+      galleryUrls.push(url);
+    }
+    updateData.galleryImages = galleryUrls;
+  }
+
+  const updatedListing = await Listing.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+  return NextResponse.json(updatedListing);
+}
+
+// ✅ DELETE - Remove listing and associated images
+export async function DELETE(req: Request) {
+  const session = await checkAdmin();
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectToDatabase();
+  const { id } = await req.json();
+
+  try {
+    // First, fetch the listing to get all image URLs
+    const listing = await Listing.findById(id);
+
+    if (!listing) {
+      return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+    }
+
+    // Collect all image URLs to delete
+    const imagesToDelete: string[] = [];
+
+    if (listing.mainImage) {
+      imagesToDelete.push(listing.mainImage);
+    }
+
+    if (listing.floorPlanImage) {
+      imagesToDelete.push(listing.floorPlanImage);
+    }
+
+    if (listing.galleryImages && listing.galleryImages.length > 0) {
+      imagesToDelete.push(...listing.galleryImages);
+    }
+
+    // Delete all images from S3
+    if (imagesToDelete.length > 0) {
+      await deleteMultipleFromS3(imagesToDelete);
+    }
+
+    // Delete the listing from database
+    await Listing.findByIdAndDelete(id);
+
+    return NextResponse.json({
+      message: "Listing and associated images deleted",
+    });
+  } catch (error) {
+    console.error("Error deleting listing:", error);
+    return NextResponse.json(
+      { error: "Failed to delete listing" },
+      { status: 500 }
+    );
+  }
+}

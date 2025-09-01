@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/components/generic/Navbar";
+import Navbar from "@/app/custom-components/generic/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faArrowLeft,
@@ -27,17 +27,23 @@ import {
 import { faBed, faBath, faUserGroup } from "@fortawesome/free-solid-svg-icons";
 
 interface Property {
-  slug: string;
+  _id?: string;
+  slug?: string;
   name: string;
   description: string;
-  price: string;
-  imageUrl: string;
-  galleryImages: string[];
-  amenities: string[];
+  price?: string;
+  pricePerNight?: number;
+  pricePerWeek?: number;
+  pricePerMonth?: number;
+  imageUrl?: string;
+  mainImage?: string;
+  galleryImages?: string[];
+  gallery?: string[];
+  amenities: Array<{ name: string; icon?: string }> | string[];
   bedrooms: number;
   bathrooms: number;
   sleeps: number;
-  location: string;
+  location?: string;
 }
 
 interface PropertyPageProps {
@@ -60,7 +66,33 @@ const amenityIcons: Record<string, IconProp> = {
 };
 
 export default function PropertyPage({ property, type }: PropertyPageProps) {
-  const { name, description, amenities, price, galleryImages } = property;
+  const {
+    name,
+    description,
+    amenities,
+    price,
+    pricePerNight,
+    pricePerWeek,
+    pricePerMonth,
+    galleryImages,
+    gallery,
+    mainImage,
+    imageUrl,
+  } = property;
+
+  // Handle different data structures
+  const propertyPrice =
+    price || (pricePerNight ? `$${pricePerNight}/night` : "");
+  const propertyLocation = property.location || "Costa Rica";
+  const propertyGallery = galleryImages || gallery || [];
+  const propertyMainImage = mainImage || imageUrl || "";
+
+  // Handle amenities - could be array of strings or array of objects
+  const amenityNames = Array.isArray(amenities)
+    ? amenities.map((amenity) =>
+        typeof amenity === "string" ? amenity : amenity.name
+      )
+    : [];
   const galleryRef = useRef(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [blueprintModalOpen, setBlueprintModalOpen] = useState(false);
@@ -83,16 +115,39 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
   // Lightbox controls
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);
-
-  const prevImage = useCallback(() => {
+  const nextImage = () =>
+    setLightboxIndex((prev) => (prev! + 1) % propertyGallery.length);
+  const prevImage = () =>
     setLightboxIndex(
-      (prev) => (prev! - 1 + galleryImages.length) % galleryImages.length
+      (prev) => (prev! - 1 + propertyGallery.length) % propertyGallery.length
     );
-  }, [galleryImages.length]);
 
-  const nextImage = useCallback(() => {
-    setLightboxIndex((prev) => (prev! + 1) % galleryImages.length);
-  }, [galleryImages.length]);
+  // Touch gesture support for mobile
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextImage();
+    } else if (isRightSwipe) {
+      prevImage();
+    }
+  };
 
   // Keyboard navigation
   useEffect(() => {
@@ -106,7 +161,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
   }, [prevImage, nextImage]);
 
   const blueprint = {
-    src: property.imageUrl,
+    src: propertyMainImage,
     label: "Blueprint",
     alt: "Blueprint",
   };
@@ -119,7 +174,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
         <div className="absolute inset-0">
           <div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url("${property.imageUrl}")` }}
+            style={{ backgroundImage: `url("${propertyMainImage}")` }}
           />
           {/* Improved text contrast overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -157,7 +212,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                 className="w-32 h-32 bg-white/90 backdrop-blur-sm rounded-xl border border-white/30 shadow-sm hover:shadow-md transition-all overflow-hidden"
               >
                 <Image
-                  src={property.imageUrl}
+                  src={propertyMainImage}
                   alt="Blueprint preview"
                   className="w-full h-full object-cover"
                   width={128}
@@ -244,7 +299,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                     Amenities
                   </h4>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {amenities?.map((amenity, idx) => (
+                    {amenityNames?.map((amenity, idx) => (
                       <motion.li
                         key={idx}
                         className="flex items-center gap-3 py-2 px-3 rounded-lg hover:bg-[#F9F6F9] transition-colors"
@@ -291,7 +346,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                             : "Asking Price"}
                         </p>
                         <p className="text-3xl font-bold bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
-                          {type === "Rentals" ? `$${700}/night` : price}
+                          {propertyPrice}
                         </p>
                         <p className="text-xs text-gray-400 mt-1">
                           {type === "Rentals"
@@ -351,9 +406,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                             className="w-4 h-4 transition-transform group-hover:scale-110"
                           />
                           <span className="font-medium tracking-wide">
-                            {type === "Realty"
-                              ? "Inquire"
-                              : "Check Availability"}
+                            {type === "Realty" ? "Inquire" : "Book"}
                           </span>
                           <FontAwesomeIcon
                             icon={faArrowRight}
@@ -416,7 +469,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             </motion.div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-              {galleryImages?.map((imgUrl, idx) => (
+              {propertyGallery?.map((imgUrl, idx) => (
                 <motion.div
                   key={idx}
                   initial={{ opacity: 0, y: 40 }}
@@ -429,7 +482,6 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                   viewport={{ once: true, margin: "0px 0px -50px 0px" }}
                   className="group relative overflow-hidden rounded-2xl aspect-square cursor-pointer shadow-lg"
                   onClick={() => openLightbox(idx)}
-                  whileHover={{ y: -5 }}
                 >
                   <Image
                     src={imgUrl}
@@ -497,7 +549,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -517,36 +569,51 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             {/* Close button */}
             <motion.button
               onClick={closeLightbox}
-              className="absolute right-32 text-white p-2 hover:text-[#E5D9E4] transition-colors"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white p-3 sm:p-4 hover:text-[#E5D9E4] transition-colors z-20 bg-black/40 rounded-full backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
+              aria-label="Close lightbox"
             >
-              <FontAwesomeIcon icon={faTimes} size="xl" />
+              <FontAwesomeIcon
+                icon={faTimes}
+                size="lg"
+                className="w-4 h-4 sm:w-5 sm:h-5"
+              />
             </motion.button>
 
             {/* Navigation arrows */}
-            <div className="flex justify-between items-center absolute top-1/2 w-full -translate-y-1/2 px-4">
+            <div className="flex justify-between items-center absolute top-1/2 w-full -translate-y-1/2 px-2 sm:px-4 pointer-events-none">
               <motion.button
                 onClick={prevImage}
-                className="text-white p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm"
+                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto"
                 whileHover={{
                   scale: 1.1,
                   backgroundColor: "rgba(133, 39, 127, 0.8)",
                 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label="Previous image"
               >
-                <FontAwesomeIcon icon={faChevronLeft} size="lg" />
+                <FontAwesomeIcon
+                  icon={faChevronLeft}
+                  size="lg"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                />
               </motion.button>
               <motion.button
                 onClick={nextImage}
-                className="text-white p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm"
+                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto"
                 whileHover={{
                   scale: 1.1,
                   backgroundColor: "rgba(133, 39, 127, 0.8)",
                 }}
                 whileTap={{ scale: 0.9 }}
+                aria-label="Next image"
               >
-                <FontAwesomeIcon icon={faChevronRight} size="lg" />
+                <FontAwesomeIcon
+                  icon={faChevronRight}
+                  size="lg"
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                />
               </motion.button>
             </div>
 
@@ -561,26 +628,28 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             >
               <motion.img
                 key={lightboxIndex}
-                src={galleryImages[lightboxIndex]}
+                src={propertyGallery[lightboxIndex]}
                 alt={`Gallery image ${lightboxIndex + 1}`}
-                className="w-full h-auto max-w-full max-h-[80vh]"
+                className="w-full h-auto max-w-full max-h-[80vh] object-contain"
                 style={{
                   borderRadius: "0.5rem",
-                  objectFit: "contain",
                 }}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
               />
             </motion.div>
 
             {/* Optional: Thumbnail strip */}
-            <div className="flex justify-center mt-4 space-x-2 overflow-x-auto py-2">
-              {galleryImages.map((img, idx) => (
+            <div className="flex justify-center mt-2 sm:mt-4 space-x-1 sm:space-x-2 overflow-x-auto py-2 px-2">
+              {propertyGallery.map((img, idx) => (
                 <motion.div
                   key={idx}
-                  className={`w-16 h-16 rounded-md overflow-hidden cursor-pointer border-2 ${
+                  className={`w-12 h-12 sm:w-16 sm:h-16 rounded-md overflow-hidden cursor-pointer border-2 flex-shrink-0 ${
                     idx === lightboxIndex
                       ? "border-[#85277F]"
                       : "border-transparent"

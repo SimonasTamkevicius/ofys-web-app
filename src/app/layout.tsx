@@ -1,31 +1,35 @@
 import type { Metadata } from "next";
-// import { Roboto } from "next/font/google";
 import "./globals.css";
-// import Navbar from "./components/Navbar";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+import FooterController from "./custom-components/FooterController";
+import { LoadingProvider } from "./custom-components/generic/LoadingProvider";
+import { Toaster } from "sonner";
+import AuthProvider from "./providers/AuthProvider";
+
 config.autoAddCss = false;
-import FooterController from "./components/FooterController";
-import { LoadingProvider } from "./components/generic/LoadingProvider";
 
 export const metadata: Metadata = {
   title: "OFYS",
   description: "Optimal Framework for Your Success",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body>
-        {/* <CursorFollower /> */}
-        <LoadingProvider>
-          {children}
-          <FooterController />
-        </LoadingProvider>
+        <AuthProvider>
+          <LoadingProvider>
+            {children}
+            <FooterController />
+            {/* Sonner global toaster */}
+            <Toaster position="top-right" richColors />
+          </LoadingProvider>
+        </AuthProvider>
       </body>
     </html>
   );
