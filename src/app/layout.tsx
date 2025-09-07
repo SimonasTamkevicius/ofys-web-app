@@ -6,6 +6,8 @@ import FooterController from "./custom-components/FooterController";
 import { LoadingProvider } from "./custom-components/generic/LoadingProvider";
 import { Toaster } from "sonner";
 import AuthProvider from "./providers/AuthProvider";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 config.autoAddCss = false;
 
@@ -28,6 +30,10 @@ export default async function RootLayout({
             <FooterController />
             {/* Sonner global toaster */}
             <Toaster position="top-right" richColors />
+            {/* Vercel Analytics */}
+            <Analytics />
+            {/* Vercel Speed Insights */}
+            <SpeedInsights />
           </LoadingProvider>
         </AuthProvider>
       </body>

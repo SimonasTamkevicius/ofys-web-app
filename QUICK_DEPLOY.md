@@ -109,6 +109,18 @@ curl -X POST https://your-app.vercel.app/api/users \
 - [ ] Images load correctly
 - [ ] Database connections work
 - [ ] SSL certificate active
+- [ ] Analytics tracking (check Vercel dashboard after 24-48 hours)
+
+## 📊 Analytics Included
+
+Your app now includes:
+
+- **Vercel Analytics**: Page views, visitors, traffic sources
+- **Speed Insights**: Performance monitoring, Core Web Vitals
+- **Real-time Data**: Live visitor tracking
+- **Privacy Compliant**: GDPR compliant, no personal data
+
+Check your Vercel dashboard after deployment for analytics data.
 
 ## 📞 Need Help?
 
@@ -117,6 +129,7 @@ curl -X POST https://your-app.vercel.app/api/users \
 3. Test API endpoints individually
 4. Use browser dev tools
 5. See full guide: `VERCEL_DEPLOYMENT.md`
+6. See analytics guide: `VERCEL_ANALYTICS_GUIDE.md`
 
 ---
 
