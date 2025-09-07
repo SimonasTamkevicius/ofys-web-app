@@ -32,14 +32,14 @@
 In Vercel → Project Settings → Environment Variables:
 
 ```env
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/ofys-web-app
-NEXTAUTH_SECRET=your-32-char-secret-key
+MONGODB_URI=your-mongodb-connection-string
+NEXTAUTH_SECRET=your-secret-key
 NEXTAUTH_URL=https://your-app.vercel.app
-ADMIN_USERNAME=ofys_admin
-ADMIN_PASSWORD=YourSecurePassword123!
-ADMIN_EMAIL=admin@ofys.com
-MAIL_USER=your-email@gmail.com
-MAIL_PASS=your-gmail-app-password
+ADMIN_USERNAME=your-admin-username
+ADMIN_PASSWORD=your-secure-password
+ADMIN_EMAIL=your-admin-email
+MAIL_USER=your-email
+MAIL_PASS=your-app-password
 ```
 
 #### 2.3 Deploy
@@ -87,7 +87,7 @@ curl -X POST https://your-app.vercel.app/api/users \
 ### Auth Issues
 
 - Ensure NEXTAUTH_SECRET is set
-- Check NEXTAUTH_URL matches domain
+- Check NEXTAUTH_URL matches your domain
 - Verify admin credentials
 
 ## 📋 Pre-Deployment Checklist
