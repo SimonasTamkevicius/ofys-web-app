@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Rental from "@/lib/models/Rental";
 import { uploadToS3, deleteFromS3, deleteMultipleFromS3 } from "@/lib/s3";
@@ -8,7 +8,11 @@ import { randomUUID } from "crypto";
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "admin") {
+  if (
+    !session ||
+    !session.user ||
+    (session.user as { role?: string }).role !== "admin"
+  ) {
     return null;
   }
   return session;
@@ -122,7 +126,9 @@ export async function PUT(req: Request) {
 
   const id = formData.get("id") as string;
 
-  const updateData: any = {
+  const amenities = JSON.parse(formData.get("amenities") as string);
+
+  const updateData: Record<string, unknown> = {
     name: formData.get("name"),
     description: formData.get("description"),
     location: formData.get("location") as string,
@@ -133,7 +139,10 @@ export async function PUT(req: Request) {
     pricePerWeek: parseFloat(formData.get("pricePerWeek") as string),
     pricePerMonth: parseFloat(formData.get("pricePerMonth") as string),
     category: formData.get("category") as "Villa" | "Apartment" | "Bungalow",
-    amenities: JSON.parse(formData.get("amenities") as string),
+    amenities: (amenities as string[]).map((name) => ({
+      name,
+      icon: "default-icon.png", // or map to your icon logic
+    })),
   };
 
   // Validate category uniqueness for Apartment and Bungalow (only if category is being changed)
@@ -153,32 +162,72 @@ export async function PUT(req: Request) {
     }
   }
 
+  // Get existing rental to preserve current images
+  const existingRental = await Rental.findById(id);
+  if (!existingRental) {
+    return NextResponse.json({ error: "Rental not found" }, { status: 404 });
+  }
+
   // Optional files
   const mainImage = formData.get("mainImage") as File | null;
   const floorplan = formData.get("floorplan") as File | null;
-  const gallery = formData.getAll("gallery") as File[];
+
+  // Handle gallery - get existing URLs and new files separately
+  const existingGalleryUrls = JSON.parse(
+    (formData.get("existingGalleryUrls") as string) || "[]"
+  );
+  const newGalleryFiles = formData.getAll("gallery") as File[];
 
   if (mainImage) {
     const buffer = Buffer.from(await mainImage.arrayBuffer());
     const key = `rentals/${randomUUID()}-${mainImage.name}`;
     updateData.mainImage = await uploadToS3(buffer, key, mainImage.type);
+    // Delete old main image from S3 if it exists
+    if (existingRental.mainImage) {
+      await deleteFromS3(existingRental.mainImage);
+    }
+  } else {
+    // Preserve existing main image
+    updateData.mainImage = existingRental.mainImage;
   }
 
   if (floorplan) {
     const buffer = Buffer.from(await floorplan.arrayBuffer());
     const key = `rentals/${randomUUID()}-${floorplan.name}`;
     updateData.floorPlanImage = await uploadToS3(buffer, key, floorplan.type);
+    // Delete old floorplan image from S3 if it exists
+    if (existingRental.floorPlanImage) {
+      await deleteFromS3(existingRental.floorPlanImage);
+    }
+  } else {
+    // Preserve existing floorplan image
+    updateData.floorPlanImage = existingRental.floorPlanImage;
   }
 
-  if (gallery.length > 0) {
-    const galleryUrls: string[] = [];
-    for (const file of gallery) {
+  // Process gallery - combine existing URLs with new uploaded files
+  const finalGalleryUrls: string[] = [];
+
+  // Start with existing URLs that should be preserved
+  finalGalleryUrls.push(...existingGalleryUrls);
+
+  // Upload new gallery files
+  if (newGalleryFiles.length > 0) {
+    for (const file of newGalleryFiles) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const key = `rentals/gallery/${randomUUID()}-${file.name}`;
       const url = await uploadToS3(buffer, key, file.type);
-      galleryUrls.push(url);
+      finalGalleryUrls.push(url);
     }
-    updateData.galleryImages = galleryUrls;
+  }
+
+  updateData.galleryImages = finalGalleryUrls;
+
+  // Delete removed images from S3
+  const imagesToDelete = existingRental.galleryImages.filter(
+    (existingUrl: string) => !finalGalleryUrls.includes(existingUrl)
+  );
+  if (imagesToDelete.length > 0) {
+    await deleteMultipleFromS3(imagesToDelete);
   }
 
   const updatedRental = await Rental.findByIdAndUpdate(id, updateData, {

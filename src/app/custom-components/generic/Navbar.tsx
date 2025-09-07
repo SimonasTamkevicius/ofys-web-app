@@ -33,12 +33,26 @@ const Navbar = () => {
 
   return (
     <motion.div
-      className={`fixed max-w-full top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "bg-white shadow-lg" : "bg-white/10 backdrop-blur-sm"
-      }`}
+      className="fixed max-w-full top-0 left-0 right-0 z-50"
       initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      animate={{
+        y: 0,
+        opacity: 1,
+        backgroundColor: scrolled
+          ? "rgba(255, 255, 255, 1)"
+          : "rgba(255, 255, 255, 0.1)",
+        backdropFilter: scrolled ? "none" : "blur(8px)",
+        boxShadow: scrolled
+          ? "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"
+          : "none",
+      }}
+      transition={{
+        duration: 0.8,
+        ease: "easeOut",
+        backgroundColor: { duration: 0.3, ease: "easeInOut" },
+        backdropFilter: { duration: 0.3, ease: "easeInOut" },
+        boxShadow: { duration: 0.3, ease: "easeInOut" },
+      }}
       style={{ minHeight: "80px" }}
     >
       <nav className="max-w-full mx-auto flex items-center justify-between px-6 sm:px-8 lg:px-16 py-4 h-20">
@@ -51,20 +65,23 @@ const Navbar = () => {
           className="flex items-center space-x-3 group"
         >
           <motion.div
-            className={`transition-colors duration-300 ${
-              scrolled ? "text-[#85277F]" : "text-[#C4A3C1]"
-            }`}
+            animate={{
+              color: scrolled ? "#85277F" : "#C4A3C1",
+            }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
             <LogoComponent className="w-12 h-12" />
           </motion.div>
           <div>
-            <h4
-              className={`text-3xl mt-1 font-bold transition-colors duration-300 ${
-                scrolled ? "text-[#85277F]" : "text-[#C4A3C1]"
-              }`}
+            <motion.h4
+              className="text-3xl mt-1 font-bold"
+              animate={{
+                color: scrolled ? "#85277F" : "#C4A3C1",
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
             >
               OFYS
-            </h4>
+            </motion.h4>
           </div>
         </motion.a>
 
@@ -87,19 +104,41 @@ const Navbar = () => {
                   : `/${label.toLowerCase()}`
               }`}
               initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-              className={`relative font-medium transition-all duration-300 group inline-block ${
-                scrolled
-                  ? "text-gray-800 hover:text-[#85277F]"
-                  : "text-[#FCE6F8] hover:text-white"
-              } ${isActiveTab(label) ? "text-[#85277F] font-semibold" : ""}`}
+              animate={{
+                opacity: 1,
+                y: 0,
+                color:
+                  isActiveTab(label) && scrolled
+                    ? "#85277F"
+                    : isActiveTab(label) && !scrolled
+                    ? "#FCE6F8"
+                    : scrolled
+                    ? "#1f2937"
+                    : "#FCE6F8",
+              }}
+              transition={{
+                duration: 0.6,
+                delay: 0.3 + i * 0.1,
+                color: { duration: 0.3, ease: "easeInOut" },
+              }}
+              className="relative font-medium group inline-block"
+              whileHover={{
+                color: scrolled ? "#85277F" : "#ffffff",
+                transition: { duration: 0.2 },
+              }}
             >
               {label}
-              <div
-                className={`absolute -bottom-1 left-0 h-0.5 transition-all duration-500 ease-out bg-gradient-to-r from-[#D497D4] to-[#B464AF] rounded-full ${
-                  isActiveTab(label) ? "w-full" : "w-0 group-hover:w-full"
-                }`}
+              <motion.div
+                className="absolute -bottom-1 left-0 h-0.5 bg-gradient-to-r from-[#D497D4] to-[#B464AF] rounded-full"
+                initial={{ width: 0 }}
+                animate={{
+                  width: isActiveTab(label) ? "100%" : 0,
+                }}
+                whileHover={{
+                  width: isActiveTab(label) ? "100%" : "100%",
+                  transition: { duration: 0.3, ease: "easeOut" },
+                }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               />
             </motion.a>
           ))}
@@ -108,23 +147,30 @@ const Navbar = () => {
           <motion.a
             href="/inquiries"
             initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className={`group relative overflow-hidden px-6 py-3 rounded-full font-semibold transition-all duration-300 ${
-              scrolled
-                ? "bg-gradient-to-r from-[#85277F] to-[#9E3A95] border border-[#85277F] text-white"
-                : "bg-gradient-to-r from-[#D497D4]/30 to-[#B464AF]/30 text-white border border-[#FADFF7]/20"
-            }`}
-            whileHover={{ scale: 1.05 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              background: scrolled
+                ? "linear-gradient(to right, #85277F, #9E3A95)"
+                : "linear-gradient(to right, rgba(212, 151, 212, 0.3), rgba(180, 100, 175, 0.3))",
+              borderColor: scrolled ? "#85277F" : "rgba(250, 223, 247, 0.2)",
+            }}
+            transition={{
+              duration: 0.6,
+              delay: 0.7,
+              background: { duration: 0.3, ease: "easeInOut" },
+              borderColor: { duration: 0.3, ease: "easeInOut" },
+            }}
+            className="group relative overflow-hidden px-6 py-3 rounded-full font-semibold text-white border"
+            whileHover={{
+              scale: 1.05,
+              background: scrolled
+                ? "linear-gradient(to right, #9E3A95, #85277F)"
+                : "linear-gradient(to right, rgba(212, 151, 212, 0.5), rgba(180, 100, 175, 0.4))",
+              transition: { duration: 0.2 },
+            }}
             whileTap={{ scale: 0.95 }}
           >
-            <motion.div
-              className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${
-                scrolled
-                  ? "bg-gradient-to-r from-[#9E3A95] to-[#85277F]"
-                  : "bg-gradient-to-r from-[#D497D4]/50 to-[#B464AF]/40"
-              }`}
-            />
             <span className="relative">Inquiries</span>
           </motion.a>
         </div>
@@ -141,10 +187,15 @@ const Navbar = () => {
       </nav>
 
       {/* Animated bottom border */}
-      <div
-        className={`h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent transition-opacity duration-500 ${
-          scrolled ? "opacity-0" : "opacity-100"
-        }`}
+      <motion.div
+        className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"
+        animate={{
+          opacity: scrolled ? 0 : 1,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeInOut",
+        }}
         style={{
           transform: "scaleX(1)",
           transformOrigin: "left",

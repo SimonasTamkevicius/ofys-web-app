@@ -25,7 +25,6 @@ function HomePage() {
   );
 
   return (
-    // <LoadingScreen>
     <div className="flex flex-col min-h-screen">
       {/* Navbar */}
       <Navbar />
@@ -62,7 +61,6 @@ function HomePage() {
         <Reviews />
       </div>
     </div>
-    // </LoadingScreen>
   );
 }
 

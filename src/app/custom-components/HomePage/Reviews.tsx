@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -57,11 +57,11 @@ const Reviews = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const nextReview = () => {
+  const nextReview = useCallback(() => {
     if (reviews.length === 0) return;
     setDirection("right");
     setCurrentIndex((prev) => (prev + 1) % reviews.length);
-  };
+  }, [reviews.length]);
 
   const prevReview = () => {
     if (reviews.length === 0) return;
@@ -78,7 +78,7 @@ const Reviews = () => {
       }
     }, 8000);
     return () => clearInterval(interval);
-  }, [isDragging, reviews.length]);
+  }, [isDragging, reviews.length, nextReview]);
 
   const variants = {
     enter: (direction: string) => ({

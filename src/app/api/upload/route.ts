@@ -1,13 +1,17 @@
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 
 const s3 = new S3Client({ region: process.env.AWS_REGION });
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "admin") {
+  if (
+    !session ||
+    !session.user ||
+    (session.user as { role?: string }).role !== "admin"
+  ) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -37,7 +41,7 @@ export async function POST(req: Request) {
       message: "File uploaded successfully",
       url: `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${file.name}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Upload error:", error);
     return NextResponse.json(
       { error: "Failed to upload file" },

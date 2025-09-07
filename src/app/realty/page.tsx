@@ -169,6 +169,84 @@ const Page = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="bg-gradient-to-b from-white to-[#F9F6F9] rounded-t-3xl p-8 lg:p-10">
+              <motion.div
+                className="text-center mb-16 relative"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                {/* Decorative Elements */}
+                <motion.div
+                  className="flex items-center justify-center mb-8"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6, delay: 1 }}
+                >
+                  <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#85277F] to-transparent"></div>
+                  <div className="mx-4 w-3 h-3 bg-[#85277F] rounded-full"></div>
+                  <div className="w-16 h-px bg-gradient-to-r from-transparent via-[#85277F] to-transparent"></div>
+                </motion.div>
+
+                {/* Main Title */}
+                <motion.h2
+                  className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.3 }}
+                >
+                  Premium Investment
+                  <span className="block bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
+                    Opportunities
+                  </span>
+                </motion.h2>
+
+                {/* Description */}
+                <motion.p
+                  className="text-gray-600 max-w-4xl mx-auto text-lg leading-relaxed font-light"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  Our Realty division offers a portfolio of luxury villas and
+                  prime land holdings along Guanacaste&apos;s Gold Coast,
+                  available exclusively through O.F.Y.S. Unlike traditional
+                  brokerages, we focus solely on properties we own or directly
+                  represent, ensuring quality, transparency, and value. Each
+                  home and parcel is chosen for its location, design potential,
+                  and long-term investment strength. Whether you&apos;re seeking
+                  a move-in-ready villa or a development site to bring your
+                  vision to life, purchasing through O.F.Y.S. means you deal
+                  directly with the source—streamlining the process and
+                  guaranteeing authenticity at every step.
+                </motion.p>
+              </motion.div>
+
+              {/* Featured Properties Title */}
+              <motion.div
+                className="text-center mb-12 relative"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <motion.h3
+                  className="text-2xl md:text-3xl font-semibold text-gray-800 mb-2"
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  Featured Properties
+                </motion.h3>
+                <motion.div
+                  className="w-12 h-px bg-gradient-to-r from-transparent via-[#85277F] to-transparent mx-auto"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.7 }}
+                />
+              </motion.div>
+
               {/* Property Cards */}
               {loading ? (
                 <div className="flex justify-center items-center py-20">
@@ -188,7 +266,8 @@ const Page = () => {
                         <motion.div
                           className="group relative overflow-hidden rounded-2xl shadow-lg bg-white h-full flex flex-col"
                           initial={{ opacity: 0, y: 40 }}
-                          animate={{ opacity: 1, y: 0 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
                           transition={{
                             duration: 0.75,
                             delay: index * 0.2,

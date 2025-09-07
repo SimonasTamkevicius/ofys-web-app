@@ -11,17 +11,33 @@ const LandingScreen = forwardRef<HTMLDivElement, LandingScreenProps>(
     const { scrollY } = useScroll();
     const y = useTransform(scrollY, [0, 300], [0, 60], { clamp: false });
 
-    // Floating particles configuration
-    const particles = Array.from({ length: 12 }).map((_, i) => ({
-      id: i,
-      size: Math.random() * 4 + 2,
-      delay: Math.random() * 2,
-      duration: 4 + Math.random() * 3,
-      position: {
-        x: Math.random() * 100,
-        y: Math.random() * 100,
+    // Floating particles configuration - fixed values to prevent hydration issues
+    const particles = [
+      { id: 0, size: 3, delay: 0.2, duration: 5, position: { x: 15, y: 25 } },
+      { id: 1, size: 4, delay: 0.8, duration: 6, position: { x: 75, y: 35 } },
+      { id: 2, size: 2, delay: 1.2, duration: 4, position: { x: 25, y: 75 } },
+      { id: 3, size: 5, delay: 1.7, duration: 7, position: { x: 65, y: 85 } },
+      { id: 4, size: 3, delay: 0.5, duration: 5.5, position: { x: 45, y: 15 } },
+      { id: 5, size: 4, delay: 1.0, duration: 6.5, position: { x: 85, y: 65 } },
+      { id: 6, size: 2, delay: 1.5, duration: 4.5, position: { x: 35, y: 45 } },
+      { id: 7, size: 3, delay: 0.3, duration: 5.2, position: { x: 55, y: 55 } },
+      { id: 8, size: 4, delay: 0.9, duration: 6.2, position: { x: 20, y: 60 } },
+      { id: 9, size: 2, delay: 1.3, duration: 4.8, position: { x: 80, y: 20 } },
+      {
+        id: 10,
+        size: 3,
+        delay: 0.6,
+        duration: 5.8,
+        position: { x: 40, y: 80 },
       },
-    }));
+      {
+        id: 11,
+        size: 4,
+        delay: 1.1,
+        duration: 6.8,
+        position: { x: 70, y: 40 },
+      },
+    ];
 
     return (
       <div ref={ref} className="relative h-screen w-full overflow-hidden">

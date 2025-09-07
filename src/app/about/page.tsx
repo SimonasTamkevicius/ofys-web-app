@@ -4,7 +4,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import Navbar from "../custom-components/generic/Navbar";
-import team from "../data/team";
+// import team from "../data/team";
 import ScrollIndicator from "../custom-components/generic/ScrollIndicator";
 import CTA from "../custom-components/generic/CTA";
 
@@ -206,7 +206,7 @@ const AboutPage = () => {
                 <p className="text-xl text-gray-600 leading-relaxed font-light">
                   Our name reflects our mission: to provide seamless,
                   high-quality support in every aspect of luxury real estate
-                  along Costa Rica's Gold Coast.
+                  along Costa Rica&apos;s Gold Coast.
                 </p>
 
                 <p className="text-lg text-gray-700 leading-relaxed">
@@ -214,8 +214,8 @@ const AboutPage = () => {
                   professional property management and expert realty services,
                   O.F.Y.S. is built on a foundation of excellence. We combine
                   local expertise with international standards to ensure that
-                  every client's investment, lifestyle, and vision are met with
-                  precision, care, and lasting value.
+                  every client&apos;s investment, lifestyle, and vision are met
+                  with precision, care, and lasting value.
                 </p>
               </div>
             </motion.div>

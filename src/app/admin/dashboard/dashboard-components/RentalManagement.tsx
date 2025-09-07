@@ -298,12 +298,24 @@ export default function RentalManagement() {
         formDataToSend.append("floorplan", formData.floorplan);
       }
 
-      // Handle gallery images - only send new files, existing ones are preserved
+      // Handle gallery images - send existing URLs and new files separately
+      const existingGalleryUrls: string[] = [];
+
       formData.gallery.forEach((galleryImage) => {
         if ("file" in galleryImage) {
+          // New file - append directly
           formDataToSend.append("gallery", galleryImage.file);
+        } else {
+          // Existing image - collect URL to preserve
+          existingGalleryUrls.push(galleryImage.url);
         }
       });
+
+      // Send existing URLs as JSON string
+      formDataToSend.append(
+        "existingGalleryUrls",
+        JSON.stringify(existingGalleryUrls)
+      );
 
       const url = editingRental ? "/api/rentals" : "/api/rentals";
       const method = editingRental ? "PUT" : "POST";
@@ -844,8 +856,8 @@ export default function RentalManagement() {
           <DialogHeader>
             <DialogTitle>Delete Rental</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{rentalToDelete?.name}"? This
-              action cannot be undone.
+              Are you sure you want to delete &quot;{rentalToDelete?.name}
+              &quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

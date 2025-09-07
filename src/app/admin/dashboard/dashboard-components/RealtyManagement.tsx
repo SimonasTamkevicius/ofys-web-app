@@ -23,7 +23,7 @@ import {
   Bed,
   Bath,
   Users,
-  Upload,
+  // Upload,
   GripVertical,
 } from "lucide-react";
 
@@ -294,12 +294,24 @@ export default function RealtyManagement() {
         formDataToSend.append("floorplan", formData.floorplan);
       }
 
-      // Handle gallery images - only send new files, existing ones are preserved
+      // Handle gallery images - send existing URLs and new files separately
+      const existingGalleryUrls: string[] = [];
+
       formData.gallery.forEach((galleryImage) => {
         if ("file" in galleryImage) {
+          // New file - append directly
           formDataToSend.append("gallery", galleryImage.file);
+        } else {
+          // Existing image - collect URL to preserve
+          existingGalleryUrls.push(galleryImage.url);
         }
       });
+
+      // Send existing URLs as JSON string
+      formDataToSend.append(
+        "existingGalleryUrls",
+        JSON.stringify(existingGalleryUrls)
+      );
 
       const url = editingProperty ? "/api/realty" : "/api/realty";
       const method = editingProperty ? "PUT" : "POST";
@@ -746,6 +758,11 @@ export default function RealtyManagement() {
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-lg">{realty.name}</CardTitle>
                   <div className="flex gap-2">
+                    {realty.category && (
+                      <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                        {realty.category}
+                      </span>
+                    )}
                     {realty.featured && (
                       <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
                         Featured
@@ -809,8 +826,8 @@ export default function RealtyManagement() {
           <DialogHeader>
             <DialogTitle>Delete Property</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{propertyToDelete?.name}"? This
-              action cannot be undone.
+              Are you sure you want to delete &quot;{propertyToDelete?.name}
+              &quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

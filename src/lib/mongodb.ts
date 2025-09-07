@@ -14,17 +14,8 @@ type MongooseCache = {
   promise: Promise<typeof mongoose> | null;
 };
 
-// Extend the NodeJS global type to include mongoose
-declare global {
-  // eslint-disable-next-line no-var
-  var mongoose: MongooseCache | undefined;
-}
-
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
-
-if (!global.mongoose) {
-  global.mongoose = cached;
-}
+// Use a simple module-level cache instead of global
+const cached: MongooseCache = { conn: null, promise: null };
 
 export async function connectToDatabase() {
   if (cached.conn) return cached.conn;

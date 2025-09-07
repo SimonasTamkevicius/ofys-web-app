@@ -12,7 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Search, Edit, Trash2 } from "lucide-react";
 
@@ -302,8 +302,8 @@ export default function FAQManagement() {
           <DialogHeader>
             <DialogTitle>Delete FAQ</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{faqToDelete?.question}"? This
-              action cannot be undone.
+              Are you sure you want to delete &quot;{faqToDelete?.question}
+              &quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

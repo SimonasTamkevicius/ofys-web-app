@@ -299,13 +299,12 @@ const RentalsPage = () => {
                   {apartmentProperty ? (
                     <motion.div
                       initial={{ opacity: 0, y: 40 }}
-                      whileInView={{ opacity: 1, y: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
                         duration: 0.75,
                         delay: 0.4,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
                     >
                       <Link
                         href={`/rentals/${apartmentProperty._id}`}
@@ -395,13 +394,12 @@ const RentalsPage = () => {
                   {bungalowProperty ? (
                     <motion.div
                       initial={{ opacity: 0, y: 40 }}
-                      whileInView={{ opacity: 1, y: 0 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{
                         duration: 0.75,
                         delay: 0.6,
                         ease: [0.16, 1, 0.3, 1],
                       }}
-                      viewport={{ once: true, margin: "0px 0px -100px 0px" }}
                     >
                       <Link
                         href={`/rentals/${bungalowProperty._id}`}

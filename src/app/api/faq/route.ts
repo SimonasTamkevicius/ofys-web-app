@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import FAQ from "@/lib/models/FAQ";
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "admin") {
+  if (
+    !session ||
+    !session.user ||
+    (session.user as { role?: string }).role !== "admin"
+  ) {
     return null;
   }
   return session;

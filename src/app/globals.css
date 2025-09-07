@@ -231,6 +231,16 @@ body {
   overflow-x: hidden;
 }
 
+/* Prevent flash of unstyled content during loading */
+body.loading {
+  overflow: hidden;
+}
+
+body.loading > *:not(.loading-screen) {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @layer base {
   :root {
     --sidebar: oklch(0.985 0 0);

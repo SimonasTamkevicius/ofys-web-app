@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import Listing from "@/lib/models/Listing";
 import { uploadToS3, deleteFromS3, deleteMultipleFromS3 } from "@/lib/s3";
@@ -8,7 +8,11 @@ import { randomUUID } from "crypto";
 
 async function checkAdmin() {
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== "admin") {
+  if (
+    !session ||
+    !session.user ||
+    (session.user as { role?: string }).role !== "admin"
+  ) {
     return null;
   }
   return session;
@@ -152,7 +156,7 @@ export async function PUT(req: Request) {
     icon: "default-icon.png", // or map to your icon logic
   }));
 
-  const updateData: any = {
+  const updateData: Record<string, unknown> = {
     name: formData.get("name"),
     description: formData.get("description"),
     location: formData.get("location") as string,
@@ -182,32 +186,72 @@ export async function PUT(req: Request) {
     }
   }
 
+  // Get existing listing to preserve current images
+  const existingListing = await Listing.findById(id);
+  if (!existingListing) {
+    return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+  }
+
   // Optional files
   const mainImage = formData.get("mainImage") as File | null;
   const floorplan = formData.get("floorplan") as File | null;
-  const gallery = formData.getAll("gallery") as File[];
+
+  // Handle gallery - get existing URLs and new files separately
+  const existingGalleryUrls = JSON.parse(
+    (formData.get("existingGalleryUrls") as string) || "[]"
+  );
+  const newGalleryFiles = formData.getAll("gallery") as File[];
 
   if (mainImage) {
     const buffer = Buffer.from(await mainImage.arrayBuffer());
     const key = `listings/${randomUUID()}-${mainImage.name}`;
     updateData.mainImage = await uploadToS3(buffer, key, mainImage.type);
+    // Delete old main image from S3 if it exists
+    if (existingListing.mainImage) {
+      await deleteFromS3(existingListing.mainImage);
+    }
+  } else {
+    // Preserve existing main image
+    updateData.mainImage = existingListing.mainImage;
   }
 
   if (floorplan) {
     const buffer = Buffer.from(await floorplan.arrayBuffer());
     const key = `listings/${randomUUID()}-${floorplan.name}`;
     updateData.floorPlanImage = await uploadToS3(buffer, key, floorplan.type);
+    // Delete old floorplan image from S3 if it exists
+    if (existingListing.floorPlanImage) {
+      await deleteFromS3(existingListing.floorPlanImage);
+    }
+  } else {
+    // Preserve existing floorplan image
+    updateData.floorPlanImage = existingListing.floorPlanImage;
   }
 
-  if (gallery.length > 0) {
-    const galleryUrls: string[] = [];
-    for (const file of gallery) {
+  // Process gallery - combine existing URLs with new uploaded files
+  const finalGalleryUrls: string[] = [];
+
+  // Start with existing URLs that should be preserved
+  finalGalleryUrls.push(...existingGalleryUrls);
+
+  // Upload new gallery files
+  if (newGalleryFiles.length > 0) {
+    for (const file of newGalleryFiles) {
       const buffer = Buffer.from(await file.arrayBuffer());
       const key = `listings/gallery/${randomUUID()}-${file.name}`;
       const url = await uploadToS3(buffer, key, file.type);
-      galleryUrls.push(url);
+      finalGalleryUrls.push(url);
     }
-    updateData.galleryImages = galleryUrls;
+  }
+
+  updateData.galleryImages = finalGalleryUrls;
+
+  // Delete removed images from S3
+  const imagesToDelete = existingListing.galleryImages.filter(
+    (existingUrl: string) => !finalGalleryUrls.includes(existingUrl)
+  );
+  if (imagesToDelete.length > 0) {
+    await deleteMultipleFromS3(imagesToDelete);
   }
 
   const updatedListing = await Listing.findByIdAndUpdate(id, updateData, {

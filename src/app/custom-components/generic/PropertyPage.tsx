@@ -72,8 +72,8 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
     amenities,
     price,
     pricePerNight,
-    pricePerWeek,
-    pricePerMonth,
+    // pricePerWeek,
+    // pricePerMonth,
     galleryImages,
     gallery,
     mainImage,
@@ -83,7 +83,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
   // Handle different data structures
   const propertyPrice =
     price || (pricePerNight ? `$${pricePerNight}/night` : "");
-  const propertyLocation = property.location || "Costa Rica";
+  // const propertyLocation = property.location || "Costa Rica";
   const propertyGallery = galleryImages || gallery || [];
   const propertyMainImage = mainImage || imageUrl || "";
 
@@ -115,12 +115,17 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
   // Lightbox controls
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = () => setLightboxIndex(null);
-  const nextImage = () =>
-    setLightboxIndex((prev) => (prev! + 1) % propertyGallery.length);
-  const prevImage = () =>
-    setLightboxIndex(
-      (prev) => (prev! - 1 + propertyGallery.length) % propertyGallery.length
-    );
+  const nextImage = useCallback(
+    () => setLightboxIndex((prev) => (prev! + 1) % propertyGallery.length),
+    [propertyGallery.length]
+  );
+  const prevImage = useCallback(
+    () =>
+      setLightboxIndex(
+        (prev) => (prev! - 1 + propertyGallery.length) % propertyGallery.length
+      ),
+    [propertyGallery.length]
+  );
 
   // Touch gesture support for mobile
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -225,18 +230,18 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
         </div>
 
         {/* Enhanced property title overlay */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 pb-10 px-6">
+        <div className="absolute bottom-0 left-0 right-0 z-10 pb-6 md:pb-10 px-4 md:px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
             className="max-w-7xl mx-auto"
           >
-            <h1 className="text-4xl md:text-5xl font-serif font-medium text-white mb-4 drop-shadow-lg">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium text-white mb-3 md:mb-4 drop-shadow-lg leading-tight">
               {name}
             </h1>
-            <div className="w-16 h-0.5 bg-white/70 mb-6"></div>
-            <p className="text-white/90 font-light max-w-2xl text-lg leading-relaxed drop-shadow-md">
+            <div className="w-12 md:w-16 h-0.5 bg-white/70 mb-4 md:mb-6"></div>
+            <p className="text-white/90 font-light max-w-6xl text-sm md:text-lg leading-relaxed drop-shadow-md">
               {description}
             </p>
           </motion.div>
@@ -248,18 +253,18 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative w-full bg-white px-8"
+        className="relative w-full bg-white px-4 md:px-8"
       >
-        <div className="max-w-7xl mx-auto py-8">
+        <div className="max-w-7xl mx-auto py-6 md:py-8">
           {/* Amenities & Pricing */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-16 md:mb-24">
             {/* Property Features */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="bg-white rounded-xl p-8 shadow-sm border border-gray-50"
+              className="bg-white rounded-xl p-6 md:p-8 shadow-sm border border-gray-50"
             >
               <div className="flex flex-col h-full">
                 <h3 className="text-2xl font-serif font-medium text-gray-900 mb-6 pb-4 border-b border-gray-100">

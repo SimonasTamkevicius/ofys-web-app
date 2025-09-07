@@ -2,7 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   DeleteObjectCommand,
-  ObjectCannedACL,
+  // ObjectCannedACL,
 } from "@aws-sdk/client-s3";
 
 // Initialize S3 client

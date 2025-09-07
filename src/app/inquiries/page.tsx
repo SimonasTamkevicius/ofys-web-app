@@ -10,7 +10,9 @@ import {
   faMapMarkerAlt,
   faPaperPlane,
   faChevronDown,
-  faChevronUp,
+  // faChevronUp,
+  faCheck,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../custom-components/generic/Navbar";
 import ScrollIndicator from "../custom-components/generic/ScrollIndicator";
@@ -30,6 +32,10 @@ const ContactPage = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [faqLoading, setFaqLoading] = useState(true);
@@ -69,9 +75,41 @@ const ContactPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setSubmitStatus({ type: null, message: "" });
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitStatus({
+          type: "success",
+          message:
+            "Thank you! Your message has been received. We'll get back to you soon.",
+        });
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setSubmitStatus({
+          type: "error",
+          message: result.error || "Failed to send message. Please try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setSubmitStatus({
+        type: "error",
+        message: "Network error. Please check your connection and try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleFaq = (index: number) => {
@@ -405,6 +443,42 @@ const ContactPage = () => {
                       required
                     />
                   </div>
+
+                  {/* Success/Error Message */}
+                  {submitStatus.type && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`p-4 rounded-xl border ${
+                        submitStatus.type === "success"
+                          ? "bg-green-50 border-green-200 text-green-800"
+                          : "bg-red-50 border-red-200 text-red-800"
+                      }`}
+                    >
+                      <div className="flex items-center">
+                        <div
+                          className={`w-5 h-5 rounded-full flex items-center justify-center mr-3 ${
+                            submitStatus.type === "success"
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                          }`}
+                        >
+                          <FontAwesomeIcon
+                            icon={
+                              submitStatus.type === "success"
+                                ? faCheck
+                                : faTimes
+                            }
+                            className="w-3 h-3 text-white"
+                          />
+                        </div>
+                        <p className="text-sm font-medium">
+                          {submitStatus.message}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
 
                   <motion.div
                     className="flex justify-center"

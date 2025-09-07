@@ -146,7 +146,7 @@ const PropertyCard = ({
             <h2 className="text-2xl md:text-4xl font-bold text-gray-800 leading-tight group-hover:text-gray-900 transition-colors duration-300">
               {name}
             </h2>
-            <p className="text-gray-600 leading-relaxed text-md group-hover:text-gray-700 transition-colors duration-300">
+            <p className="text-gray-600 leading-relaxed text-md group-hover:text-gray-700 transition-colors duration-300 line-clamp-3">
               {description}
             </p>
           </div>

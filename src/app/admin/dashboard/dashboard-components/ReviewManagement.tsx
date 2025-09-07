@@ -12,7 +12,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  // DialogTrigger,
 } from "@/components/ui/dialog";
 import { Plus, Search, Edit, Trash2, Star } from "lucide-react";
 
@@ -351,7 +351,7 @@ export default function ReviewManagement() {
               <CardContent>
                 <div className="flex justify-between items-start">
                   <p className="text-muted-foreground flex-1 mr-4">
-                    "{review.content}"
+                    &quot;{review.content}&quot;
                   </p>
                   <div className="flex space-x-2">
                     <Button
@@ -382,8 +382,8 @@ export default function ReviewManagement() {
           <DialogHeader>
             <DialogTitle>Delete Review</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete the review by "
-              {reviewToDelete?.author}"? This action cannot be undone.
+              Are you sure you want to delete the review by &quot;
+              {reviewToDelete?.author}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
