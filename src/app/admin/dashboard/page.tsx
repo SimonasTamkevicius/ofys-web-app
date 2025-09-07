@@ -27,7 +27,7 @@ export default function Page() {
     }
 
     // Check if user has admin role
-    if ((session.user as any)?.role !== "admin") {
+    if ((session.user as { role?: string })?.role !== "admin") {
       // Not an admin, redirect to home
       router.push("/");
       return;
@@ -47,7 +47,7 @@ export default function Page() {
   }
 
   // Show nothing while redirecting
-  if (!session || (session.user as any)?.role !== "admin") {
+  if (!session || (session.user as { role?: string })?.role !== "admin") {
     return null;
   }
 
