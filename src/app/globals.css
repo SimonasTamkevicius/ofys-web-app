@@ -2,6 +2,95 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* ---------- Safari Rendering Optimizations ---------- */
+
+/* 1. Enable GPU acceleration for smoother animations/transforms */
+/* Apply to specific elements that need optimization */
+[data-framer-motion],
+.motion-div,
+.animate-pulse,
+.animate-bounce,
+.animate-spin,
+div:not(.fixed.inset-0.z-50),
+section:not(.fixed.inset-0.z-50),
+article:not(.fixed.inset-0.z-50),
+main:not(.fixed.inset-0.z-50),
+header:not(.fixed.inset-0.z-50),
+footer:not(.fixed.inset-0.z-50),
+nav:not(.fixed.inset-0.z-50),
+aside:not(.fixed.inset-0.z-50) {
+  -webkit-transform: translateZ(0); /* Forces GPU compositing */
+  -webkit-backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased; /* Smoother text on macOS */
+  -moz-osx-font-smoothing: grayscale; /* For Firefox on macOS */
+}
+
+/* 2. Prevent iOS Safari zooming text when rotating device */
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+/* 3. Improve scrolling on iOS (momentum scrolling) */
+body {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 4. Prevent overscroll bounce on full-screen sections (optional) */
+html,
+body {
+  overscroll-behavior: none;
+}
+
+/* 5. Fix Safari issues with sticky + transforms (optional) */
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+/* 6. Force hardware-accelerated smooth scrolling (especially for motion-heavy pages) */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 7. Exclude loading screen from backface-visibility hidden */
+.fixed.inset-0.z-50 {
+  -webkit-backface-visibility: visible !important;
+}
+
+/* Desktop Safari specific optimizations */
+@supports (-webkit-appearance: none) and (not (display: -webkit-box)) {
+  /* Desktop Safari only (not mobile Safari) */
+  .fixed.inset-0.z-50 {
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: visible;
+    -webkit-perspective: 1000px;
+    will-change: transform, opacity;
+  }
+
+  /* Improve desktop Safari rendering for complex layouts */
+  [data-framer-motion],
+  .motion-div {
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Desktop Safari animation optimizations */
+  .animate-pulse,
+  .animate-bounce {
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+  }
+
+  /* Desktop Safari loading screen specific fixes */
+  .fixed.inset-0.z-50 .animate-pulse {
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: visible;
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Maybe

@@ -31,7 +31,7 @@ const ServiceCard = ({
         delay: index * 0.2,
         ease: "easeOut",
       }}
-      viewport={{ once: true, amount: 0.3 }}
+      viewport={{ once: true }}
     >
       {/* Image Container */}
       <div className="relative h-64 flex-shrink-0 overflow-hidden">
