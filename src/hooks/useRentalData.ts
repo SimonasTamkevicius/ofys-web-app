@@ -11,7 +11,8 @@ interface Rental {
   pricePerNight: number;
   pricePerWeek: number;
   pricePerMonth: number;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Apartment" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];

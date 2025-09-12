@@ -93,14 +93,7 @@ const ImageBanner = () => {
             transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             viewport={{ once: true }}
           >
-            Call{" "}
-            <a
-              href="tel:+18004784251"
-              className="font-medium hover:text-[#E5D9E4] transition-colors duration-300"
-            >
-              +1 (416) 111-1111
-            </a>{" "}
-            or contact us online to begin your journey
+            Contact us online to begin your journey
           </motion.p>
 
           <motion.div

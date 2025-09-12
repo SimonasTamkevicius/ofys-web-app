@@ -1,12 +1,17 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
-  faPhone,
   faMapMarkerAlt,
   faPaperPlane,
   faChevronDown,
@@ -24,10 +29,119 @@ interface FAQ {
   category: string;
 }
 
+// Memoized FAQ Item Component for better performance
+const FAQItem = React.memo(
+  ({
+    faq,
+    index,
+    isActive,
+    onToggle,
+  }: {
+    faq: FAQ;
+    index: number;
+    isActive: boolean;
+    onToggle: (index: number) => void;
+  }) => {
+    // Memoize expensive class computations
+    const containerClasses = useMemo(
+      () =>
+        `group cursor-pointer transition-all duration-200 rounded-2xl border overflow-hidden ${
+          isActive
+            ? "bg-white shadow-xl border-[#85277F]/20 shadow-[#85277F]/10"
+            : "bg-white shadow-sm border-gray-200 hover:shadow-lg hover:border-[#85277F]/30"
+        }`,
+      [isActive]
+    );
+
+    const titleClasses = useMemo(
+      () =>
+        `text-lg font-medium transition-colors duration-200 ${
+          isActive
+            ? "text-[#85277F]"
+            : "text-gray-800 group-hover:text-[#85277F]"
+        }`,
+      [isActive]
+    );
+
+    // Memoize animation variants to prevent recreation
+    const animationVariants = useMemo(
+      () => ({
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.3, delay: index * 0.05 },
+      }),
+      [index]
+    );
+
+    const expandVariants = useMemo(
+      () => ({
+        initial: { height: 0, opacity: 0 },
+        animate: {
+          height: isActive ? "auto" : 0,
+          opacity: isActive ? 1 : 0,
+        },
+        transition: {
+          height: { duration: 0.3, ease: "easeInOut" },
+          opacity: { duration: 0.2, delay: isActive ? 0.1 : 0 },
+        },
+      }),
+      [isActive]
+    );
+    return (
+      <motion.div
+        className="overflow-hidden"
+        initial={animationVariants.initial}
+        whileInView={animationVariants.animate}
+        transition={animationVariants.transition}
+        viewport={{ once: true }}
+      >
+        <div className={containerClasses} onClick={() => onToggle(index)}>
+          <div className="p-6">
+            <div className="flex justify-between items-start">
+              <div className="flex-1 pr-4">
+                <h3 className={titleClasses}>{faq.question}</h3>
+                {faq.category && faq.category !== "General" && (
+                  <span className="inline-block mt-2 px-3 py-1 bg-[#85277F]/10 text-[#85277F] text-xs font-medium rounded-full">
+                    {faq.category}
+                  </span>
+                )}
+              </div>
+              <motion.div
+                className="flex-shrink-0 w-8 h-8 rounded-full bg-[#85277F]/10 flex items-center justify-center group-hover:bg-[#85277F]/20 transition-colors duration-200"
+                animate={{ rotate: isActive ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className="text-[#85277F]"
+                />
+              </motion.div>
+            </div>
+
+            <motion.div
+              className="overflow-hidden"
+              initial={expandVariants.initial}
+              animate={expandVariants.animate}
+              transition={expandVariants.transition}
+            >
+              <div className="pt-4 mt-4 border-t border-gray-100">
+                <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
+    );
+  }
+);
+
+FAQItem.displayName = "FAQItem";
+
 const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    category: "",
     subject: "",
     message: "",
   });
@@ -64,7 +178,9 @@ const ContactPage = () => {
   }, []);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setFormData({
       ...formData,
@@ -94,7 +210,13 @@ const ContactPage = () => {
           message:
             "Thank you! Your message has been received. We'll get back to you soon.",
         });
-        setFormData({ name: "", email: "", subject: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          category: "",
+          subject: "",
+          message: "",
+        });
       } else {
         setSubmitStatus({
           type: "error",
@@ -112,9 +234,24 @@ const ContactPage = () => {
     }
   };
 
-  const toggleFaq = (index: number) => {
-    setActiveFaq(activeFaq === index ? null : index);
-  };
+  const toggleFaq = useCallback((index: number) => {
+    setActiveFaq((prev) => (prev === index ? null : index));
+  }, []);
+
+  // Memoize FAQ list to prevent unnecessary re-renders
+  const faqList = useMemo(
+    () =>
+      faqs.map((faq, index) => (
+        <FAQItem
+          key={faq._id}
+          faq={faq}
+          index={index}
+          isActive={activeFaq === index}
+          onToggle={toggleFaq}
+        />
+      )),
+    [faqs, activeFaq, toggleFaq]
+  );
 
   const containerRef = useRef(null);
 
@@ -225,106 +362,8 @@ const ContactPage = () => {
         <ScrollIndicator />
       </section>
 
-      {/* Contact Options Section */}
-      <section className="w-full py-24 bg-gray-50">
-        <div className="container mx-auto px-6 md:px-12">
-          {/* Header with decorative element */}
-          <motion.div
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <div className="inline-flex flex-col items-center">
-              <span className="text-lg tracking-widest uppercase text-[#85277F] font-light mb-3">
-                Contact Options
-              </span>
-              <motion.div
-                className="h-0.5 w-16 bg-[#85277F]/60 mb-8"
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                viewport={{ once: true }}
-              />
-            </div>
-            <h2 className="text-4xl md:text-5xl font-serif font-medium text-gray-900 max-w-2xl mx-auto">
-              How Can We Help You?
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Email Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
-              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center bg-gradient-to-br from-[#85277F] to-[#9E3A95] text-white group-hover:rotate-6 transition-transform duration-300">
-                <FontAwesomeIcon icon={faEnvelope} className="h-8 w-8" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-gray-800 mb-4 text-center">
-                Email Us
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                For detailed inquiries and documentation
-              </p>
-              <p className="text-lg font-medium text-[#85277F] text-center hover:text-[#9E3A95] transition-colors">
-                info@ofys.com
-              </p>
-            </motion.div>
-
-            {/* Phone Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center bg-gradient-to-br from-[#85277F] to-[#9E3A95] text-white group-hover:rotate-6 transition-transform duration-300">
-                <FontAwesomeIcon icon={faPhone} className="h-8 w-8" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-gray-800 mb-4 text-center">
-                Call Us
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                Direct access to our specialists
-              </p>
-              <p className="text-lg font-medium text-[#85277F] text-center hover:text-[#9E3A95] transition-colors">
-                +1 (111) 111-1111
-              </p>
-            </motion.div>
-
-            {/* Location Option */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-              className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 group"
-            >
-              <div className="w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center bg-gradient-to-br from-[#85277F] to-[#9E3A95] text-white group-hover:rotate-6 transition-transform duration-300">
-                <FontAwesomeIcon icon={faMapMarkerAlt} className="h-8 w-8" />
-              </div>
-              <h3 className="text-2xl font-serif font-bold text-gray-800 mb-4 text-center">
-                Visit Us
-              </h3>
-              <p className="text-gray-600 text-center mb-4">
-                Experience Costa Rica firsthand
-              </p>
-              <p className="text-lg font-medium text-[#85277F] text-center hover:text-[#9E3A95] transition-colors">
-                San José, Costa Rica
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* Contact Form Section with Side Content */}
-      <section className="w-full bg-white py-20 px-8 md:px-20">
+      <section className="w-full bg-white py-10 px-8 md:px-20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <motion.div
@@ -404,6 +443,29 @@ const ContactPage = () => {
                       className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#85277F] focus:border-[#85277F] transition-all duration-300"
                       required
                     />
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="category"
+                      className="block font-medium text-gray-700 mb-2"
+                    >
+                      Category *
+                    </label>
+                    <select
+                      id="category"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#85277F] focus:border-[#85277F] transition-all duration-300"
+                      required
+                    >
+                      <option value="">Select a category</option>
+                      <option value="Realty">Realty</option>
+                      <option value="Rentals">Rentals</option>
+                      <option value="Construction">Construction</option>
+                      <option value="General Inquiry">General Inquiry</option>
+                    </select>
                   </div>
 
                   <div>
@@ -543,59 +605,63 @@ const ContactPage = () => {
                 </div>
 
                 <h3 className="text-2xl font-serif font-bold text-gray-800 mb-4">
-                  Why Choose Us?
+                  Ready to Start Your Journey?
                 </h3>
 
                 <div className="space-y-4 text-gray-600 mb-6">
-                  {/* Benefit 1 - Customize for your business */}
                   <p className="flex items-start">
-                    <span className="w-8 h-8 bg-[#85277F] text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                      1
-                    </span>
+                    <FontAwesomeIcon
+                      icon={faMapMarkerAlt}
+                      className="text-[#85277F] mr-3 mt-1 flex-shrink-0"
+                    />
                     <span>
-                      Tailored solutions designed for your specific needs and
-                      goals
+                      Discover luxury properties in Costa Rica&apos;s most
+                      beautiful locations
                     </span>
                   </p>
 
-                  {/* Benefit 2 - Customize for your business */}
                   <p className="flex items-start">
-                    <span className="w-8 h-8 bg-[#85277F] text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                      2
-                    </span>
+                    <FontAwesomeIcon
+                      icon={faEnvelope}
+                      className="text-[#85277F] mr-3 mt-1 flex-shrink-0"
+                    />
                     <span>
-                      Access to exclusive offerings and industry-leading
-                      expertise
+                      Get personalized recommendations based on your preferences
                     </span>
                   </p>
 
-                  {/* Benefit 3 - Customize for your business */}
-                  <p className="flex items-start">
-                    <span className="w-8 h-8 bg-[#85277F] text-white rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                      3
-                    </span>
-                    <span>
-                      Commitment to excellence and customer satisfaction at
-                      every step
-                    </span>
-                  </p>
+                  <p className="flex items-start"></p>
                 </div>
 
                 {/* Contact CTA - Update contact method as needed */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200">
                   <h4 className="font-medium text-gray-800 mb-3 flex items-center">
                     <FontAwesomeIcon
-                      icon={faPhone} // Can change to faEnvelope or other icon
+                      icon={faEnvelope}
                       className="text-[#85277F] mr-2"
                     />
                     Get In Touch
                   </h4>
-                  <p className="text-gray-600 text-sm">
-                    Have questions? Contact us directly at{" "}
-                    <span className="text-[#85277F] font-medium">
-                      +1 (555) 555-5555
-                    </span>
-                  </p>
+                  <div className="text-gray-600 text-sm space-y-2">
+                    <p>Have questions? Contact us directly:</p>
+                    <div className="space-y-1">
+                      <p>
+                        <span className="text-[#85277F] font-medium">
+                          Management@ofys.cr
+                        </span>
+                      </p>
+                      <p>
+                        <span className="text-[#85277F] font-medium">
+                          Realty@ofys.cr
+                        </span>
+                      </p>
+                      <p>
+                        <span className="text-[#85277F] font-medium">
+                          Construction@ofys.cr
+                        </span>
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -656,82 +722,7 @@ const ContactPage = () => {
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {faqs.map((faq, index) => (
-                  <motion.div
-                    key={faq._id}
-                    className="overflow-hidden"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    viewport={{ once: true }}
-                  >
-                    <div
-                      className={`group cursor-pointer transition-all duration-300 rounded-2xl border overflow-hidden ${
-                        activeFaq === index
-                          ? "bg-white shadow-xl border-[#85277F]/20 shadow-[#85277F]/10"
-                          : "bg-white shadow-sm border-gray-200 hover:shadow-lg hover:border-[#85277F]/30"
-                      }`}
-                      onClick={() => toggleFaq(index)}
-                    >
-                      <div className="p-6">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1 pr-4">
-                            <h3
-                              className={`text-lg font-medium transition-colors duration-300 ${
-                                activeFaq === index
-                                  ? "text-[#85277F]"
-                                  : "text-gray-800 group-hover:text-[#85277F]"
-                              }`}
-                            >
-                              {faq.question}
-                            </h3>
-                            {faq.category && faq.category !== "General" && (
-                              <span className="inline-block mt-2 px-3 py-1 bg-[#85277F]/10 text-[#85277F] text-xs font-medium rounded-full">
-                                {faq.category}
-                              </span>
-                            )}
-                          </div>
-                          <motion.div
-                            className="flex-shrink-0 w-8 h-8 rounded-full bg-[#85277F]/10 flex items-center justify-center group-hover:bg-[#85277F]/20 transition-colors duration-300"
-                            animate={{ rotate: activeFaq === index ? 180 : 0 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faChevronDown}
-                              className={`text-[#85277F] transition-transform duration-300 ${
-                                activeFaq === index ? "rotate-180" : ""
-                              }`}
-                            />
-                          </motion.div>
-                        </div>
-
-                        <motion.div
-                          className="overflow-hidden"
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{
-                            height: activeFaq === index ? "auto" : 0,
-                            opacity: activeFaq === index ? 1 : 0,
-                          }}
-                          transition={{
-                            height: { duration: 0.4, ease: "easeInOut" },
-                            opacity: {
-                              duration: 0.3,
-                              delay: activeFaq === index ? 0.1 : 0,
-                            },
-                          }}
-                        >
-                          <div className="pt-4 mt-4 border-t border-gray-100">
-                            <p className="text-gray-600 leading-relaxed">
-                              {faq.answer}
-                            </p>
-                          </div>
-                        </motion.div>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+              <div className="space-y-4">{faqList}</div>
             )}
           </div>
         </div>

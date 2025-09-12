@@ -15,7 +15,8 @@ export interface Rental extends Document {
   pricePerNight: number;
   pricePerWeek: number;
   pricePerMonth: number;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Apartment" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];
@@ -38,10 +39,11 @@ const RentalSchema = new Schema<Rental>(
     pricePerNight: { type: Number, required: true },
     pricePerWeek: { type: Number, required: true },
     pricePerMonth: { type: Number, required: true },
+    order: { type: Number, default: 0 },
     category: {
       type: String,
       required: true,
-      enum: ["Villa", "Apartment", "Bungalow"],
+      enum: ["Villa", "Apartment", "Casita"],
       default: "Villa",
     },
     mainImage: { type: String, required: true },

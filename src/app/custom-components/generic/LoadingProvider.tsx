@@ -100,14 +100,14 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({
             </div>
 
             {/* Animated logo */}
-            <div className="relative z-10 text-5xl md:text-6xl font-serif font-medium mb-12">
+            <div className="relative z-10 text-4xl sm:text-5xl md:text-6xl font-serif font-medium mb-8 sm:mb-12">
               <span className="bg-gradient-to-r from-[#85277F] via-[#9E3A95] to-[#C4A3C1] bg-clip-text text-transparent">
                 OFYS
               </span>
             </div>
 
             {/* Luxury progress bar */}
-            <div className="w-full max-w-md h-1.5 bg-white/30 rounded-full overflow-hidden shadow-inner relative z-10 mb-6">
+            <div className="w-3/4 sm:w-2/3 md:w-1/2 lg:max-w-md h-1.5 bg-white/30 rounded-full overflow-hidden shadow-inner relative z-10 mb-6">
               <div
                 className="h-full bg-gradient-to-r from-[#85277F] to-[#9E3A95] transition-all duration-500 ease-out"
                 style={{
@@ -117,7 +117,7 @@ export const LoadingProvider: React.FC<LoadingProviderProps> = ({
             </div>
 
             {/* Loading text */}
-            <div className="text-sm text-[#85277F]/80 font-light tracking-wider relative z-10">
+            <div className="text-xs sm:text-sm text-[#85277F]/80 font-light tracking-wider relative z-10">
               <span>{Math.round(progress)}% LOADING</span>
             </div>
 

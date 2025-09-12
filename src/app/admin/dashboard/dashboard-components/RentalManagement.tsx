@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 // import { Input } from "@/components/ui/input";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   Plus,
   Search,
@@ -38,7 +55,8 @@ interface Rental {
   pricePerNight: number;
   pricePerWeek: number;
   pricePerMonth: number;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Apartment" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];
@@ -57,6 +75,127 @@ interface ExistingGalleryImage {
   isExisting: true;
 }
 
+// Sortable Rental Card Component
+function SortableRentalCard({
+  rental,
+  onEdit,
+  onDelete,
+}: {
+  rental: Rental;
+  onEdit: (rental: Rental) => void;
+  onDelete: (rental: Rental) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: rental._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Card className="cursor-grab active:cursor-grabbing">
+        <CardHeader className="pb-3">
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-lg">{rental.name}</CardTitle>
+            <div className="flex gap-2">
+              {rental.category && (
+                <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                  {rental.category}
+                </span>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-gray-600 text-sm line-clamp-2">
+              {rental.description}
+            </p>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <Bed className="h-4 w-4" />
+                <span>{rental.bedrooms} beds</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Bath className="h-4 w-4" />
+                <span>{rental.bathrooms} baths</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                <span>Sleeps {rental.sleeps}</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 text-sm">
+              <div className="text-center p-2 bg-gray-50 rounded">
+                <div className="font-semibold">
+                  {formatPrice(rental.pricePerNight)}
+                </div>
+                <div className="text-xs text-gray-600">per night</div>
+              </div>
+              <div className="text-center p-2 bg-gray-50 rounded">
+                <div className="font-semibold">
+                  {formatPrice(rental.pricePerWeek)}
+                </div>
+                <div className="text-xs text-gray-600">per week</div>
+              </div>
+              <div className="text-center p-2 bg-gray-50 rounded">
+                <div className="font-semibold">
+                  {formatPrice(rental.pricePerMonth)}
+                </div>
+                <div className="text-xs text-gray-600">per month</div>
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-500">
+                Order: {rental.order || 0}
+              </p>
+            </div>
+
+            <div className="flex justify-end space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onEdit(rental)}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onDelete(rental)}
+                className="text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function RentalManagement() {
   const [rentals, setRentals] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +205,18 @@ export default function RentalManagement() {
   const [editingRental, setEditingRental] = useState<Rental | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [rentalToDelete, setRentalToDelete] = useState<Rental | null>(null);
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -76,7 +227,8 @@ export default function RentalManagement() {
     pricePerNight: "",
     pricePerWeek: "",
     pricePerMonth: "",
-    category: "Villa" as "Villa" | "Apartment" | "Bungalow",
+    order: 0,
+    category: "Villa" as "Villa" | "Apartment" | "Casita",
     amenities: [] as string[],
     mainImage: null as File | null,
     mainImagePreview: "" as string,
@@ -86,23 +238,23 @@ export default function RentalManagement() {
   });
 
   // Fetch rentals from API
-  useEffect(() => {
-    const fetchRentals = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/rentals");
-        if (!response.ok) {
-          throw new Error("Failed to fetch rentals");
-        }
-        const data = await response.json();
-        setRentals(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
+  const fetchRentals = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/rentals");
+      if (!response.ok) {
+        throw new Error("Failed to fetch rentals");
       }
-    };
+      const data = await response.json();
+      setRentals(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchRentals();
   }, []);
 
@@ -118,11 +270,61 @@ export default function RentalManagement() {
       rental.bathrooms.toString().includes(searchTerm)
   );
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (
+    field: string,
+    value: string | boolean | number
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Handle drag end for reordering
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = rentals.findIndex((item) => item._id === active.id);
+      const newIndex = rentals.findIndex((item) => item._id === over?.id);
+
+      const newRentals = arrayMove(rentals, oldIndex, newIndex);
+
+      // Update order values in the local state immediately with a single state update
+      const updatedRentals = newRentals.map((rental, index) => ({
+        ...rental,
+        order: index + 1,
+      }));
+
+      // Use React's batching to prevent multiple re-renders
+      React.startTransition(() => {
+        setRentals(updatedRentals);
+      });
+
+      // Update order values in the database
+      const updates = updatedRentals.map((rental, index) => ({
+        id: rental._id,
+        order: index + 1,
+      }));
+
+      try {
+        const response = await fetch("/api/rentals", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ updates }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update order");
+        }
+      } catch (error) {
+        console.error("Error updating rental order:", error);
+        // Revert the change on error
+        fetchRentals();
+      }
+    }
   };
 
   const createImagePreview = (file: File): Promise<string> => {
@@ -234,6 +436,7 @@ export default function RentalManagement() {
       pricePerNight: rental.pricePerNight.toString(),
       pricePerWeek: rental.pricePerWeek.toString(),
       pricePerMonth: rental.pricePerMonth.toString(),
+      order: rental.order || 0,
       category: rental.category,
       amenities: rental.amenities.map((a) => a.name),
       mainImage: null,
@@ -245,7 +448,9 @@ export default function RentalManagement() {
     setShowForm(true);
   };
 
-  const handleDelete = async (rentalId: string) => {
+  const handleDelete = async () => {
+    if (!rentalToDelete) return;
+    const rentalId = rentalToDelete._id;
     try {
       const response = await fetch("/api/rentals", {
         method: "DELETE",
@@ -287,6 +492,7 @@ export default function RentalManagement() {
       formDataToSend.append("pricePerNight", formData.pricePerNight);
       formDataToSend.append("pricePerWeek", formData.pricePerWeek);
       formDataToSend.append("pricePerMonth", formData.pricePerMonth);
+      formDataToSend.append("order", formData.order.toString());
       formDataToSend.append("category", formData.category);
       formDataToSend.append("amenities", JSON.stringify(formData.amenities));
 
@@ -356,6 +562,7 @@ export default function RentalManagement() {
         pricePerNight: "",
         pricePerWeek: "",
         pricePerMonth: "",
+        order: 0,
         category: "Villa",
         amenities: [],
         mainImage: null,
@@ -386,6 +593,7 @@ export default function RentalManagement() {
       pricePerNight: "",
       pricePerWeek: "",
       pricePerMonth: "",
+      order: 0,
       category: "Villa",
       amenities: [],
       mainImage: null,
@@ -396,15 +604,6 @@ export default function RentalManagement() {
     });
     setShowForm(false);
     setEditingRental(null);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
   };
 
   const commonAmenities = [
@@ -484,10 +683,10 @@ export default function RentalManagement() {
                 >
                   <option value="Villa">Villa</option>
                   <option value="Apartment">Apartment</option>
-                  <option value="Bungalow">Bungalow</option>
+                  <option value="Casita">Casita</option>
                 </select>
                 <p className="text-xs text-gray-600">
-                  Only one Apartment and one Bungalow property are allowed.
+                  Only one Apartment and one Casita property are allowed.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -772,82 +971,27 @@ export default function RentalManagement() {
           <p className="text-muted-foreground">No rentals found.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {filteredRentals.map((rental) => (
-            <Card key={rental._id}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{rental.name}</CardTitle>
-                  <div className="flex gap-2">
-                    <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                      {rental.category}
-                    </span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <p className="text-muted-foreground line-clamp-2">
-                    {rental.description}
-                  </p>
-
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
-                      <span>{rental.bedrooms} beds</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath className="h-4 w-4" />
-                      <span>{rental.bathrooms} baths</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>Sleeps {rental.sleeps}</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-2 text-sm">
-                    <div className="text-center p-2 bg-gray-50 rounded">
-                      <div className="font-semibold">
-                        {formatPrice(rental.pricePerNight)}
-                      </div>
-                      <div className="text-xs text-gray-600">per night</div>
-                    </div>
-                    <div className="text-center p-2 bg-gray-50 rounded">
-                      <div className="font-semibold">
-                        {formatPrice(rental.pricePerWeek)}
-                      </div>
-                      <div className="text-xs text-gray-600">per week</div>
-                    </div>
-                    <div className="text-center p-2 bg-gray-50 rounded">
-                      <div className="font-semibold">
-                        {formatPrice(rental.pricePerMonth)}
-                      </div>
-                      <div className="text-xs text-gray-600">per month</div>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end space-x-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleEdit(rental)}
-                    >
-                      <Edit className="h-4 w-4 mr-1" /> Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => openDeleteDialog(rental)}
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" /> Delete
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={filteredRentals.map((rental) => rental._id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid grid-cols-1 gap-4">
+              {filteredRentals.map((rental) => (
+                <SortableRentalCard
+                  key={rental._id}
+                  rental={rental}
+                  onEdit={handleEdit}
+                  onDelete={openDeleteDialog}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Delete Confirmation Dialog */}
@@ -863,18 +1007,12 @@ export default function RentalManagement() {
           <DialogFooter>
             <Button
               variant="outline"
-              onClick={() => {
-                setDeleteDialogOpen(false);
-                setRentalToDelete(null);
-              }}
+              onClick={() => setDeleteDialogOpen(false)}
             >
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={() => rentalToDelete && handleDelete(rentalToDelete._id)}
-            >
-              Delete Rental
+            <Button variant="destructive" onClick={handleDelete}>
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

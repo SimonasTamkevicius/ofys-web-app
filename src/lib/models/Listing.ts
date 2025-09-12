@@ -14,8 +14,8 @@ export interface Listing extends Document {
   sleeps: number;
   amenities: Amenity[];
   price: number;
-  featured: boolean;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Apartment" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];
@@ -36,11 +36,11 @@ const ListingSchema = new Schema<Listing>(
     sleeps: { type: Number, required: true },
     amenities: [AmenitySchema],
     price: { type: Number, required: true },
-    featured: { type: Boolean, default: false },
+    order: { type: Number, default: 0 },
     category: {
       type: String,
       required: true,
-      enum: ["Villa", "Apartment", "Bungalow"],
+      enum: ["Villa", "Apartment", "Casita"],
       default: "Villa",
     },
     mainImage: { type: String, required: true },

@@ -18,10 +18,12 @@ async function checkAdmin() {
   return session;
 }
 
-// ✅ GET - Fetch all listings
+// ✅ GET - Fetch all listings (excluding apartments)
 export async function GET() {
   await connectToDatabase();
-  const listings = await Listing.find();
+  const listings = await Listing.find({ category: { $ne: "Apartment" } }).sort({
+    order: 1,
+  });
   return NextResponse.json(listings);
 }
 
@@ -44,30 +46,25 @@ export async function POST(req: Request) {
   const bathrooms = parseInt(formData.get("bathrooms") as string);
   const sleeps = parseInt(formData.get("sleeps") as string);
   const price = parseFloat(formData.get("price") as string);
-  const featured = String(formData.get("featured")) === "true";
-  const category = formData.get("category") as
-    | "Villa"
-    | "Apartment"
-    | "Bungalow";
+  const category = formData.get("category") as "Villa" | "Apartment" | "Casita";
   const amenities = JSON.parse(formData.get("amenities") as string);
 
-  // Validate category uniqueness for Apartment and Bungalow
-  if (category === "Apartment" || category === "Bungalow") {
+  // Auto-assign order value (highest existing order + 1)
+  const existingListings = await Listing.find({
+    category: { $ne: "Apartment" },
+  });
+  const maxOrder = existingListings.reduce(
+    (max, listing) => Math.max(max, listing.order || 0),
+    0
+  );
+  const order = maxOrder + 1;
+
+  // Validate category uniqueness for Apartment and Casita
+  if (category === "Apartment" || category === "Casita") {
     const existingCategory = await Listing.findOne({ category });
     if (existingCategory) {
       return NextResponse.json(
         { error: `Only one ${category} property is allowed` },
-        { status: 400 }
-      );
-    }
-  }
-
-  // Check featured property limit
-  if (featured) {
-    const featuredCount = await Listing.countDocuments({ featured: true });
-    if (featuredCount >= 3) {
-      return NextResponse.json(
-        { error: "Maximum of 3 featured properties allowed" },
         { status: 400 }
       );
     }
@@ -115,7 +112,7 @@ export async function POST(req: Request) {
     bathrooms,
     sleeps,
     price,
-    featured,
+    order,
     category,
     amenities: amenitiesArr,
     mainImage: mainImageUrl,
@@ -136,19 +133,6 @@ export async function PUT(req: Request) {
   const formData = await req.formData();
 
   const id = formData.get("id") as string;
-  const featured = String(formData.get("featured")) === "true";
-
-  // Check featured property limit when setting to featured
-  if (featured) {
-    const currentListing = await Listing.findById(id);
-    const featuredCount = await Listing.countDocuments({ featured: true });
-    if (!currentListing?.featured && featuredCount >= 3) {
-      return NextResponse.json(
-        { error: "Maximum of 3 featured properties allowed" },
-        { status: 400 }
-      );
-    }
-  }
 
   const amenities = JSON.parse(formData.get("amenities") as string);
   const amenitiesArr = (amenities as string[]).map((name) => ({
@@ -164,16 +148,13 @@ export async function PUT(req: Request) {
     bathrooms: parseInt(formData.get("bathrooms") as string),
     sleeps: parseInt(formData.get("sleeps") as string),
     price: parseFloat(formData.get("price") as string),
-    featured,
-    category: formData.get("category") as "Villa" | "Apartment" | "Bungalow",
+    order: parseInt(formData.get("order") as string) || 0,
+    category: formData.get("category") as "Villa" | "Apartment" | "Casita",
     amenities: amenitiesArr,
   };
 
-  // Validate category uniqueness for Apartment and Bungalow (only if category is being changed)
-  if (
-    updateData.category === "Apartment" ||
-    updateData.category === "Bungalow"
-  ) {
+  // Validate category uniqueness for Apartment and Casita (only if category is being changed)
+  if (updateData.category === "Apartment" || updateData.category === "Casita") {
     const existingCategory = await Listing.findOne({
       category: updateData.category,
       _id: { $ne: id }, // Exclude current listing from check
@@ -258,6 +239,35 @@ export async function PUT(req: Request) {
     new: true,
   });
   return NextResponse.json(updatedListing);
+}
+
+// ✅ PATCH - Update order of multiple listings
+export async function PATCH(req: Request) {
+  const session = await checkAdmin();
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectToDatabase();
+
+  try {
+    const { updates } = await req.json();
+
+    // Update multiple listings with new order values
+    const updatePromises = updates.map(
+      (update: { id: string; order: number }) =>
+        Listing.findByIdAndUpdate(update.id, { order: update.order })
+    );
+
+    await Promise.all(updatePromises);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error updating listing orders:", error);
+    return NextResponse.json(
+      { error: "Failed to update listing orders" },
+      { status: 500 }
+    );
+  }
 }
 
 // ✅ DELETE - Remove listing and associated images

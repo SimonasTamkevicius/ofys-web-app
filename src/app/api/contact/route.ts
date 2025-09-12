@@ -2,10 +2,10 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, subject, message } = await req.json();
+    const { name, email, category, subject, message } = await req.json();
 
     // Validate required fields
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !category || !subject || !message) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -67,6 +67,7 @@ export async function POST(req: Request) {
           
           <div style="background-color: #f9f6f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h2 style="color: #85277F; font-size: 20px; margin: 0 0 15px 0;">Contact Details</h2>
+            <p style="margin: 8px 0; color: #333;"><strong>Category for this inquiry:</strong> ${category}</p>
             <p style="margin: 8px 0; color: #333;"><strong>Name:</strong> ${name}</p>
             <p style="margin: 8px 0; color: #333;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #85277F; text-decoration: none;">${email}</a></p>
             <p style="margin: 8px 0; color: #333;"><strong>Subject:</strong> ${subject}</p>

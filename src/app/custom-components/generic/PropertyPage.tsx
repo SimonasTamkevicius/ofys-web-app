@@ -80,9 +80,27 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
     imageUrl,
   } = property;
 
-  // Handle different data structures
+  // Handle different data structures and format price
+  const formatPrice = (price: string | number | undefined) => {
+    if (!price) return "";
+
+    const numericPrice = typeof price === "string" ? parseFloat(price) : price;
+    if (isNaN(numericPrice)) return "";
+
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numericPrice);
+  };
+
   const propertyPrice =
-    price || (pricePerNight ? `$${pricePerNight}/night` : "");
+    type === "Realty"
+      ? formatPrice(price)
+      : pricePerNight
+      ? `$${pricePerNight}/night`
+      : "";
   // const propertyLocation = property.location || "Costa Rica";
   const propertyGallery = galleryImages || gallery || [];
   const propertyMainImage = mainImage || imageUrl || "";
@@ -197,13 +215,14 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.3 }}
+              whileTap={{ scale: 0.98 }}
             >
               <Link
                 href={`/${type.toLowerCase()}`}
-                className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-lg text-[#85277F] font-medium shadow-sm hover:shadow-md transition-all"
+                className="flex items-center gap-2 px-3 py-3 bg-[#85277F]/30 backdrop-blur-sm rounded-full text-white font-medium shadow-sm hover:bg-[#85277F]/50 transition-all cursor-pointer min-w-[44px] min-h-[44px] justify-center"
               >
                 <FontAwesomeIcon icon={faArrowLeft} className="w-4 h-4" />
-                Back
+                <span>Back</span>
               </Link>
             </motion.div>
 
@@ -214,7 +233,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             >
               <button
                 onClick={() => setBlueprintModalOpen(true)}
-                className="w-32 h-32 bg-white/90 backdrop-blur-sm rounded-xl border border-white/30 shadow-sm hover:shadow-md transition-all overflow-hidden"
+                className="w-32 h-32 bg-white/90 backdrop-blur-sm rounded-xl border border-white/30 shadow-sm hover:shadow-md transition-all overflow-hidden cursor-pointer"
               >
                 <Image
                   src={propertyMainImage}
@@ -348,7 +367,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
                         <p className="text-sm text-gray-500 mb-1">
                           {type === "Rentals"
                             ? "Nightly Rate From"
-                            : "Asking Price"}
+                            : "Starting from"}
                         </p>
                         <p className="text-3xl font-bold bg-gradient-to-r from-[#85277F] to-[#9E3A95] bg-clip-text text-transparent">
                           {propertyPrice}
@@ -554,7 +573,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -574,7 +593,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             {/* Close button */}
             <motion.button
               onClick={closeLightbox}
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white p-3 sm:p-4 hover:text-[#E5D9E4] transition-colors z-20 bg-black/40 rounded-full backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white p-3 sm:p-4 hover:text-[#E5D9E4] transition-colors z-20 bg-black/40 rounded-full cursor-pointer backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Close lightbox"
@@ -590,7 +609,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
             <div className="flex justify-between items-center absolute top-1/2 w-full -translate-y-1/2 px-2 sm:px-4 pointer-events-none">
               <motion.button
                 onClick={prevImage}
-                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto"
+                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto cursor-pointer"
                 whileHover={{
                   scale: 1.1,
                   backgroundColor: "rgba(133, 39, 127, 0.8)",
@@ -606,7 +625,7 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
               </motion.button>
               <motion.button
                 onClick={nextImage}
-                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto"
+                className="text-white p-3 sm:p-4 bg-black/40 rounded-full hover:bg-[#85277F] transition-all backdrop-blur-sm min-w-[48px] min-h-[48px] flex items-center justify-center pointer-events-auto cursor-pointer"
                 whileHover={{
                   scale: 1.1,
                   backgroundColor: "rgba(133, 39, 127, 0.8)",
@@ -678,31 +697,64 @@ export default function PropertyPage({ property, type }: PropertyPageProps) {
 
       {/* Blueprint Modal */}
       {blueprintModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setBlueprintModalOpen(false)}
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-hidden"
+          style={{ height: "100vh", width: "100vw" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          <div
-            className="relative max-w-4xl w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setBlueprintModalOpen(false)}
-              className="absolute -top-12 right-0 text-white p-2"
-            >
-              <FontAwesomeIcon icon={faTimes} size="lg" />
-            </button>
+          {/* Backdrop with blur and dimming */}
+          <motion.div
+            className="absolute inset-0 bg-black/80 backdrop-blur-lg"
+            style={{ height: "100vh", width: "100vw" }}
+            onClick={() => setBlueprintModalOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4 }}
+          />
 
-            <Image
-              src={blueprint.src}
-              alt={blueprint.alt}
-              className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
-              width={1280}
-              height={720}
-              style={{ objectFit: "contain" }}
-            />
+          {/* Lightbox container */}
+          <div className="relative z-10 max-w-6xl w-full max-h-[90vh]">
+            {/* Close button */}
+            <motion.button
+              onClick={() => setBlueprintModalOpen(false)}
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 text-white p-3 sm:p-4 hover:text-[#E5D9E4] transition-colors z-20 bg-black/40 rounded-full cursor-pointer backdrop-blur-sm min-w-[44px] min-h-[44px] flex items-center justify-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Close blueprint modal"
+            >
+              <FontAwesomeIcon
+                icon={faTimes}
+                size="lg"
+                className="w-4 h-4 sm:w-5 sm:h-5"
+              />
+            </motion.button>
+
+            {/* Blueprint image with enhanced animations */}
+            <motion.div
+              className="w-full h-full flex items-center justify-center overflow-hidden rounded-lg"
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <motion.img
+                src={blueprint.src}
+                alt={blueprint.alt}
+                className="w-full h-auto max-w-full max-h-[80vh] object-contain"
+                style={{
+                  borderRadius: "0.5rem",
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

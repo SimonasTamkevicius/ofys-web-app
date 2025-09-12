@@ -17,9 +17,9 @@ const GeneralInfo = () => {
             image="/costaricacoast.png"
             altText="Sunset over a luxury coastal villa"
             imageSide="left"
-            subHeadText="Seaside Serenity"
-            headText="Wake Up to Ocean Breezes"
-            paragraphText="Experience ultimate relaxation in our oceanfront villas. Let the sound of gentle waves and panoramic views welcome you to each new day in paradise."
+            subHeadText="A Lifestyle Worth Investing In"
+            headText="The Gold Coast Advantage"
+            paragraphText="Costa Rica's Gold Coast offers pristine beaches, a vibrant culture, and a year-round tropical climate for a lifestyle of beauty and relaxation. With a stable market and rising values, it also stands as one of the most secure and rewarding real estate investments in Central America."
             buttonText="View Ocean Villas"
           />
         </motion.div>
@@ -29,9 +29,9 @@ const GeneralInfo = () => {
             image="/rentalsbg1.png"
             altText="Tropical jungle villa with infinity pool"
             imageSide="right"
-            subHeadText="Hidden Oasis"
-            headText="Retreat Into Nature's Embrace"
-            paragraphText="Surround yourself with lush greenery and tranquil privacy. Our jungle hideaways blend modern luxury with untouched nature, offering you a secluded escape."
+            subHeadText="Ease Meets Elegance"
+            headText="Everyday Living"
+            paragraphText="O.F.Y.S. properties offer refined living that balances modern luxury with everyday ease. With beaches, shops, and exclusive clubs close at hand, life here is as convenient as it is elevated."
             buttonText="Discover Jungle Retreats"
           />
         </motion.div>

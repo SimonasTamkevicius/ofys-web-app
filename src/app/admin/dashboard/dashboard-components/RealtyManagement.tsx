@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -14,6 +14,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
   Plus,
   Search,
@@ -36,8 +53,8 @@ interface Listing {
   bathrooms: number;
   sleeps: number;
   price: number;
-  featured: boolean;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];
@@ -56,6 +73,110 @@ interface ExistingGalleryImage {
   isExisting: true;
 }
 
+// Sortable Property Card Component
+function SortablePropertyCard({
+  realty,
+  onEdit,
+  onDelete,
+}: {
+  realty: Listing;
+  onEdit: (realty: Listing) => void;
+  onDelete: (realty: Listing) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: realty._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 1000 : 1,
+  };
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price);
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <Card className="cursor-grab active:cursor-grabbing">
+        <CardHeader className="pb-3">
+          <div className="flex justify-between items-start">
+            <CardTitle className="text-lg">{realty.name}</CardTitle>
+            <div className="flex gap-2">
+              {realty.category && (
+                <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
+                  {realty.category}
+                </span>
+              )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <p className="text-gray-600 text-sm line-clamp-2">
+              {realty.description}
+            </p>
+            <div className="flex items-center gap-4 text-sm text-gray-500">
+              <div className="flex items-center gap-1">
+                <Bed className="h-4 w-4" />
+                <span>{realty.bedrooms} beds</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Bath className="h-4 w-4" />
+                <span>{realty.bathrooms} baths</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Users className="h-4 w-4" />
+                <span>Sleeps {realty.sleeps}</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-lg font-semibold">
+                  {formatPrice(realty.price)}
+                </p>
+                <p className="text-sm text-gray-500">
+                  Order: {realty.order || 0}
+                </p>
+              </div>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(realty)}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onDelete(realty)}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function RealtyManagement() {
   const [realties, setRealties] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +188,18 @@ export default function RealtyManagement() {
   const [propertyToDelete, setPropertyToDelete] = useState<Listing | null>(
     null
   );
+
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -75,8 +208,8 @@ export default function RealtyManagement() {
     bathrooms: "",
     sleeps: "",
     price: "",
-    featured: false,
-    category: "Villa" as "Villa" | "Apartment" | "Bungalow",
+    order: 0,
+    category: "Villa" as "Villa" | "Casita",
     amenities: [] as string[],
     mainImage: null as File | null,
     mainImagePreview: "" as string,
@@ -86,23 +219,23 @@ export default function RealtyManagement() {
   });
 
   // Fetch properties from API
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch("/api/realty");
-        if (!response.ok) {
-          throw new Error("Failed to fetch properties");
-        }
-        const data = await response.json();
-        setRealties(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
+  const fetchProperties = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/realty");
+      if (!response.ok) {
+        throw new Error("Failed to fetch properties");
       }
-    };
+      const data = await response.json();
+      setRealties(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProperties();
   }, []);
 
@@ -116,11 +249,61 @@ export default function RealtyManagement() {
       realty.bathrooms.toString().includes(searchTerm)
   );
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (
+    field: string,
+    value: string | boolean | number
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
+  };
+
+  // Handle drag end for reordering
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = realties.findIndex((item) => item._id === active.id);
+      const newIndex = realties.findIndex((item) => item._id === over?.id);
+
+      const newRealties = arrayMove(realties, oldIndex, newIndex);
+
+      // Update order values in the local state immediately with a single state update
+      const updatedRealties = newRealties.map((realty, index) => ({
+        ...realty,
+        order: index + 1,
+      }));
+
+      // Use React's batching to prevent multiple re-renders
+      React.startTransition(() => {
+        setRealties(updatedRealties);
+      });
+
+      // Update order values in the database
+      const updates = updatedRealties.map((realty, index) => ({
+        id: realty._id,
+        order: index + 1,
+      }));
+
+      try {
+        const response = await fetch("/api/realty", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ updates }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to update order");
+        }
+      } catch (error) {
+        console.error("Error updating order:", error);
+        // Revert the change on error
+        fetchProperties();
+      }
+    }
   };
 
   const createImagePreview = (file: File): Promise<string> => {
@@ -230,7 +413,7 @@ export default function RealtyManagement() {
       bathrooms: property.bathrooms.toString(),
       sleeps: property.sleeps.toString(),
       price: property.price.toString(),
-      featured: property.featured,
+      order: property.order || 0,
       category: property.category,
       amenities: property.amenities.map((a) => a.name),
       mainImage: null,
@@ -282,7 +465,7 @@ export default function RealtyManagement() {
       formDataToSend.append("bathrooms", formData.bathrooms);
       formDataToSend.append("sleeps", formData.sleeps);
       formDataToSend.append("price", formData.price);
-      formDataToSend.append("featured", formData.featured.toString());
+      formDataToSend.append("order", formData.order.toString());
       formDataToSend.append("category", formData.category);
       formDataToSend.append("amenities", JSON.stringify(formData.amenities));
 
@@ -352,7 +535,7 @@ export default function RealtyManagement() {
         bathrooms: "",
         sleeps: "",
         price: "",
-        featured: false,
+        order: 0,
         category: "Villa",
         amenities: [],
         mainImage: null,
@@ -383,7 +566,7 @@ export default function RealtyManagement() {
       bathrooms: "",
       sleeps: "",
       price: "",
-      featured: false,
+      order: 0,
       category: "Villa",
       amenities: [],
       mainImage: null,
@@ -394,15 +577,6 @@ export default function RealtyManagement() {
     });
     setShowForm(false);
     setEditingProperty(null);
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
   };
 
   const commonAmenities = [
@@ -462,24 +636,6 @@ export default function RealtyManagement() {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) =>
-                      handleInputChange("featured", e.target.checked)
-                    }
-                    className="rounded border-gray-300"
-                  />
-                  <span>Featured Property</span>
-                </Label>
-                <p className="text-xs text-gray-600">
-                  Featured properties will be highlighted on the website.
-                  Maximum of 3 featured properties allowed.
-                </p>
-              </div>
-
-              <div className="space-y-2">
                 <Label htmlFor="category">Category</Label>
                 <select
                   id="category"
@@ -494,11 +650,10 @@ export default function RealtyManagement() {
                   required
                 >
                   <option value="Villa">Villa</option>
-                  <option value="Apartment">Apartment</option>
-                  <option value="Bungalow">Bungalow</option>
+                  <option value="Casita">Casita</option>
                 </select>
                 <p className="text-xs text-gray-600">
-                  Only one Apartment and one Bungalow property are allowed.
+                  Only one Casita property is allowed.
                 </p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -751,73 +906,27 @@ export default function RealtyManagement() {
           <p className="text-muted-foreground">No properties found.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {filteredRealties.map((realty) => (
-            <Card key={realty._id}>
-              <CardHeader className="pb-3">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{realty.name}</CardTitle>
-                  <div className="flex gap-2">
-                    {realty.category && (
-                      <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-medium">
-                        {realty.category}
-                      </span>
-                    )}
-                    {realty.featured && (
-                      <span className="px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
-                        Featured
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <p className="text-muted-foreground line-clamp-2">
-                    {realty.description}
-                  </p>
-
-                  <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Bed className="h-4 w-4" />
-                      <span>{realty.bedrooms} beds</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Bath className="h-4 w-4" />
-                      <span>{realty.bathrooms} baths</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Users className="h-4 w-4" />
-                      <span>Sleeps {realty.sleeps}</span>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <p className="text-lg font-semibold">
-                      {formatPrice(realty.price)}
-                    </p>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(realty)}
-                      >
-                        <Edit className="h-4 w-4 mr-1" /> Edit
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => openDeleteDialog(realty)}
-                      >
-                        <Trash2 className="h-4 w-4 mr-1" /> Delete
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={filteredRealties.map((realty) => realty._id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid grid-cols-1 gap-4">
+              {filteredRealties.map((realty) => (
+                <SortablePropertyCard
+                  key={realty._id}
+                  realty={realty}
+                  onEdit={handleEdit}
+                  onDelete={openDeleteDialog}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Delete Confirmation Dialog */}

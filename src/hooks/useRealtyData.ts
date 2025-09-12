@@ -9,8 +9,8 @@ interface Listing {
   bathrooms: number;
   sleeps: number;
   price: number;
-  featured: boolean;
-  category: "Villa" | "Apartment" | "Bungalow";
+  order: number;
+  category: "Villa" | "Casita";
   mainImage: string;
   floorPlanImage: string;
   galleryImages: string[];

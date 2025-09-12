@@ -21,7 +21,7 @@ async function checkAdmin() {
 // ✅ GET - Fetch all rentals
 export async function GET() {
   await connectToDatabase();
-  const rentals = await Rental.find();
+  const rentals = await Rental.find().sort({ order: 1 });
   return NextResponse.json(rentals);
 }
 
@@ -44,14 +44,19 @@ export async function POST(req: Request) {
   const pricePerNight = parseFloat(formData.get("pricePerNight") as string);
   const pricePerWeek = parseFloat(formData.get("pricePerWeek") as string);
   const pricePerMonth = parseFloat(formData.get("pricePerMonth") as string);
-  const category = formData.get("category") as
-    | "Villa"
-    | "Apartment"
-    | "Bungalow";
+  const category = formData.get("category") as "Villa" | "Apartment" | "Casita";
   const amenities = JSON.parse(formData.get("amenities") as string);
 
-  // Validate category uniqueness for Apartment and Bungalow
-  if (category === "Apartment" || category === "Bungalow") {
+  // Auto-assign order value (highest existing order + 1)
+  const existingRentals = await Rental.find();
+  const maxOrder = existingRentals.reduce(
+    (max, rental) => Math.max(max, rental.order || 0),
+    0
+  );
+  const order = maxOrder + 1;
+
+  // Validate category uniqueness for Apartment and Casita
+  if (category === "Apartment" || category === "Casita") {
     const existingCategory = await Rental.findOne({ category });
     if (existingCategory) {
       return NextResponse.json(
@@ -105,6 +110,7 @@ export async function POST(req: Request) {
     pricePerNight,
     pricePerWeek,
     pricePerMonth,
+    order,
     category,
     amenities: amenitiesArr,
     mainImage: mainImageUrl,
@@ -138,18 +144,16 @@ export async function PUT(req: Request) {
     pricePerNight: parseFloat(formData.get("pricePerNight") as string),
     pricePerWeek: parseFloat(formData.get("pricePerWeek") as string),
     pricePerMonth: parseFloat(formData.get("pricePerMonth") as string),
-    category: formData.get("category") as "Villa" | "Apartment" | "Bungalow",
+    order: parseInt(formData.get("order") as string) || 0,
+    category: formData.get("category") as "Villa" | "Apartment" | "Casita",
     amenities: (amenities as string[]).map((name) => ({
       name,
       icon: "default-icon.png", // or map to your icon logic
     })),
   };
 
-  // Validate category uniqueness for Apartment and Bungalow (only if category is being changed)
-  if (
-    updateData.category === "Apartment" ||
-    updateData.category === "Bungalow"
-  ) {
+  // Validate category uniqueness for Apartment and Casita (only if category is being changed)
+  if (updateData.category === "Apartment" || updateData.category === "Casita") {
     const existingCategory = await Rental.findOne({
       category: updateData.category,
       _id: { $ne: id }, // Exclude current rental from check
@@ -234,6 +238,35 @@ export async function PUT(req: Request) {
     new: true,
   });
   return NextResponse.json(updatedRental);
+}
+
+// ✅ PATCH - Update order of multiple rentals
+export async function PATCH(req: Request) {
+  const session = await checkAdmin();
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  await connectToDatabase();
+
+  try {
+    const { updates } = await req.json();
+
+    // Update multiple rentals with new order values
+    const updatePromises = updates.map(
+      (update: { id: string; order: number }) =>
+        Rental.findByIdAndUpdate(update.id, { order: update.order })
+    );
+
+    await Promise.all(updatePromises);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error updating rental orders:", error);
+    return NextResponse.json(
+      { error: "Failed to update rental orders" },
+      { status: 500 }
+    );
+  }
 }
 
 // ✅ DELETE - Remove rental and associated images

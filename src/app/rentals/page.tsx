@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/app/custom-components/generic/Navbar";
 import { motion, useScroll, useTransform } from "framer-motion";
 import PropertyCard from "@/app/custom-components/generic/PropertyCard";
@@ -8,6 +8,8 @@ import { useRentalData } from "@/hooks/useRentalData";
 import Link from "next/link";
 import Image from "next/image";
 import CTA from "@/app/custom-components/generic/CTA";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const RentalsPage = () => {
   const { scrollYProgress } = useScroll({
@@ -24,16 +26,49 @@ const RentalsPage = () => {
 
   const { rentals, loading, error } = useRentalData();
 
-  // Get all properties for the main grid - only villas
-  const villaProperties =
-    rentals?.filter((property) => property.category === "Villa") || [];
+  // Search and filter states
+  const [searchTerm, setSearchTerm] = useState("");
+  const [priceRange, setPriceRange] = useState<string>("all");
 
-  // Get apartment and bungalow properties for category cards
+  // Filter properties based on search and filter criteria
+  const filteredVillaProperties =
+    rentals?.filter((property) => {
+      // Only show villas in the main grid
+      if (property.category !== "Villa") return false;
+
+      const matchesSearch =
+        property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        property.location.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesPrice = (() => {
+        if (priceRange === "all") return true;
+        const price = property.pricePerNight;
+        switch (priceRange) {
+          case "under-200":
+            return price < 200;
+          case "200-500":
+            return price >= 200 && price < 500;
+          case "500-1000":
+            return price >= 500 && price < 1000;
+          case "over-1000":
+            return price >= 1000;
+          default:
+            return true;
+        }
+      })();
+
+      return matchesSearch && matchesPrice;
+    }) || [];
+
+  // Get all properties for the main grid - only villas
+  const villaProperties = filteredVillaProperties;
+
+  // Get apartment and casita properties for category cards
   const apartmentProperty = rentals?.find(
     (property) => property.category === "Apartment"
   );
-  const bungalowProperty = rentals?.find(
-    (property) => property.category === "Bungalow"
+  const casitaProperty = rentals?.find(
+    (property) => property.category === "Casita"
   );
 
   return (
@@ -390,8 +425,8 @@ const RentalsPage = () => {
                     </motion.div>
                   ) : null}
 
-                  {/* Bungalows Category Card */}
-                  {bungalowProperty ? (
+                  {/* Casitas Category Card */}
+                  {casitaProperty ? (
                     <motion.div
                       initial={{ opacity: 0, y: 40 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -402,14 +437,14 @@ const RentalsPage = () => {
                       }}
                     >
                       <Link
-                        href={`/rentals/${bungalowProperty._id}`}
+                        href={`/rentals/${casitaProperty._id}`}
                         className="group relative overflow-hidden rounded-2xl shadow-lg bg-white h-full flex flex-col w-full"
                       >
                         {/* Image with overlay */}
                         <div className="relative aspect-[8/4] overflow-hidden flex-none">
                           <Image
-                            src={bungalowProperty.mainImage}
-                            alt={bungalowProperty.name}
+                            src={casitaProperty.mainImage}
+                            alt={casitaProperty.name}
                             fill
                             className="object-cover transition-all duration-700 group-hover:scale-105"
                           />
@@ -418,7 +453,7 @@ const RentalsPage = () => {
                           {/* Category badge */}
                           <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full shadow-sm text-xs">
                             <span className="font-medium text-[#85277F]">
-                              Bungalows
+                              Casitas
                             </span>
                           </div>
                         </div>
@@ -427,7 +462,7 @@ const RentalsPage = () => {
                         <div className="p-6 flex-grow flex flex-col">
                           <div className="mb-4">
                             <h4 className="font-serif text-2xl font-semibold text-gray-900 mb-2 line-clamp-1">
-                              {bungalowProperty.name}
+                              {casitaProperty.name}
                             </h4>
                             <p className="text-[#85277F] text-sm font-medium flex items-center">
                               <svg
@@ -449,12 +484,12 @@ const RentalsPage = () => {
                                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                 />
                               </svg>
-                              {bungalowProperty.location}
+                              {casitaProperty.location}
                             </p>
                           </div>
 
                           <p className="text-gray-600 text-sm leading-relaxed mb-6 line-clamp-3 flex-grow">
-                            {bungalowProperty.description}
+                            {casitaProperty.description}
                           </p>
 
                           <div className="flex justify-center items-center pt-4 border-t border-gray-100 mt-auto">
@@ -555,6 +590,57 @@ const RentalsPage = () => {
             </div>
           </motion.div>
 
+          {/* Search and Filter Bar */}
+          <motion.div
+            className="max-w-6xl mx-auto px-4 md:px-8 pt-8 mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 md:p-6">
+              <div className="flex flex-col lg:flex-row gap-4 items-center">
+                {/* Search Input */}
+                <div className="relative flex-1 w-full lg:w-auto">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <FontAwesomeIcon
+                      icon={faSearch}
+                      className="h-4 w-4 text-gray-400"
+                    />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search rentals..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#85277F]/20 focus:border-[#85277F] transition-all duration-300 bg-gray-50 focus:bg-white"
+                  />
+                </div>
+
+                {/* Price Range Filter */}
+                <div className="relative w-full lg:w-auto">
+                  <select
+                    value={priceRange}
+                    onChange={(e) => setPriceRange(e.target.value)}
+                    className="w-full lg:w-48 pl-4 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#85277F]/20 focus:border-[#85277F] transition-all duration-300 bg-gray-50 focus:bg-white appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Prices</option>
+                    <option value="under-200">Under $200/night</option>
+                    <option value="200-500">$200 - $500/night</option>
+                    <option value="500-1000">$500 - $1000/night</option>
+                    <option value="over-1000">Over $1000/night</option>
+                  </select>
+                </div>
+
+                {/* Results Count */}
+                <div className="text-sm text-gray-600 font-medium whitespace-nowrap">
+                  {villaProperties.length}{" "}
+                  {villaProperties.length === 1 ? "rental" : "rentals"} found
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
           {/* Properties Grid */}
           {loading ? (
             <div className="flex justify-center items-center py-20">
@@ -574,17 +660,16 @@ const RentalsPage = () => {
               {villaProperties.map((property, index) => (
                 <motion.div
                   key={property._id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{
                     once: true,
-                    margin: "-100px 0px -100px 0px",
-                    amount: 0.3,
+                    amount: 0.2,
                   }}
                   transition={{
-                    duration: 0.6,
-                    ease: [0.16, 1, 0.3, 1],
-                    delay: Math.min(index * 0.1, 0.5),
+                    duration: 0.4,
+                    ease: "easeOut",
+                    delay: Math.min(index * 0.05, 0.2),
                   }}
                 >
                   <PropertyCard
@@ -600,20 +685,24 @@ const RentalsPage = () => {
           ) : (
             <div className="text-center py-20">
               <p className="text-gray-600 text-lg">
-                No properties available at the moment.
+                {searchTerm || priceRange !== "all"
+                  ? "No rentals match your search criteria. Try adjusting your filters."
+                  : "No properties available at the moment."}
               </p>
             </div>
           )}
 
           {/* Call to Action */}
-          <CTA
-            subtitle="Luxury Awaits"
-            title="Ready to Book Your Dream Rental?"
-            description="Our team of rental experts is here to help you find the perfect
-                accommodation that matches your vacation style and preferences."
-            buttonText="Get in Touch"
-            href="/inquiries"
-          />
+          <div className="px-8">
+            <CTA
+              subtitle="Luxury Awaits"
+              title="Ready to Book Your Dream Rental?"
+              description="Our team of rental experts is here to help you find the perfect
+                  accommodation that matches your vacation style and preferences."
+              buttonText="Get in Touch"
+              href="/inquiries"
+            />
+          </div>
         </div>
       </motion.section>
     </div>
