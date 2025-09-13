@@ -123,7 +123,7 @@ This message was sent from the OFYS contact form on ${new Date().toLocaleDateStr
 
     // Send email to business (routed by category)
     await transporter.sendMail({
-      from: process.env.MAIL_USER, // Send from your business email
+      from: email,
       to: targetEmail, // Send to category-specific email
       replyTo: email, // Allow direct reply to customer
       subject: `New Contact Form: ${subject}`,
@@ -193,7 +193,7 @@ The OFYS Team
     `;
 
     await transporter.sendMail({
-      from: process.env.MAIL_USER, // Send from business email
+      from: targetEmail, // Send from business email
       to: email, // Send to customer
       subject: `Thank you for contacting OFYS - ${subject}`,
       text: confirmationText,
