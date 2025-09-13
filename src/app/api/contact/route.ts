@@ -193,7 +193,7 @@ The OFYS Team
     `;
 
     await transporter.sendMail({
-      from: targetEmail, // Send from business email
+      from: `"OFYS Team" <${process.env.MAIL_USER}>`, // Send from business email with display name
       to: email, // Send to customer
       subject: `Thank you for contacting OFYS - ${subject}`,
       text: confirmationText,
