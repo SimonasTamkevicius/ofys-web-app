@@ -155,6 +155,7 @@ export default function BurgerMenu({ scrolled }: BurgerMenuProps) {
               transition: { duration: 0.4, ease: "easeIn" },
             }}
             className="fixed top-0 z-99 left-0 w-full h-screen bg-white backdrop-blur-md px-6 py-4 box-border overflow-y-auto"
+            data-mobile-menu
           >
             {/* Logo */}
             <motion.div
